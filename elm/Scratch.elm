@@ -34,3 +34,20 @@ the changed functions to stay available without qualification by the
 module name, you have to repeat the whole line, including `exposing (..)`. 
 
 -}
+
+-- An example of a multi-line code snippet that would be inconvenient
+-- to type in the repl.
+snippet =
+  Nothing
+    |> Maybe.map String.reverse 
+    |> Maybe.map (String.append "Dawn")
+
+{- 
+You can now see the result of the snippet by importing the module and
+typing `snippet` without any arguments.
+
+> import Scratch
+> Scratch.snippet
+Nothing : Maybe.Maybe String
+
+-}
