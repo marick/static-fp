@@ -1,7 +1,5 @@
 module SumTypes.WholeStory exposing (..)
 
--- import SumTypes.WholeStory exposing (..)
-
 type Silly a b
   = AsInt Int
   | AsA a
