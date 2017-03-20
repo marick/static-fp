@@ -1,44 +1,14 @@
 module SumTypes.SimpleTagging exposing (..)
 
-import Date exposing (Date)
-import Date.Extra as Date
-import Html exposing (..)
-import Html.Attributes exposing (..)
+import SumTypes.Percent as Percent exposing (Percent(..))
 
+type DripRate = DropsPerSecond Float
 
-type PropertyValue
-  = AsInt Int
-  | AsBool Bool
-  | AsDate Date
+increase1 : Percent -> DripRate -> DripRate
+increase1 (Percent percent) (DropsPerSecond rate) =
+  DropsPerSecond <| rate * (1.0 + percent) 
 
-type Property = Property String PropertyValue
+increase2 : Percent -> DripRate -> DripRate
+increase2 percent (DropsPerSecond rate) =
+  DropsPerSecond <| Percent.increase percent rate
 
-summarize : Property -> Html msg
-summarize (Property name value) =             
-  tr []
-    [ td [] [text name]
-    , td [] (summarizeValue value)
-    ]
-
-summarizeValue value =
-  case value of
-    AsInt int ->
-      [ text <| toString int ]
-    AsDate date ->
-      [ text <| Date.toFormattedString "y-m-d" date ]
-    AsBool bool ->
-      case bool of
-        True -> [trueIcon]
-        False -> [falseIcon]
-
-coloredIcon : String -> String -> Html msg
-coloredIcon iconName color =
-  i [class ("fa " ++ iconName)
-    , style [("color", color)]
-    ] []
-
-trueIcon : Html msg
-trueIcon = coloredIcon "fa-check" "green"
-
-falseIcon : Html msg
-falseIcon = coloredIcon "fa-times" "red"

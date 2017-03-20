@@ -3,19 +3,28 @@ module SumTypes.CleverTagging exposing (..)
 type Tagged tag value
   = Tagged value
 
-type CountTag = CountTag
-type IdTag = IdTag
+type PercentTag = PercentTag
+type DripRateTag = DripRateTag
 
-type alias Count = Tagged CountTag Int
-type alias Id = Tagged IdTag String   
-  
-makeCount : Int -> Count
-makeCount = Tagged
+type alias Percent = Tagged PercentTag Float  
+type alias DripRate = Tagged DripRateTag Float  
 
-makeId : String -> Id
-makeId = Tagged
+dripRate : Float -> DripRate
+dripRate = Tagged
+             
+percent : Float -> Percent
+percent = Tagged
+             
+map : (wrapped -> wrapped) -> Tagged tag wrapped -> Tagged tag wrapped
+map f (Tagged wrapped) = 
+  Tagged (f wrapped)
 
-type Pair = Pair Count Id
 
--- Pair (makeCount 3) (makeId "dawn")
--- Pair (makeCount 3) (makeCount 4)
+
+ascendingChoose : Int -> Int -> (String, String) -> String
+ascendingChoose x y tuple =
+  case x < y of
+    True -> Tuple.first tuple
+    False -> Tuple.second tuple
+
+    
