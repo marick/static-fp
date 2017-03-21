@@ -1,9 +1,16 @@
 module Scratch exposing (..)
 
 -- These are modules used in the book that are not automatically
--- imported. Notice that the import of `Maybe.Extra` adds some
--- user-contributed functions to the built-in `Maybe` module.
+-- imported.
+
 import Tuple
+
+-- Many of Elm's base types have community supported `<type>.Extra`
+-- modules that add useful functions. They're usually imported as
+-- follows. After that, you can use functions like `Maybe.values`
+-- without having to know which module it comes from.
+--
+-- `Maybe` itself is automatically imported to all Elm programs.
 import Maybe.Extra as Maybe
 
 -- An example function
