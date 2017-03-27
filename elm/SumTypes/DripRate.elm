@@ -8,6 +8,6 @@ map : (Float -> Float) -> DripRate -> DripRate
 map f (DropsPerSecond wrapped) =
   DropsPerSecond <| f wrapped
            
-increase : Percent -> DripRate -> DripRate
-increase percent rate =
+dripFaster : Percent -> DripRate -> DripRate
+dripFaster percent rate =
   map (Percent.increase percent) rate

@@ -1,7 +1,6 @@
-module SumTypes.CleverTagging exposing (..)
+module SumTypes.Aliases exposing (..)
 
-type Tagged tag value
-  = Tagged value
+type Tagged tag value = Tagged value
 
 type PercentTag = PercentTag
 type DripRateTag = DripRateTag
@@ -15,16 +14,11 @@ dripRate = Tagged
 percent : Float -> Percent
 percent = Tagged
              
+doubleDripRate : DripRate -> DripRate
+doubleDripRate rate =
+  map ((*) 2) rate
+
 map : (wrapped -> wrapped) -> Tagged tag wrapped -> Tagged tag wrapped
 map f (Tagged wrapped) = 
   Tagged (f wrapped)
 
-
-
-ascendingChoose : Int -> Int -> (String, String) -> String
-ascendingChoose x y tuple =
-  case x < y of
-    True -> Tuple.first tuple
-    False -> Tuple.second tuple
-
-    
