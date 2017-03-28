@@ -1,23 +1,36 @@
-module SumTypes.Random exposing (..)
+module Architecture1.Random1 exposing (..)
 
 import Html exposing (..)
 import Random
+import Tagged exposing (Tagged(..))
 
-type Msg = HandleRandomValue Int
+type SumTag = SumTag
+type alias Model = Tagged SumTag Int
 
+type Msg
+  = HandleRandomValue Int
+
+onlyCommand : Cmd Msg    
 onlyCommand =
   Random.generate HandleRandomValue (Random.int 0 5)
 
-init : (Int, Cmd Msg)
-init = (1, onlyCommand)
+init : (Model, Cmd Msg)
+init = (Tagged 1, onlyCommand)
 
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     HandleRandomValue value ->
-      (model + value, onlyCommand)
+      ( Tagged.map ((+) value) model
+      , onlyCommand
+      )
 
-view model = 
-  div [] [ text (toString model) ]
+view : Model -> Html Msg
+view model =
+  let
+    toShow = Tagged.untag model |> toString
+  in 
+    div [] [ text toShow ]
 
 
 -- The following tells the runtime where to find the
