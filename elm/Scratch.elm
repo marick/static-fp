@@ -32,7 +32,7 @@ Functions defined here are easy to use in the repl. Here are two ways:
    module name isn't needed.
 
 > import Scratch exposing (..)
-> Scratch.double 33
+> double 33
 66 : number
 
 If you change something in this file, repeat the `import` statement to
