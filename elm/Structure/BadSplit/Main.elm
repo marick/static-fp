@@ -11,7 +11,9 @@ interleave strings floats =
 interleavePairs : List (String, Float) -> One    
 interleavePairs pairs = 
   case pairs of
-      -- (string, float) :: remainder ->
-      --   One.Link string (Two.Link float (interleavePairs remainder))
-      _ ->
+      [] ->
         One.Stop
+      (string, float) :: tail ->
+        One.Link string
+                 (Two.Link float
+                           (interleavePairs tail))

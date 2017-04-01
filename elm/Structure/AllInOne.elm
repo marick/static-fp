@@ -1,4 +1,8 @@
-module Structure.AllInOne exposing (One(..), Two(..), interleave)
+module Structure.AllInOne exposing
+  ( One(..)
+  , Two(..)
+  , interleave
+  )
 
 import List.Extra as List
 
@@ -16,7 +20,9 @@ interleave strings floats =
 interleavePairs : List (String, Float) -> One    
 interleavePairs pairs = 
   case pairs of
-      (string, float) :: remainder ->
-        LinkOne string (LinkTwo float (interleavePairs remainder))
-      _ ->
-        Stop
+    [] ->
+      Stop
+    (string, float) :: tail ->
+      LinkOne string
+              (LinkTwo float
+                       (interleavePairs tail))

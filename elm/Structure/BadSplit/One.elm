@@ -1,8 +1,8 @@
 module Structure.BadSplit.One exposing (One(..))
 
--- import Structure.BadSplit.Two exposing (Two(..))
+import Structure.BadSplit.Two exposing (Two(..))
 
 type One
-  = Link String -- Two
+  = Link String Two
   | Stop
 
