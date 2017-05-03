@@ -12,7 +12,10 @@ f3 : List a -> Int -> List a
 f3 list = List.reverse list
 
 f4: List a -> List a
-f4 list = List.reverse    
+f4 list = List.reverse
+
+f5: List a -> a -> b -> List b
+f5 = flip List.map    
 
 -- Should find more of these. Feel free to make suggestions at
 -- the exercise's wiki page.
