@@ -36,7 +36,6 @@ imported as follows. After that, you can use functions like
 import Maybe.Extra as Maybe
 
 
-
 toBool maybe =
   False
 
