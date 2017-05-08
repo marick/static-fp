@@ -7,9 +7,9 @@ import Html.Attributes exposing (..)
 
 
 type PropertyValue
-  = AsInt Int
-  | AsBool Bool
-  | AsDate Date
+  = Int Int
+  | Bool Bool
+  | Date Date
 
 type Property = Property String PropertyValue
 
@@ -22,11 +22,11 @@ summarize (Property name value) =
 
 summarizeValue value =
   case value of
-    AsInt int ->
+    Int int ->
       text <| toString int
-    AsDate date ->
+    Date date ->
       text <| Date.toFormattedString "y-MM-dd" date
-    AsBool bool ->
+    Bool bool ->
       case bool of
         True -> coloredIcon "fa-check" "green"
         False -> coloredIcon "fa-times" "red"
