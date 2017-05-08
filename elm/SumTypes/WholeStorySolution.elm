@@ -20,8 +20,8 @@ type Silly a b
 simplify : Silly a b -> Silly a b
 simplify silly =
   case silly of
-    AsA a -> AsA a
-    AsB b -> AsB b
+    AsA _ -> silly
+    AsB _ -> silly
     _ -> NoArg
 
 
@@ -37,7 +37,7 @@ bVals silly =
     AsB b -> Just b
     AsBoth _ b -> Just b
     AsIntB _ b -> Just b
-    AsMaybe (Just b) -> Just b
+    AsMaybe (Just b) -> Just b  -- could just be AsMaybe maybe -> maybe
     DeeplySilly _ nested -> bVals nested
     _ -> Nothing
          
