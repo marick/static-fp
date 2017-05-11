@@ -1,0 +1,17 @@
+Two of these applications have a mild strobing effect:
+
+* Random1.elm
+* TypeChangeSolution.elm
+
+They display numbers that change very quickly.
+
+A third, ColorWheelSolution.elm, has a much stronger strobing
+effect. The numbers not only change, but the font size and color
+change. You can reduce the effect by removing either or both of these
+tuples in `Style.elm`
+
+  style [ ("color", colorWheelString iteration)
+        , ("font-size", fontSizeString iteration)
+        ]
+
+If you remove both, the strobing effect will be the same as for `Random1.elm`. 

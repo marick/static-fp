@@ -1,4 +1,4 @@
-module Architecture1.Random1 exposing (..)
+module Architecture1.SumTypeChangeSolution exposing (..)
 
 {-                                   WARNING
 
@@ -9,16 +9,16 @@ module Architecture1.Random1 exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Random
-import Tagged exposing (Tagged(..))
 
 -- Model
 
-type DisplayValueTag = DisplayValueTag_Unused
-type alias Model = Tagged DisplayValueTag Int
+type alias DisplayValue = Int
+type alias Iteration = Int
+type Model = Model DisplayValue Iteration
 
 includeRandomValue : Int -> Model -> Model
-includeRandomValue value model =
-  Tagged.map ((+) value) model
+includeRandomValue randomValue (Model displayValue iteration) =
+  Model (displayValue + randomValue) (iteration + 1)
 
 -- Msg  
 
@@ -28,7 +28,7 @@ type Msg
 -- Update
     
 init : (Model, Cmd Msg)
-init = (Tagged 0, askForRandomValue)
+init = (Model 0 0, askForRandomValue)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -47,7 +47,7 @@ askForRandomValue =
 view : Model -> Html Msg
 view model =
   let
-    toShow = Tagged.untag model |> toString
+    toShow = model |> toString
   in 
     div [] [ text toShow ]
 
