@@ -1,4 +1,4 @@
-module Architecture1.EverySecond exposing (..)
+module Architecture1.EverySecondNextSolution exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -19,8 +19,7 @@ includeRandomValue randomValue (Model displayValue iteration) =
 -- Msg  
 
 type Msg
-  = ProduceRandomValue Time 
-  | HandleRandomValue Int
+  = HandleRandomValue Int
 
 -- Update
     
@@ -31,11 +30,11 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     ProduceRandomValue _ ->
-      (model, Cmd.none)
+      (model, askForRandomValue)
         
     HandleRandomValue value ->
       ( includeRandomValue value model
-      , askForRandomValue
+      , Cmd.none
       )
 
 askForRandomValue : Cmd Msg

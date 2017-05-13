@@ -1,4 +1,4 @@
-module Architecture1.EverySecond exposing (..)
+module Architecture1.EverySecondSolution exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -23,7 +23,9 @@ type Msg
   | HandleRandomValue Int
 
 -- Update
-    
+
+-- Note: always showing 0 when the program starts would be boring,
+-- so ask for a random number right away.
 init : (Model, Cmd Msg)
 init = (Model 0 0, askForRandomValue)
 
@@ -31,11 +33,11 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     ProduceRandomValue _ ->
-      (model, Cmd.none)
+      (model, askForRandomValue)
         
     HandleRandomValue value ->
       ( includeRandomValue value model
-      , askForRandomValue
+      , Cmd.none
       )
 
 askForRandomValue : Cmd Msg
