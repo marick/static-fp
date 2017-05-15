@@ -1,7 +1,5 @@
 module SumTypes.PhantomTagging exposing (..)
 
-module SumTypes.PhantomTagging exposing (..)
-
 -- The core trick:
 
 type Tagged tag value = Tagged value
@@ -9,8 +7,9 @@ type Tagged tag value = Tagged value
 
 ----- Uses  
 
-type DripRate = UnusedDripRateConstructor
-type Percent = UnusedPercentConstructor
+type DripRate = DripRate_Unused
+type Percent = Percent_Unused
+type Minutes = Minutes_Unused
 
 dripRate : Float -> Tagged DripRate Float
 dripRate = Tagged 
@@ -18,3 +17,13 @@ dripRate = Tagged
 percent : Float -> Tagged Percent Float
 percent  = Tagged 
              
+minutes : Float -> Tagged Minutes Float
+minutes = Tagged
+
+
+minutesUntilCheck : Tagged DripRate Float -> Tagged Minutes Float
+minutesUntilCheck (Tagged rate) =
+  let
+    calculation perSecond = (2000 * 15) / (60 * perSecond)
+  in
+    rate |> calculation |> minutes

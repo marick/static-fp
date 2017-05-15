@@ -2,8 +2,8 @@ module SumTypes.Aliases exposing (..)
 
 type Tagged tag value = Tagged value
 
-type PercentTag = PercentTagUnused
-type DripRateTag = DripRateTagUnused
+type PercentTag = PercentTag_Unused
+type DripRateTag = DripRateTag_Unused
 
 type alias Percent = Tagged PercentTag Float  
 type alias DripRate = Tagged DripRateTag Float  

@@ -22,18 +22,23 @@ retag (Tagged x) =
 
 ----- Uses  
 
-type DripRate = UnusedDripRateConstructor
-type Percent = UnusedPercentConstructor
+type DripRate = DripRate_Unused
+type Percent = Percent_Unused
+type Minutes = Minutes_Unused
 
 dripRate : Float -> Tagged DripRate Float
 dripRate = Tagged 
 
 percent : Float -> Tagged Percent Float
-percent  = Tagged 
-             
-percentToRate1 : Tagged Percent a -> Tagged DripRate a
-percentToRate1 (Tagged value) =
-  Tagged value
+percent = Tagged
 
-percentToRate : Tagged Percent Float -> Tagged DripRate Float
-percentToRate = retag 
+minutes : Float -> Tagged Minutes Float
+minutes = Tagged
+
+
+minutesUntilCheck : Tagged DripRate Float -> Tagged Minutes Float
+minutesUntilCheck drips =
+  let
+    calculation perSecond = (2000 * 15) / (60 * perSecond)
+  in
+    map calculation drips

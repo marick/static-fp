@@ -1,4 +1,4 @@
-module Architecture1.ColorWheelSolution exposing (..)
+module Architecture1.Original_ToSumType exposing (..)
 
 {-                                   WARNING
 
@@ -9,7 +9,6 @@ module Architecture1.ColorWheelSolution exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Random
-import Architecture1.Style as Style
 
 -- Model
 
@@ -46,9 +45,11 @@ askForRandomValue =
 -- View
       
 view : Model -> Html Msg
-view (Model displayValue iteration) =
-  div [ Style.iteratedText iteration ]
-    [ text <| toString displayValue ]
+view model =
+  let
+    toShow = model |> toString
+  in 
+    div [] [ text toShow ]
 
 -- Main
       

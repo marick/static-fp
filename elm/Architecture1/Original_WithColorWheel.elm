@@ -1,12 +1,15 @@
-module Architecture1.RandomButtonSolution
-  exposing (..)
+module Architecture1.Original_WithColorWheel exposing (..)
+
+{-                                   WARNING
+
+     When run, this code causes a strobing effect.
+     See `========WARNING-READ-THIS========.txt` in this directory 
+-}
 
 import Html exposing (..)
-import Html.Events as Event
 import Html.Attributes exposing (..)
 import Random
 import Architecture1.Style as Style
-import Time exposing (Time, every, second)
 
 -- Model
 
@@ -18,36 +21,22 @@ includeRandomValue : Int -> Model -> Model
 includeRandomValue randomValue (Model displayValue iteration) =
   Model (displayValue + randomValue) (iteration + 1)
 
-negateDisplayValue : Model -> Model
-negateDisplayValue (Model displayValue iteration) = 
-  Model (negate displayValue) iteration
-
 -- Msg  
 
 type Msg
-  = ProduceRandomValue Time 
-  | HandleRandomValue Int
-  | Negate
+  = HandleRandomValue Int
 
 -- Update
-
+    
 init : (Model, Cmd Msg)
 init = (Model 0 0, askForRandomValue)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    ProduceRandomValue _ ->
-      (model, askForRandomValue)
-        
     HandleRandomValue value ->
       ( includeRandomValue value model
-      , Cmd.none
-      )
-
-    Negate ->
-      ( negateDisplayValue model
-      , Cmd.none
+      , askForRandomValue
       )
 
 askForRandomValue : Cmd Msg
@@ -58,24 +47,15 @@ askForRandomValue =
       
 view : Model -> Html Msg
 view (Model displayValue iteration) =
-  div []
-    [ button [Event.onClick (HandleRandomValue 11111)] [text "Negate"]
-    , div [ Style.iteratedText iteration ]
-      [ text <| toString displayValue ]
-    ]
-
--- Subscriptions
-
-subscriptions : Model -> Sub Msg
-subscriptions _ = 
-  every second ProduceRandomValue
+  div [ Style.iteratedText iteration ]
+    [ text <| toString displayValue ]
 
 -- Main
-
+      
 main =
   Html.program
     { init = init
     , view = view
     , update = update
-    , subscriptions = subscriptions
+    , subscriptions = always Sub.none
     }

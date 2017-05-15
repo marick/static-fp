@@ -1,6 +1,8 @@
-module Architecture1.EverySecondSolution exposing (..)
+module Architecture1.RandomButtonSolution
+  exposing (..)
 
 import Html exposing (..)
+import Html.Events as Event
 import Html.Attributes exposing (..)
 import Random
 import Architecture1.Style as Style
@@ -16,16 +18,19 @@ includeRandomValue : Int -> Model -> Model
 includeRandomValue randomValue (Model displayValue iteration) =
   Model (displayValue + randomValue) (iteration + 1)
 
+negateDisplayValue : Model -> Model
+negateDisplayValue (Model displayValue iteration) = 
+  Model (negate displayValue) iteration
+
 -- Msg  
 
 type Msg
   = ProduceRandomValue Time 
   | HandleRandomValue Int
+  | Negate
 
 -- Update
 
--- Note: always showing 0 when the program starts would be boring,
--- so ask for a random number right away.
 init : (Model, Cmd Msg)
 init = (Model 0 0, askForRandomValue)
 
@@ -40,6 +45,11 @@ update msg model =
       , Cmd.none
       )
 
+    Negate ->
+      ( negateDisplayValue model
+      , Cmd.none
+      )
+
 askForRandomValue : Cmd Msg
 askForRandomValue =
   Random.generate HandleRandomValue (Random.int 0 5)
@@ -48,8 +58,11 @@ askForRandomValue =
       
 view : Model -> Html Msg
 view (Model displayValue iteration) =
-  div [ Style.iteratedText iteration ]
-    [ text <| toString displayValue ]
+  div []
+    [ button [Event.onClick (HandleRandomValue 11111)] [text "Increase"]
+    , div [ Style.iteratedText iteration ]
+      [ text <| toString displayValue ]
+    ]
 
 -- Subscriptions
 
