@@ -1,28 +1,14 @@
-module Structure.AllInOne exposing
-  ( One(..)
-  , Two(..)
-  , interleave
-  )
+module Structure.AllInOne exposing (..)
 
-import List.Extra as List
+type StringCell
+  = WithString String FloatCell
 
-type One 
-  = LinkOne String Two
+type FloatCell
+  = WithFloat Float StringCell
   | Stop
 
-type Two
-  = LinkTwo Float One
-
-interleave : List String -> List Float -> One
-interleave strings floats =
-  interleavePairs <| List.zip strings floats
-
-interleavePairs : List (String, Float) -> One    
-interleavePairs pairs = 
-  case pairs of
-    [] ->
-      Stop
-    (string, float) :: tail ->
-      LinkOne string
-              (LinkTwo float
-                       (interleavePairs tail))
+example =     
+  WithString "first"
+    <| WithFloat 1.3
+      <| WithString "second" Stop
+  
