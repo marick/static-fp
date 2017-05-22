@@ -41,4 +41,4 @@ minutesUntilCheck drips =
   let
     calculation perSecond = (2000 * 15) / (60 * perSecond)
   in
-    map calculation drips
+    map calculation drips |> retag

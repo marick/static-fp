@@ -1,6 +1,10 @@
-module SumTypes.PhantomTagging exposing (..)
+module SumTypes.PhantomTaggingUse exposing (..)
 
--- The core trick:
+{-
+  Copy the uses below into your solution file, omitting
+  the type just below. It's just there so that the file compiles
+  without error.
+-}
 
 type Tagged tag value = Tagged value
 
