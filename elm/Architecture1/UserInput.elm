@@ -58,9 +58,10 @@ askForRandomValue =
 view : Model -> Html Msg
 view (Model displayValue iteration) =
   div []
-    [ button [Event.onClick Negate] [text "Negate"]
+    [ button [Event.onClick Negate]
+             [text "Negate"]
     , div [ Style.iteratedText iteration ]
-      [ text <| toString displayValue ]
+          [ text <| toString displayValue ]
     ]
 
 -- Subscriptions
