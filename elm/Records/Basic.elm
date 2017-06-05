@@ -28,10 +28,10 @@ bossie =
   }
   
 
-type alias NamedIdThing whole =
-  { whole | id : Int, name : String }
-  
-shorthand : NamedIdThing record -> String
+type alias ContainsNameId record =
+  { record | id : Int, name : String }
+
+shorthand : ContainsNameId record -> String
 shorthand record =
   record.name ++ " (" ++ (toString record.id) ++ ")"
 
@@ -47,7 +47,7 @@ ex1taker record =
 
     
 
--- x : NamedIdThing { id : Float, name : Float }
+-- x : ContainsNameId { id : Float, name : Float }
 -- x = { id = 3 , name = "foo"}    
     
 -- bossie =
@@ -109,3 +109,30 @@ ex1taker record =
 -- setName : String -> Animal -> Animal
 -- setName newName animal =
 --   { animal | name = newName }
+
+
+
+type alias Inner =   
+  { name : String
+  , value : Maybe Int
+  }
+
+type alias Outer =
+  { count : Int
+  , inner : Inner
+  }
+
+outer =
+  { count = 1
+  , inner =
+    { name = "Dawn"
+    , value = Just "awesome"
+    }
+  }
+
+
+new =
+  let
+    inner = outer.inner
+  in
+    { outer | inner = { inner | name = "X" } } 

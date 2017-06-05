@@ -5,7 +5,8 @@ import Html.Attributes exposing (..)
 import Html.Events as Event
 import IvArchitecture.Common.Measures as Measure
 import IvArchitecture.Common.Svg as Svg
-import IvArchitecture.Common.Html as Html
+import IvArchitecture.Common.Html as H
+import IvArchitecture.V1.Apparatus as Apparatus
 import Tagged exposing (Tagged(..))
 
 -- Model
@@ -33,14 +34,16 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     ChangeDripRate desired ->
-      ( model, Cmd.none )
+      ( model
+      , Cmd.none
+      )
 
 -- View
 
 view : Model -> Html Msg
 view model =
-  Html.wrapper 
-    [ Svg.wrapper []
+  H.wrapper 
+    [ Svg.wrapper Apparatus.view
     , p []
         [ text "Drops per second: "
         , input [ type_ "text"
@@ -61,3 +64,4 @@ main =
     , update = update
     , subscriptions = always Sub.none
     }
+    

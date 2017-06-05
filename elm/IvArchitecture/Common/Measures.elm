@@ -21,8 +21,6 @@ toFloatString : Float -> FloatString
 toFloatString float =
   Tagged (toString float)
 
-        
-
 --- Support for tagging
 
 type FloatStringTag = FloatStringTag UnusableConstructor

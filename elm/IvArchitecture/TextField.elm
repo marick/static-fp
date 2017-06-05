@@ -6,7 +6,7 @@ import Html.Events as Event
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import IvArchitecture.Common.Html as Html
+import IvArchitecture.Common.Html as H
 
 -- Model
 
@@ -41,7 +41,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  Html.wrapper 
+  H.wrapper 
     [ div []
         [ text "Value: "
         , input [ type_ "text"
