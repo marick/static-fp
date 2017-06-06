@@ -7,15 +7,22 @@ import IvArchitecture.Common.Measures as Measure
 import IvArchitecture.Common.Svg as Svg
 import IvArchitecture.Common.Html as H
 import IvArchitecture.V1.Apparatus as Apparatus
+import IvArchitecture.V1.FloatString as FloatString exposing (FloatString)
 import Tagged exposing (Tagged(..))
 
 -- Model
 
 type alias Model =
-  { dripRate : Measure.FloatString
-  } 
+  { desiredDripRate : FloatString
+  }
+
+updateDesiredDripRate candidate model =
+  { model |
+      desiredDripRate =
+        FloatString.fromString model.desiredDripRate candidate }
 
 -- Msg  
+
 
 type Msg
   = ChangeDripRate String
@@ -24,7 +31,7 @@ type Msg
 
 startingModel : Model
 startingModel =
-  { dripRate = Measure.toFloatString 0
+  { desiredDripRate = FloatString.fromFloat 0.0
   }
 
 init : (Model, Cmd Msg)
@@ -33,8 +40,8 @@ init = ( startingModel, Cmd.none )
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    ChangeDripRate desired ->
-      ( model
+    ChangeDripRate candidate ->
+      ( model |> updateDesiredDripRate candidate
       , Cmd.none
       )
 
@@ -47,7 +54,7 @@ view model =
     , p []
         [ text "Drops per second: "
         , input [ type_ "text"
-                , value <| Tagged.untag model.dripRate
+                , value <| Tagged.untag model.desiredDripRate
                 , Event.onInput ChangeDripRate
                 ]
             []
