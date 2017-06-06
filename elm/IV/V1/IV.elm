@@ -1,14 +1,15 @@
-module IvArchitecture.V1.IV exposing (..)
+module IV.V1.IV exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events as Event
-import IvArchitecture.Common.Measures as Measure
-import IvArchitecture.Common.Svg as Svg
-import IvArchitecture.Common.Html as H
-import IvArchitecture.V1.Apparatus as Apparatus
-import IvArchitecture.V1.FloatString as FloatString exposing (FloatString)
 import Tagged exposing (Tagged(..))
+
+import IV.Common.Measures as Measure
+import IV.Common.Svg as Svg
+import IV.Common.Html as H
+import IV.V1.Apparatus as Apparatus
+import IV.V1.FloatString as FloatString exposing (FloatString)
 
 -- Model
 

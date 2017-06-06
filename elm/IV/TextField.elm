@@ -1,4 +1,4 @@
-module IvArchitecture.TextField exposing (..)
+module IV.TextField exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -6,7 +6,7 @@ import Html.Events as Event
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import IvArchitecture.Common.Html as H
+import IV.Common.Html as H
 
 -- Model
 

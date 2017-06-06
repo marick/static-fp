@@ -1,4 +1,4 @@
-module IvArchitecture.Common.FloatString exposing
+module IV.Common.FloatString exposing
   ( FloatString
   , fromFloat
   , fromString

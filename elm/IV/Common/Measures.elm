@@ -1,7 +1,7 @@
-module IvArchitecture.Common.Measures exposing (..)
+module IV.Common.Measures exposing (..)
 
 import Tagged exposing (Tagged(..))
-import IvArchitecture.Common.Tagged exposing (UnusableConstructor)
+import IV.Common.Tagged exposing (UnusableConstructor)
 
 type alias DropsPerSecond = Tagged DropsPerSecondTag Float
 

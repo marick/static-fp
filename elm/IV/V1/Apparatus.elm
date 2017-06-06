@@ -1,9 +1,9 @@
-module IvArchitecture.V1.Apparatus exposing (..)
+module IV.V1.Apparatus exposing (..)
 
 import Svg 
 import Svg.Attributes exposing (..)
-import IvArchitecture.Common.Svg exposing ((^^))
-import IvArchitecture.Common.ApparatusConstants as C
+import IV.Common.Svg exposing ((^^))
+import IV.Common.ApparatusConstants as C
 
 view = 
   [ -- Bag
@@ -16,6 +16,7 @@ view =
   , container C.chamber
 
   , container C.hose
+  , fluid C.hose
   ]
 
 rawRect {origin, size} =

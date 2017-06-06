@@ -1,11 +1,11 @@
-module IvArchitecture.V1.FloatString exposing
+module IV.V1.FloatString exposing
   ( FloatString
   , fromFloat
   , fromString
   )
 
 import Tagged exposing (Tagged(..))
-import IvArchitecture.Common.Tagged exposing (UnusableConstructor)
+import IV.Common.Tagged exposing (UnusableConstructor)
 
 type alias FloatString = Tagged FloatStringTag String
 

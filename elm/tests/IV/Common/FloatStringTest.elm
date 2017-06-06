@@ -1,8 +1,8 @@
-module IvArchitecture.Common.FloatStringTest exposing (..)
+module IV.Common.FloatStringTest exposing (..)
 
 import Test exposing (..)
 import Expect exposing (Expectation)
-import IvArchitecture.Common.FloatString as FloatString exposing (FloatString)
+import IV.Common.FloatString as FloatString exposing (FloatString)
 
 defaultFloat = 123456789.0  -- Don't reuse this!
 defaultFloatString = FloatString.fromFloat defaultFloat

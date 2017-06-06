@@ -1,4 +1,4 @@
-module IvArchitecture.Common.Tagged exposing (..)
+module IV.Common.Tagged exposing (..)
 
 import Tagged exposing (Tagged(..))
 

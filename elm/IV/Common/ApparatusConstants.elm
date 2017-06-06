@@ -1,6 +1,6 @@
-module IvArchitecture.Common.ApparatusConstants exposing (..)
+module IV.Common.ApparatusConstants exposing (..)
 
-import IvArchitecture.Common.Svg exposing (..)
+import IV.Common.Svg exposing (..)
 import Color exposing (Color, rgb)
 
 bag : Rectangle    

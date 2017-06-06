@@ -1,4 +1,4 @@
-module IvArchitecture.Common.Svg exposing (..)
+module IV.Common.Svg exposing (..)
 
 import Html exposing (Html, div)
 import Svg exposing (..)
