@@ -1,21 +1,11 @@
-module IV.Common.Svg exposing (..)
+module IV.Common.EuclideanRectangle exposing
+  ( ..
+  )
 
-import Html exposing (Html, div)
-import Svg exposing (..)
-import Svg.Attributes exposing (..)
+import IV.Common.EuclideanTypes exposing (..)
 
-
-(^^) : (String -> a) -> number -> a
-(^^) f n =
-  f <| toString n
-
-type alias Point = { x : Int, y : Int }
-type alias Size = { width : Int, height : Int }            
-
-type alias Rectangle = { origin : Point, size : Size }
-
-rectangle : Int -> Int -> Rectangle  
-rectangle width height =
+fromOrigin : Int -> Int -> Rectangle  
+fromOrigin width height =
   { origin = Point 0 0, size = Size width height }
 
 translate { origin, size } shiftBy =
@@ -23,7 +13,7 @@ translate { origin, size } shiftBy =
   , size = Size size.width size.height
   }
 
-drainTo percent { origin, size } =
+lower percent { origin, size } =
   let
     shift : Int -> Float -> Int
     shift value byPercent = round (toFloat value * byPercent)
@@ -44,19 +34,4 @@ centeredBelow old new =
     newX = oldCenter - new.size.width // 2
   in
     translate new (Point newX newY)
-
-    
-wrapper : List (Svg msg) -> Html msg
-wrapper content =
-  div [] 
-    [ svg
-        [ version "1.1"
-        , x "0"
-        , y "0"
-        , width "400px"
-        , height "400px"
-        ]
-        content
-    ]
-
 

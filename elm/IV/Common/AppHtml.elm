@@ -1,4 +1,4 @@
-module IV.Common.Html exposing (..)
+module IV.Common.AppHtml exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)

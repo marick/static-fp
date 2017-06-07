@@ -1,50 +1,30 @@
 module IV.V1.Apparatus exposing (..)
 
 import Svg 
+import IV.Common.AppSvg as AppSvg exposing ((^^))
 import Svg.Attributes exposing (..)
-import IV.Common.Svg exposing ((^^))
 import IV.Common.ApparatusConstants as C
 
 view = 
-  [ -- Bag
-    fluid C.bagFluid
-  , container C.bag
-  , tickMarks
-
+  [ -- Hose
+    container C.hose
+  , fluid C.hose
+    
   -- Chamber
   , fluid C.chamberFluid
   , container C.chamber
 
-  , container C.hose
-  , fluid C.hose
+  -- Bag    
+  ,  fluid C.bagFluid
+  , container C.bag
+  , tickMarks
   ]
 
-rawRect {origin, size} =
-  [ x ^^ origin.x
-  , y ^^ origin.y
-  , width ^^ size.width
-  , height ^^ size.height
-  ]
-
-fluidAppearance =
-  [ fill C.fluidColorString
-  , stroke "none"
-  ]
-
-containerAppearance =   
-  [ fill "none"
-  , stroke "black"
-  ]
-
-visibleRectangle coordinates appearance =
-  Svg.rect
-      (appearance ++ rawRect coordinates) []
-  
 fluid coordinates =
-  visibleRectangle coordinates fluidAppearance
+  AppSvg.rect coordinates C.fluidAppearance
         
 container coordinates =
-  visibleRectangle coordinates containerAppearance
+  AppSvg.rect coordinates C.containerAppearance
 
 tickMarks =
   let

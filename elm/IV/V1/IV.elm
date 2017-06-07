@@ -6,10 +6,12 @@ import Html.Events as Event
 import Tagged exposing (Tagged(..))
 
 import IV.Common.Measures as Measure
-import IV.Common.Svg as Svg
-import IV.Common.Html as H
+import IV.Common.AppSvg as AppSvg
+import IV.Common.AppHtml as H
 import IV.V1.Apparatus as Apparatus
 import IV.V1.FloatString as FloatString exposing (FloatString)
+import IV.Common.EuclideanTypes exposing (Rectangle)
+import IV.Common.EuclideanRectangle as Rectangle
 
 -- Model
 
@@ -48,10 +50,13 @@ update msg model =
 
 -- View
 
+canvas : Rectangle
+canvas = Rectangle.fromOrigin 400 400 
+
 view : Model -> Html Msg
 view model =
   H.wrapper 
-    [ Svg.wrapper Apparatus.view
+    [ AppSvg.canvas canvas Apparatus.view
     , p []
         [ text "Drops per second: "
         , input [ type_ "text"
