@@ -1,6 +1,6 @@
 module IV.Common.EuclideanTypes exposing (..)
 
-type alias Point = { x : Int, y : Int }
-type alias Size = { width : Int, height : Int }            
+type alias Point = { x : Float, y : Float }
+type alias Size = { width : Float, height : Float }            
 type alias Rectangle = { origin : Point, size : Size }
 

@@ -6,7 +6,7 @@ import Html.Events as Event
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import IV.Common.Html as H
+import IV.Common.AppHtml as H
 
 -- Model
 
@@ -54,6 +54,7 @@ view model =
 
 -- Main
       
+main : Program Never Model Msg
 main =
   Html.program
     { init = init

@@ -1,10 +1,12 @@
 module IV.V1.Apparatus exposing (..)
 
-import Svg 
+import Svg exposing (Svg)
 import IV.Common.AppSvg as AppSvg exposing ((^^))
 import Svg.Attributes exposing (..)
 import IV.Common.ApparatusConstants as C
+import IV.Common.EuclideanTypes exposing (..)
 
+view : List (Svg msg)
 view = 
   [ -- Hose
     container C.hose
@@ -20,12 +22,15 @@ view =
   , tickMarks
   ]
 
+fluid : Rectangle -> Svg msg
 fluid coordinates =
   AppSvg.rect coordinates C.fluidAppearance
-        
+
+container : Rectangle -> Svg msg
 container coordinates =
   AppSvg.rect coordinates C.containerAppearance
 
+tickMarks : Svg msg    
 tickMarks =
   let
     ypos n =

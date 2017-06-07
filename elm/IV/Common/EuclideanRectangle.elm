@@ -4,19 +4,24 @@ module IV.Common.EuclideanRectangle exposing
 
 import IV.Common.EuclideanTypes exposing (..)
 
-fromOrigin : Int -> Int -> Rectangle  
+fromOrigin : Float -> Float -> Rectangle  
 fromOrigin width height =
   { origin = Point 0 0, size = Size width height }
 
-translate { origin, size } shiftBy =
-  { origin = Point (origin.x + shiftBy.x) (origin.y + shiftBy.y)
+translate : Point -> Rectangle-> Rectangle
+translate {x, y} { origin, size } =
+  { origin = Point (origin.x + x) (origin.y + y)
   , size = Size size.width size.height
   }
 
+nudgeDown : Float -> Rectangle -> Rectangle
+nudgeDown i =
+  translate (Point 0 i)
+
+lower : Float -> Rectangle -> Rectangle  
 lower percent { origin, size } =
   let
-    shift : Int -> Float -> Int
-    shift value byPercent = round (toFloat value * byPercent)
+    shift value byPercent = value * byPercent
 
     newY = origin.y + shift size.height (1 - percent)
     newHeight = shift size.height percent
@@ -27,11 +32,25 @@ lower percent { origin, size } =
     }
 
 centeredBelow : Rectangle -> Rectangle -> Rectangle
-centeredBelow old new =
+centeredBelow above toBeBelow =
   let 
-    newY = old.origin.y + old.size.height
-    oldCenter = old.origin.x + old.size.width // 2
-    newX = oldCenter - new.size.width // 2
+    newY = above.origin.y + above.size.height
+    newX = centerX above toBeBelow
   in
-    translate new (Point newX newY)
+    translate (Point newX newY) toBeBelow
 
+centeredAbove : Rectangle -> Rectangle -> Rectangle
+centeredAbove below toBeAbove =
+  let 
+    newY = below.origin.y - toBeAbove.size.height
+    newX = centerX below toBeAbove
+  in
+    translate (Point newX newY) toBeAbove
+
+centerX : Rectangle -> Rectangle -> Float
+centerX existing toBeCentered = 
+  let
+    existingCenter = existing.origin.x + existing.size.width / 2
+  in
+    existingCenter - toBeCentered.size.width / 2
+          
