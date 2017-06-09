@@ -1,18 +1,18 @@
 module Animation.Stopping exposing (..)
 
-import Html as H exposing (Html)
-import Svg as S exposing (Svg)
-import Svg.Attributes as SA
+import Html exposing (Html)
 import Animation.MessengerCommon as C
 import Animation
 import Animation.Messenger
 
+type alias AnimationState = Animation.Messenger.State Msg
+
 type alias Model =
-  { dropletAnimatables : Animation.Messenger.State Msg
-  , fluidAnimatables : Animation.Messenger.State Msg
+  { dropletAnimatables : AnimationState
+  , fluidAnimatables : AnimationState
   }
 
-startDroplet : Animation.Messenger.State Msg -> Animation.Messenger.State Msg
+startDroplet : AnimationState -> AnimationState
 startDroplet previousAnimation  =
   Animation.interrupt
     [ Animation.loop
@@ -22,13 +22,13 @@ startDroplet previousAnimation  =
     ]
     previousAnimation
   
-stopDroplet : Animation.Messenger.State Msg -> Animation.Messenger.State Msg
+stopDroplet : AnimationState -> AnimationState
 stopDroplet previousAnimation =
   Animation.interrupt
     [ Animation.set C.dropletStart ]
     previousAnimation
   
-startFluid : Animation.Messenger.State Msg -> Animation.Messenger.State Msg
+startFluid : AnimationState -> AnimationState
 startFluid previousAnimation  =
   Animation.interrupt
     [ Animation.toWith C.fluidControl C.fluidEnd
@@ -52,28 +52,16 @@ init = ( { dropletAnimatables = Animation.style C.dropletStart
        , Cmd.none
        )
 
-updateDroplet : (Animation.Messenger.State Msg -> Animation.Messenger.State Msg) -> Model -> Model
-updateDroplet f model =
-  { model |
-      dropletAnimatables = f model.dropletAnimatables
-  }
-
-  
-updateFluid : (Animation.Messenger.State Msg -> Animation.Messenger.State Msg) -> Model -> Model
-updateFluid f model =
-  { model |
-      fluidAnimatables = f model.fluidAnimatables
-  }
-
-  
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Start ->
-      model
-        |> updateDroplet startDroplet
-        |> updateFluid startFluid
-        |> C.noCmd
+      ( { model
+            | dropletAnimatables = startDroplet model.dropletAnimatables
+            , fluidAnimatables = startFluid model.fluidAnimatables
+        }
+      , Cmd.none
+      )
            
     Tick animationMsg ->
       let
@@ -90,9 +78,11 @@ update msg model =
         )
 
     Stop ->
-      model
-        |> updateDroplet stopDroplet
-        |> C.noCmd
+      ( { model
+            | dropletAnimatables = stopDroplet model.dropletAnimatables
+        }
+      , Cmd.none
+      )
 
 view : Model -> Html Msg
 view model =
@@ -112,7 +102,7 @@ subscriptions model =
     
 main : Program Never Model Msg
 main =
-  H.program
+  Html.program
     { init = init
     , view = view
     , update = update

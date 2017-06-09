@@ -1,8 +1,6 @@
 module Animation.FluidSolution exposing (..)
 
-import Html as H exposing (Html)
-import Svg as S exposing (Svg)
-import Svg.Attributes as SA
+import Html exposing (Html)
 import Animation.Common as C
 import Animation
 
@@ -88,7 +86,7 @@ subscriptions model =
     
 main : Program Never Model Msg
 main =
-  H.program
+  Html.program
     { init = init
     , view = view
     , update = update

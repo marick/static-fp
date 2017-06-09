@@ -9,6 +9,7 @@ import Animation
 import Time
 import Ease 
 
+
 -- Used in Droplet.elm
 
 wrapper : List (Html msg) -> Html msg
@@ -52,6 +53,7 @@ animatable figure staticPart animatedPart =
     (staticPart ++ Animation.render animatedPart)
     []
 
+hasStaticPart : List (S.Attribute msg) -> List (S.Attribute msg)
 hasStaticPart = identity
       
 droplet : Animation.State -> Svg msg
@@ -81,6 +83,7 @@ noCmd model =
 
 -- Added for DropletEasing.elm
 
+dropletControl : Animation.Interpolation  
 dropletControl =
   Animation.easing
     { duration = Time.second * 0.5
@@ -112,9 +115,10 @@ fluidEnd =
   , Animation.height (Animation.px 0)
   ]
 
+fluidControl : Animation.Interpolation  
 fluidControl =
   Animation.easing
-    { duration = Time.second * 5
+    { duration = Time.second * 3
     , ease = Ease.linear
     }
 
