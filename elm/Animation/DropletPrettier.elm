@@ -1,59 +1,48 @@
 module Animation.DropletPrettier exposing (..)
 
 import Html exposing (Html)
-import Animation.Common as C
+import Animation.Common as C exposing (Msg(..))
 import Animation
 
 type alias Model =
-  { dropletAnimatables : Animation.State
+  { droplet : C.AnimationModel
   }
 
-startDroplet : Animation.State -> Animation.State
-startDroplet previousAnimation  =
+startDroplet : C.AnimationModel -> C.AnimationModel
+startDroplet =
   Animation.interrupt
-    [ Animation.to C.dropletEnd ]
-    previousAnimation
-  
+    [ Animation.to C.dropletEndStyles ]
 
 -- The usual functions
   
-type Msg
-  = Start
-  | Tick Animation.Msg
-
 init : (Model, Cmd Msg)
-init = ( { dropletAnimatables = Animation.style C.dropletStart }
+init = ( { droplet = Animation.style C.dropletStartStyles }
        , Cmd.none
        )
 
-updateDroplet : (Animation.State -> Animation.State) -> Model -> Model
-updateDroplet f model =
-  { model |
-      dropletAnimatables = f model.dropletAnimatables
-  }
-  
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Start ->
-      ( updateDroplet startDroplet model
+      ( { model | droplet = startDroplet model.droplet }
       , Cmd.none
       )
-    Tick animationMsg ->
-      ( updateDroplet (Animation.update animationMsg) model
+           
+    Tick subMsg ->
+      ( { model | droplet = Animation.update subMsg model.droplet }
       , Cmd.none
       )
 
 view : Model -> Html Msg
 view model =
   C.wrapper
-    [ C.canvas [C.droplet model.dropletAnimatables]
-    , C.button Start "Start"
+    [ C.canvas [ C.dropletView model.droplet ]
+    , C.button Start "Click Me"
     ]
 
 subscriptions : Model -> Sub Msg    
 subscriptions model =
-  Animation.subscription Tick [ model.dropletAnimatables ]
+  Animation.subscription Tick [ model.droplet ]
 
     
 main : Program Never Model Msg

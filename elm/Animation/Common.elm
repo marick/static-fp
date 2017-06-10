@@ -47,7 +47,7 @@ button onClick text =
 -- Added for DropletPrettier.elm
 
 type alias Shape msg =
-  (List (S.Attribute msg) -> List (Svg msg) -> Svg msg)
+  List (S.Attribute msg) -> List (Svg msg) -> Svg msg
 
 type alias StaticAttributes msg = List (S.Attribute msg)
 
@@ -70,12 +70,12 @@ dropletView =
     , SA.x "300"
     ]
 
-dropletStartStyle : List Animation.Property    
-dropletStartStyle =
+dropletStartStyles : List Animation.Property    
+dropletStartStyles =
   [ Animation.y 10 ]
 
-dropletEndStyle : List Animation.Property    
-dropletEndStyle =
+dropletEndStyles : List Animation.Property    
+dropletEndStyles =
   [ Animation.y 200 ]
 
 
@@ -99,14 +99,14 @@ fluidView =
     , SA.fill "grey"
     ]
 
-fluidStartStyle : List Animation.Property
-fluidStartStyle =
+fluidStartStyles : List Animation.Property
+fluidStartStyles =
   [ Animation.y 10
   , Animation.height (Animation.px 100)
   ]
 
-fluidEndStyle : List Animation.Property    
-fluidEndStyle =
+fluidEndStyles : List Animation.Property    
+fluidEndStyles =
   [ Animation.y 110
   , Animation.height (Animation.px 0)
   ]

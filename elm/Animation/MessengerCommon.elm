@@ -74,15 +74,15 @@ dropletView =
     , SA.x "300"
     ]
 
-dropletStartStyle : List Animation.Property    
-dropletStartStyle =
+dropletStartStyles : List Animation.Property    
+dropletStartStyles =
   [ Animation.y 10 ]
 
-dropletEndStyle : List Animation.Property    
-dropletEndStyle =
+dropletEndStyles : List Animation.Property    
+dropletEndStyles =
   [ Animation.y 200 ]
 
-      
+
 -- Added for DropletEasing.elm
 
 dropletControl : Animation.Interpolation  
@@ -103,14 +103,14 @@ fluidView =
     , SA.fill "grey"
     ]
 
-fluidStartStyle : List Animation.Property
-fluidStartStyle =
+fluidStartStyles : List Animation.Property
+fluidStartStyles =
   [ Animation.y 10
   , Animation.height (Animation.px 100)
   ]
 
-fluidEndStyle : List Animation.Property    
-fluidEndStyle =
+fluidEndStyles : List Animation.Property    
+fluidEndStyles =
   [ Animation.y 110
   , Animation.height (Animation.px 0)
   ]

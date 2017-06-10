@@ -6,36 +6,36 @@ import Animation
 import Animation.Messenger
 
 type alias Model =
-  { dropletStyle : C.AnimationModel
-  , fluidStyle : C.AnimationModel
+  { droplet : C.AnimationModel
+  , fluid : C.AnimationModel
   }
 
 startDroplet : C.AnimationModel -> C.AnimationModel
 startDroplet =
   Animation.interrupt
     [ Animation.loop
-        [ Animation.set C.dropletStartStyle 
-        , Animation.toWith C.dropletControl C.dropletEndStyle
+        [ Animation.set C.dropletStartStyles 
+        , Animation.toWith C.dropletControl C.dropletEndStyles
         ]
     ]
   
 stopDroplet : C.AnimationModel -> C.AnimationModel
 stopDroplet =
   Animation.interrupt
-    [ Animation.set C.dropletStartStyle ]
+    [ Animation.set C.dropletStartStyles ]
   
 startFluid : C.AnimationModel -> C.AnimationModel
 startFluid =
   Animation.interrupt
-    [ Animation.toWith C.fluidControl C.fluidEndStyle
+    [ Animation.toWith C.fluidControl C.fluidEndStyles
     , Animation.Messenger.send Stop
     ]
 
 -- The usual functions
   
 init : (Model, Cmd Msg)
-init = ( { dropletStyle = Animation.style C.dropletStartStyle
-         , fluidStyle = Animation.style C.fluidStartStyle
+init = ( { droplet = Animation.style C.dropletStartStyles
+         , fluid = Animation.style C.fluidStartStyles
          }
        , Cmd.none
        )
@@ -45,8 +45,8 @@ update msg model =
   case msg of
     Start ->
       ( { model
-            | dropletStyle = startDroplet model.dropletStyle
-            , fluidStyle = startFluid model.fluidStyle
+            | droplet = startDroplet model.droplet
+            , fluid = startFluid model.fluid
         }
       , Cmd.none
       )
@@ -54,20 +54,20 @@ update msg model =
     Tick subMsg ->
       let
         (newDroplet, dropletCmd) =
-          Animation.Messenger.update subMsg model.dropletStyle
+          Animation.Messenger.update subMsg model.droplet
         (newFluid, fluidCmd) = 
-          Animation.Messenger.update subMsg model.fluidStyle
+          Animation.Messenger.update subMsg model.fluid
       in
         ( { model 
-              | dropletStyle = newDroplet
-              , fluidStyle = newFluid
+              | droplet = newDroplet
+              , fluid = newFluid
           }
         , Cmd.batch [dropletCmd, fluidCmd]
         )
 
     Stop ->
       ( { model
-            | dropletStyle = stopDroplet model.dropletStyle
+            | droplet = stopDroplet model.droplet
         }
       , Cmd.none
       )
@@ -75,17 +75,17 @@ update msg model =
 view : Model -> Html Msg
 view model =
   C.wrapper
-    [ C.canvas [ C.dropletView model.dropletStyle
-               , C.fluidView model.fluidStyle
+    [ C.canvas [ C.dropletView model.droplet
+               , C.fluidView model.fluid
                ]
-    , C.button Start "Start"
+    , C.button Start "Click Me"
     ]
 
 subscriptions : Model -> Sub Msg    
 subscriptions model =
   Animation.subscription Tick
-    [ model.dropletStyle
-    , model.fluidStyle
+    [ model.droplet
+    , model.fluid
     ]
 
     

@@ -3,19 +3,15 @@ module Animation.Droplet exposing (..)
 import Html as H exposing (Html)
 import Svg as S exposing (Svg)
 import Svg.Attributes as SA
+import Animation.Common as C exposing (Msg(..))
 import Animation
-import Animation.Common as C
 
 type alias Model =
-  { dropletAnimatables : Animation.State
+  { droplet : C.AnimationModel
   }
 
-type Msg
-  = Start
-  | Tick Animation.Msg
-
 init : (Model, Cmd Msg)
-init = ({ dropletAnimatables =
+init = ({ droplet =
             Animation.style
               [ Animation.x 200
               , Animation.y 10
@@ -29,22 +25,22 @@ update msg model =
   case msg of
     Start ->
       ( { model |
-            dropletAnimatables = 
+            droplet = 
               Animation.interrupt
                 [ Animation.to
                     [ Animation.x 200
                     , Animation.y 300
                     ]
                 ]
-                model.dropletAnimatables
+                model.droplet
         }
       , Cmd.none
       )
     Tick animationMsg ->
       let
-        newStyle = Animation.update animationMsg model.dropletAnimatables
+        newStyle = Animation.update animationMsg model.droplet
       in
-        ( { model | dropletAnimatables = newStyle }
+        ( { model | droplet = newStyle }
         , Cmd.none
         )
 
@@ -57,15 +53,15 @@ view model =
             ([ SA.height "20"
              , SA.width "20"
              , SA.fill "grey"
-             ] ++ Animation.render model.dropletAnimatables)
+             ] ++ Animation.render model.droplet)
             []
         ]
-    , C.button Start "Press Me"
+    , C.button Start "Click Me"
     ]
 
 subscriptions : Model -> Sub Msg    
 subscriptions model =
-  Animation.subscription Tick [ model.dropletAnimatables ]
+  Animation.subscription Tick [ model.droplet ]
 
     
 main : Program Never Model Msg
