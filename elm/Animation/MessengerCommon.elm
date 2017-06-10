@@ -10,6 +10,15 @@ import Animation.Messenger
 import Time
 import Ease 
 
+
+type Msg
+  = Start
+  | Tick Animation.Msg
+  | Stop
+
+type alias AnimationModel = Animation.Messenger.State Msg
+
+
 -- Used in Droplet.elm
 
 wrapper : List (Html msg) -> Html msg
@@ -41,23 +50,23 @@ button onClick text =
 
 -- Added for DropletPrettier.elm
 
-type alias FigureFunction msg =
-  (List (S.Attribute msg) -> List (Svg msg) -> Svg msg)
+type alias Shape msg =
+  List (S.Attribute msg) -> List (Svg msg) -> Svg msg
 
 type alias StaticAttributes msg = List (S.Attribute msg)
 
-animatable : FigureFunction msg -> StaticAttributes msg -> Animation.Messenger.State msg
+animatable : Shape msg -> StaticAttributes msg -> AnimationModel
            -> Svg msg
-animatable figure staticPart animatedPart =
-  figure
+animatable shape staticPart animatedPart =
+  shape
     (staticPart ++ Animation.render animatedPart)
     []
 
 hasStaticPart : List (S.Attribute msg) -> List (S.Attribute msg)
 hasStaticPart = identity
       
-droplet : Animation.Messenger.State msg -> Svg msg
-droplet =
+dropletView : AnimationModel -> Svg msg
+dropletView =
   animatable S.rect <| hasStaticPart
     [ SA.height "20"
     , SA.width "20"
@@ -65,22 +74,15 @@ droplet =
     , SA.x "300"
     ]
 
-dropletStart : List Animation.Property    
-dropletStart =
+dropletStartStyle : List Animation.Property    
+dropletStartStyle =
   [ Animation.y 10 ]
 
-dropletEnd : List Animation.Property    
-dropletEnd =
+dropletEndStyle : List Animation.Property    
+dropletEndStyle =
   [ Animation.y 200 ]
 
       
--- Added for DropletUnidiomatic.elm
-
-noCmd : model -> (model, Cmd msg)
-noCmd model =
-  (model, Cmd.none)
-
-
 -- Added for DropletEasing.elm
 
 dropletControl : Animation.Interpolation  
@@ -91,26 +93,24 @@ dropletControl =
     }
 
 
-
-
 -- Added for Fluid exercise
 
-fluid : Animation.Messenger.State msg -> Svg msg
-fluid =
+fluidView : AnimationModel -> Svg msg
+fluidView =
   animatable S.rect <| hasStaticPart
     [ SA.width "40"
     , SA.x "100"
     , SA.fill "grey"
     ]
 
-fluidStart : List Animation.Property
-fluidStart =
+fluidStartStyle : List Animation.Property
+fluidStartStyle =
   [ Animation.y 10
   , Animation.height (Animation.px 100)
   ]
 
-fluidEnd : List Animation.Property    
-fluidEnd =
+fluidEndStyle : List Animation.Property    
+fluidEndStyle =
   [ Animation.y 110
   , Animation.height (Animation.px 0)
   ]
