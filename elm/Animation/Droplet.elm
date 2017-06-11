@@ -11,12 +11,7 @@ type alias Model =
   }
 
 init : (Model, Cmd Msg)
-init = ({ droplet =
-            Animation.style
-              [ Animation.x 200
-              , Animation.y 10
-              ]
-        }
+init = ({ droplet = Animation.style [ Animation.y 10 ] }
        , Cmd.none
        )
 
@@ -27,22 +22,19 @@ update msg model =
       ( { model |
             droplet = 
               Animation.interrupt
-                [ Animation.to
-                    [ Animation.x 200
-                    , Animation.y 300
-                    ]
-                ]
+                [ Animation.to [ Animation.y 200 ] ]
                 model.droplet
         }
       , Cmd.none
       )
+
     Tick animationMsg ->
-      let
-        newStyle = Animation.update animationMsg model.droplet
-      in
-        ( { model | droplet = newStyle }
-        , Cmd.none
-        )
+      ( { model |
+            droplet =
+              Animation.update animationMsg model.droplet
+        }
+      , Cmd.none
+      )
 
 
 view : Model -> Html Msg
@@ -53,6 +45,7 @@ view model =
             ([ SA.height "20"
              , SA.width "20"
              , SA.fill "grey"
+             , SA.x "300"
              ] ++ Animation.render model.droplet)
             []
         ]
