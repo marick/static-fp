@@ -46,36 +46,37 @@ button onClick text =
 
 -- Added for DropletPrettier.elm
 
+-- Tag attributes (including styles) that a particular shape
+-- never animates.
+type FixedPart msg =
+  HasFixedPart (List (S.Attribute msg))
+
 type alias Shape msg =
   List (S.Attribute msg) -> List (Svg msg) -> Svg msg
-
-type alias StaticAttributes msg = List (S.Attribute msg)
-
-animatable : Shape msg -> StaticAttributes msg -> AnimationModel
-           -> Svg msg
-animatable shape staticPart animatedPart =
+  
+animatable : Shape msg -> FixedPart msg -> AnimationModel
+          -> Svg msg
+animatable shape (HasFixedPart attributes) animatedPart =
   shape
-    (staticPart ++ Animation.render animatedPart)
+    (attributes ++ Animation.render animatedPart)
     []
 
-hasStaticPart : List (S.Attribute msg) -> List (S.Attribute msg)
-hasStaticPart = identity
       
 dropletView : AnimationModel -> Svg msg
 dropletView =
-  animatable S.rect <| hasStaticPart
+  animatable S.rect <| HasFixedPart
     [ SA.height "20"
     , SA.width "20"
     , SA.fill "grey"
     , SA.x "300"
     ]
 
-dropletStartStyles : List Animation.Property    
-dropletStartStyles =
+dropletInitStyles : List Animation.Property
+dropletInitStyles =
   [ Animation.y 10 ]
 
-dropletEndStyles : List Animation.Property    
-dropletEndStyles =
+dropletFallenStyles : List Animation.Property
+dropletFallenStyles =
   [ Animation.y 200 ]
 
 
@@ -93,20 +94,20 @@ dropletControl =
 
 fluidView : AnimationModel -> Svg msg
 fluidView =
-  animatable S.rect <| hasStaticPart
+  animatable S.rect <| HasFixedPart
     [ SA.width "40"
     , SA.x "100"
     , SA.fill "grey"
     ]
 
-fluidStartStyles : List Animation.Property
-fluidStartStyles =
+fluidInitStyles : List Animation.Property
+fluidInitStyles =
   [ Animation.y 10
   , Animation.height (Animation.px 100)
   ]
 
-fluidEndStyles : List Animation.Property    
-fluidEndStyles =
+fluidDrainedStyles : List Animation.Property    
+fluidDrainedStyles =
   [ Animation.y 110
   , Animation.height (Animation.px 0)
   ]
@@ -117,4 +118,3 @@ fluidControl =
     { duration = Time.second * 3
     , ease = Ease.linear
     }
-

@@ -1,4 +1,4 @@
-module Animation.DropletPrettier exposing (..)
+module Animation.DropletTidy exposing (..)
 
 import Html exposing (Html)
 import Animation.Common as C exposing (Msg(..))
@@ -8,15 +8,15 @@ type alias Model =
   { droplet : C.AnimationModel
   }
 
-startDroplet : C.AnimationModel -> C.AnimationModel
-startDroplet =
+dropletFalls : C.AnimationModel -> C.AnimationModel
+dropletFalls =
   Animation.interrupt
-    [ Animation.to C.dropletEndStyles ]
+    [ Animation.to C.dropletFallenStyles ]
 
 -- The usual functions
   
 init : (Model, Cmd Msg)
-init = ( { droplet = Animation.style C.dropletStartStyles }
+init = ( { droplet = Animation.style C.dropletInitStyles }
        , Cmd.none
        )
 
@@ -24,7 +24,7 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Start ->
-      ( { model | droplet = startDroplet model.droplet }
+      ( { model | droplet = dropletFalls model.droplet }
       , Cmd.none
       )
            

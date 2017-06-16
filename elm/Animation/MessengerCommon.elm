@@ -74,12 +74,12 @@ dropletView =
     , SA.x "300"
     ]
 
-dropletStartStyles : List Animation.Property    
-dropletStartStyles =
+dropletInitStyles : List Animation.Property    
+dropletInitStyles =
   [ Animation.y 10 ]
 
-dropletEndStyles : List Animation.Property    
-dropletEndStyles =
+dropletFallenStyles : List Animation.Property    
+dropletFallenStyles =
   [ Animation.y 200 ]
 
 
@@ -103,14 +103,14 @@ fluidView =
     , SA.fill "grey"
     ]
 
-fluidStartStyles : List Animation.Property
-fluidStartStyles =
+fluidInitStyles : List Animation.Property
+fluidInitStyles =
   [ Animation.y 10
   , Animation.height (Animation.px 100)
   ]
 
-fluidEndStyles : List Animation.Property    
-fluidEndStyles =
+fluidLastStyles : List Animation.Property    
+fluidLastStyles =
   [ Animation.y 110
   , Animation.height (Animation.px 0)
   ]

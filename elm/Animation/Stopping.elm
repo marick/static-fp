@@ -10,32 +10,32 @@ type alias Model =
   , fluid : C.AnimationModel
   }
 
-startDroplet : C.AnimationModel -> C.AnimationModel
-startDroplet =
+dropletFalls : C.AnimationModel -> C.AnimationModel
+dropletFalls =
   Animation.interrupt
     [ Animation.loop
-        [ Animation.set C.dropletStartStyles 
-        , Animation.toWith C.dropletControl C.dropletEndStyles
+        [ Animation.set C.dropletInitStyles 
+        , Animation.toWith C.dropletControl C.dropletFallenStyles
         ]
     ]
   
-stopDroplet : C.AnimationModel -> C.AnimationModel
-stopDroplet =
+dropletStops : C.AnimationModel -> C.AnimationModel
+dropletStops =
   Animation.interrupt
-    [ Animation.set C.dropletStartStyles ]
+    [ Animation.set C.dropletInitStyles ]
   
-startFluid : C.AnimationModel -> C.AnimationModel
-startFluid =
+fluidDrains : C.AnimationModel -> C.AnimationModel
+fluidDrains =
   Animation.interrupt
-    [ Animation.toWith C.fluidControl C.fluidEndStyles
+    [ Animation.toWith C.fluidControl C.fluidLastStyles
     , Animation.Messenger.send Stop
     ]
 
 -- The usual functions
   
 init : (Model, Cmd Msg)
-init = ( { droplet = Animation.style C.dropletStartStyles
-         , fluid = Animation.style C.fluidStartStyles
+init = ( { droplet = Animation.style C.dropletInitStyles
+         , fluid = Animation.style C.fluidInitStyles
          }
        , Cmd.none
        )
@@ -45,8 +45,8 @@ update msg model =
   case msg of
     Start ->
       ( { model
-            | droplet = startDroplet model.droplet
-            , fluid = startFluid model.fluid
+            | droplet = dropletFalls model.droplet
+            , fluid = fluidDrains model.fluid
         }
       , Cmd.none
       )
@@ -67,7 +67,7 @@ update msg model =
 
     Stop ->
       ( { model
-            | droplet = stopDroplet model.droplet
+            | droplet = dropletStops model.droplet
         }
       , Cmd.none
       )

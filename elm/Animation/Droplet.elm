@@ -6,6 +6,12 @@ import Svg.Attributes as SA
 import Animation.Common as C exposing (Msg(..))
 import Animation
 
+type Msg
+  = Start
+  | Tick Animation.Msg
+
+type alias AnimationModel = Animation.State
+
 type alias Model =
   { droplet : C.AnimationModel
   }
@@ -28,10 +34,10 @@ update msg model =
       , Cmd.none
       )
 
-    Tick animationMsg ->
+    Tick subMsg ->
       ( { model |
             droplet =
-              Animation.update animationMsg model.droplet
+            Animation.update subMsg model.droplet
         }
       , Cmd.none
       )
@@ -65,4 +71,3 @@ main =
     , update = update
     , subscriptions = subscriptions
     }
-    

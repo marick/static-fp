@@ -1,20 +1,64 @@
-module Animation.FluidSolution exposing (..)
+module Animation.X exposing (..)
 
 import Html exposing (Html)
 import Animation.Common as C exposing (Msg(..))
 import Animation
+import Time
+import Ease
 
 type alias Model =
   { droplet : C.AnimationModel
   , fluid : C.AnimationModel
   }
 
+
+dropletInitStyles : List Animation.Property
+dropletInitStyles =
+  [ Animation.y 10
+  , Animation.opacity 0
+  ]
+
+dropletFormedStyles : List Animation.Property
+dropletFormedStyles =
+  [ Animation.y 10
+  , Animation.opacity 1.0
+  ]
+
+dropletFallenStyles : List Animation.Property
+dropletFallenStyles =
+  [ Animation.y 200
+  , Animation.opacity 1.0
+  ]
+
+
+-- Added for DropletEasing.elm
+
+
+
+
+dropletForming : Animation.Interpolation  
+dropletForming =
+  Animation.easing
+    { duration = Time.second * 0.5
+    , ease = Ease.linear
+    }
+
+dropletFalling : Animation.Interpolation  
+dropletFalling =
+  Animation.easing
+    { duration = Time.second * 0.3
+    , ease = Ease.inQuad
+    }
+
+
+  
 dropletFalls : C.AnimationModel -> C.AnimationModel
 dropletFalls =
   Animation.interrupt
     [ Animation.loop
-        [ Animation.set C.dropletInitStyles
-        , Animation.toWith C.dropletControl C.dropletFallenStyles
+        [ Animation.set dropletInitStyles
+        , Animation.toWith dropletForming dropletFormedStyles
+        , Animation.toWith dropletFalling dropletFallenStyles
         ]
     ]
   
@@ -27,7 +71,7 @@ fluidDrains =
 -- The usual functions
   
 init : (Model, Cmd Msg)
-init = ( { droplet = Animation.style C.dropletInitStyles
+init = ( { droplet = Animation.style dropletInitStyles
          , fluid = Animation.style C.fluidInitStyles
          }
        , Cmd.none
