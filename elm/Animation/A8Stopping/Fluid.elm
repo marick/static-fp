@@ -15,7 +15,7 @@ drains : AnimationModel -> AnimationModel
 drains =
   Animation.interrupt
     [ Animation.toWith draining drainedStyles
-    , Animation.Messenger.send Stop
+    , Animation.Messenger.send Stop             -- added
     ]
 
 

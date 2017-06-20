@@ -15,7 +15,7 @@ type alias Shape msg =
   
 animatable : Shape msg -> FixedPart msg -> AnimationModel
           -> Svg msg
-animatable shape (HasFixedPart attributes) animatedPart =
+animatable shape (HasFixedPart attributes) animationModel =
   shape
-    (attributes ++ Animation.render animatedPart)
+    (attributes ++ Animation.render animationModel)
     []

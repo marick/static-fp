@@ -46,18 +46,24 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  Layout.wrapper
-    [ Layout.canvas
-        [ S.rect
-            ([ SA.height "20"
-             , SA.width "20"
-             , SA.fill "grey"
-             , SA.x "300"
-             ] ++ Animation.render model.droplet)
+  let
+    fixedPart =
+      [ SA.height "20"
+      , SA.width "20"
+      , SA.fill "grey"
+      , SA.x "300"
+      ]
+    animatedPart =
+      Animation.render model.droplet
+  in
+    Layout.wrapper
+      [ Layout.canvas
+          [ S.rect
+            (fixedPart ++ animatedPart)
             []
-        ]
-    , Layout.button Start "Click Me"
-    ]
+          ]
+      , Layout.button Start "Click Me"
+      ]
 
 subscriptions : Model -> Sub Msg    
 subscriptions model =
