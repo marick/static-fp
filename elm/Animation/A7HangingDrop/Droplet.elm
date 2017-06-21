@@ -27,7 +27,7 @@ initStyles =
   , Animation.height (px 0)
   ]
 
--- Growing, but still held by surface tension, is simulated by changing opacity.  
+-- Growing, but still held by surface tension
 
 grownStyles : List Animation.Property
 grownStyles =
