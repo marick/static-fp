@@ -14,17 +14,17 @@ button label onClick =
     ]
     [strong [] [text label]]
 
-textInput : (Tagged tag String) -> List (Html.Attribute msg) -> Html msg
-textInput (Tagged val) eventHandlers = 
+textInput : {r | literal : String} -> List (Html.Attribute msg) -> Html msg
+textInput {literal} eventHandlers = 
   input ([ type_ "text"
-         , value val
+         , value literal
          ] ++ eventHandlers)
   []
 
-askFor : String -> (Tagged tag String) -> List (Html.Attribute msg) -> Html msg
-askFor label tagged eventHandlers =
+askFor : String -> {r | literal : String } -> List (Html.Attribute msg) -> Html msg
+askFor label arg eventHandlers =
   span [] 
     [ text <| label ++ ": "
-    , textInput tagged eventHandlers
+    , textInput arg eventHandlers
     ]
     

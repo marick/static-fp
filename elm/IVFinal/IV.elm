@@ -9,7 +9,7 @@ import Animation.Messenger
 import IVFinal.Measures as Measure
 import IVFinal.Apparatus as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
-import IVFinal.FloatString as FloatString exposing (FloatString)
+import IVFinal.FloatInput as FloatInput exposing (FloatInput)
 import IVFinal.Util.EuclideanTypes exposing (Rectangle)
 import IVFinal.Util.EuclideanRectangle as Rectangle
 
@@ -23,13 +23,13 @@ import IVFinal.Types exposing (..)
 updateDesiredDripRate candidate model =
   { model |
       desiredDripRate =
-        FloatString.fromString model.desiredDripRate candidate }
+        FloatInput.fromString candidate }
 
 -- Update
 
 startingModel : Model
 startingModel =
-  { desiredDripRate = FloatString.fromFloat 0.0
+  { desiredDripRate = FloatInput.fromString "0"
   , droplet = Animation.style Droplet.initStyles
   }
 

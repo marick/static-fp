@@ -1,6 +1,6 @@
 module IVFinal.Types exposing (..)
 
-import IVFinal.FloatString as FloatString exposing (FloatString)
+import IVFinal.FloatInput as FloatInput exposing (FloatInput)
 import Animation
 import Animation.Messenger
 
@@ -18,7 +18,7 @@ type Msg
   | Tick Animation.Msg
 
 type alias Model =
-  { desiredDripRate : FloatString
+  { desiredDripRate : FloatInput
 
   , droplet : AnimationModel
   }
