@@ -6,17 +6,37 @@ import Html.Events as Event
 import Svg as S exposing (Svg)
 import Svg.Attributes as SA
 
+-- CSS is really confusing.
+
 wrapper : List (Html msg) -> Html msg
 wrapper contents = 
   H.div
-    [ HA.style [("margin", "4em")]]
+    [ HA.style [ ("margin", "4em")
+               , ("width", "800px")
+               ]
+    ]
     contents
       
 canvas : List (Svg msg) -> Html msg
-canvas contents =       
-  S.svg 
-    [ SA.version "1.1"
-    , SA.width "400"
-    , SA.height "400"
+canvas contents =
+  H.div
+    [ HA.style [ ("width", "200 px")
+               , ("float", "left")
+               ]
+    ]
+    [ S.svg 
+        [ SA.version "1.1"
+        , SA.width "200"
+        , SA.height "600"
+        ]
+        contents
+    ]
+
+
+form contents = 
+  H.div 
+    [ HA.style [ ("width", "600 px")
+               , ("float", "left")
+               ]
     ]
     contents
