@@ -4,6 +4,15 @@ module IVFinal.Util.EuclideanRectangle exposing
 
 import IVFinal.Util.EuclideanTypes exposing (..)
 
+-- accessors
+
+x rect = rect.origin.x
+y rect = rect.origin.y
+width rect = rect.size.width
+height rect = rect.size.height
+
+-- constructors
+
 fromOrigin : Float -> Float -> Rectangle  
 fromOrigin width height =
   { origin = Point 0 0, size = Size width height }

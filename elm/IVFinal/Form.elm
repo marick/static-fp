@@ -12,17 +12,19 @@ view : Model -> List (Html Msg)
 view model = 
   [ div []
       [ H.askFor "Drops per second" model.desiredDripRate
-          [Event.onInput ChangeDripRate]
+          [ Event.onInput ChangeDripRate
+          , Event.onBlur StartDripping
+          ]
       , H.br
       , H.askFor "Hours" model.desiredDripRate
-          [Event.onInput ChangeDripRate]
+          [Event.onInput ChangeHours]
       , text " and minutes: "
       , H.textInput model.desiredDripRate
-          [Event.onInput ChangeDripRate]
+          [Event.onInput ChangeMinutes]
       , H.br
       , H.br
-      , H.button "Start" Click
-      , H.button "Reset" Click
+      , H.button "Start" StartSimulation
+      , H.button "Reset Fields" ResetFields
       ]
   ]
   

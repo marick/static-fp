@@ -1,13 +1,17 @@
 module IVFinal.Apparatus exposing (..)
 
+import IVFinal.Types exposing (..)
+
 import Svg exposing (Svg)
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
 import Svg.Attributes exposing (..)
 import IVFinal.Apparatus.Constants as C
 import IVFinal.Util.EuclideanTypes exposing (..)
 
-view : List (Svg msg)
-view = 
+import IVFinal.Apparatus.Droplet as Droplet
+
+view : Model -> List (Svg msg)
+view model = 
   [ -- Hose
     container C.hose
   , fluid C.hose
@@ -20,6 +24,8 @@ view =
   , fluid C.bagFluid
   , container C.bag
   , tickMarks
+
+  , Droplet.view model.droplet
   ]
 
 fluid : Rectangle -> Svg msg

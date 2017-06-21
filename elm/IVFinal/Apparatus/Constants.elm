@@ -31,7 +31,9 @@ hose =
 
 -- The droplet
 
-unmovedDroplet = Rectangle.fromOrigin hoseWidth hoseWidth
+dropletSideLength = hoseWidth
+
+unmovedDroplet = Rectangle.fromOrigin dropletSideLength dropletSideLength
 
 startingDroplet : Rectangle
 startingDroplet =
@@ -44,7 +46,7 @@ endingDroplet : Rectangle
 endingDroplet =
   unmovedDroplet
     |> centeredAbove chamberFluid
-    |> nudgeDown hoseWidth
+    |> nudgeDown dropletSideLength
 
 -- Utilities for constant transformations
        
@@ -66,8 +68,8 @@ containerAppearance =
   
 fluidColor : Color
 fluidColor = rgb 211 215 207
+fluidColorString = Convert.colorToHex fluidColor
 
 variantFluidColor : Color                   
 variantFluidColor = rgb 193 193 193
-
-invisibleDropColor = Color.white                    
+variantFluidColorString = Convert.colorToHex fluidColor
