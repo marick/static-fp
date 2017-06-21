@@ -14,6 +14,17 @@ import IVFinal.Apparatus.Constants as C
 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
 
+view : AnimationModel -> Svg msg
+view =
+  animatable S.rect <| HasFixedPart
+    [ SA.width ^^ (Rect.width C.startingDroplet)
+    , SA.fill C.fluidColorString
+    , SA.x ^^ (Rect.x C.startingDroplet)
+    ]
+
+
+-- Animations
+
 falls : AnimationModel -> AnimationModel
 falls = 
   Animation.interrupt
@@ -30,6 +41,7 @@ stops =
     [ Animation.set initStyles ] -- reset back to invisible droplet
 
 
+-- Styles
     
 initStyles : List Animation.Property
 initStyles =
@@ -37,11 +49,25 @@ initStyles =
   , Animation.height (px 0)
   ]
 
--- Growing, but still held by surface tension, is simulated by changing opacity.  
-
 grownStyles : List Animation.Property
 grownStyles =
   [ Animation.height (px C.dropletSideLength) ]
+
+    
+fallenStyles : List Animation.Property
+fallenStyles =
+  [ Animation.y (Rect.y C.endingDroplet) ]
+
+
+-- Timing
+
+    
+falling : Animation.Interpolation  
+falling =
+  Animation.easing
+    { duration = Time.second * 0.3
+    , ease = Ease.inQuad
+    }
 
 growing : Animation.Interpolation  
 growing =
@@ -50,26 +76,3 @@ growing =
     , ease = Ease.linear
     }
 
--- Falling is as before, except that I made it faster
-    
-fallenStyles : List Animation.Property
-fallenStyles =
-  [ Animation.y (Rect.y C.endingDroplet) ]
-
-falling : Animation.Interpolation  
-falling =
-  Animation.easing
-    { duration = Time.second * 0.3
-    , ease = Ease.inQuad
-    }
-
-
--- Original view is unchanged
-
-view : AnimationModel -> Svg msg
-view =
-  animatable S.rect <| HasFixedPart
-    [ SA.width ^^ (Rect.width C.startingDroplet)
-    , SA.fill C.fluidColorString
-    , SA.x ^^ (Rect.x C.startingDroplet)
-    ]
