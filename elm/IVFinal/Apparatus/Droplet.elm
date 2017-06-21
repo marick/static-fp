@@ -61,18 +61,23 @@ fallenStyles =
 
 -- Timing
 
-    
+dropStreamCutoff = 6.0
+
+-- Following is slower than reality (in a vacuum), but looks better
+timeForDropToFall = (1 / dropStreamCutoff ) * Time.second
+
+                    
 falling : Animation.Interpolation  
 falling =
   Animation.easing
-    { duration = Time.second * 0.3
+    { duration = timeForDropToFall
     , ease = Ease.inQuad
     }
 
 growing : Animation.Interpolation  
 growing =
   Animation.easing
-    { duration = Time.second * 0.4
+    { duration = Time.second * 0.7
     , ease = Ease.linear
     }
 
