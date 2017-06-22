@@ -36,6 +36,7 @@ startingModel =
 init : (Model, Cmd Msg)
 init = ( startingModel, Cmd.none )
 
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -46,7 +47,7 @@ update msg model =
 
     StartDripping ->
       ( { model
-            | droplet = Droplet.falls model.droplet
+            | droplet = Droplet.falls model
         }
       , Cmd.none
       )

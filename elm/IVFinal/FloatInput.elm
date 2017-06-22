@@ -7,12 +7,13 @@ type alias FloatInput =
 
 fromString : String -> FloatInput
 fromString string =
+  let
+    withLiteral = { literal = string, value = 0.0 }
+  in
     case String.toFloat string of
       Err _ ->
-        { literal = string
-        , value = Nothing
-        }
+        { withLiteral | value = Nothing }
+      Ok 0.0 ->
+        { withLiteral | value = Nothing }
       Ok float ->
-        { literal = string
-        , value = Just float
-        }
+        { withLiteral | value = Just float } 

@@ -11,6 +11,7 @@ import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanTypes exposing (Rectangle)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
+import IVFinal.FloatInput as FloatInput exposing (FloatInput)
 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
 
@@ -22,18 +23,27 @@ view =
     , SA.x ^^ (Rect.x C.startingDroplet)
     ]
 
+type alias DropletData r =
+  { r | droplet : AnimationModel
+      , desiredDripRate : FloatInput
+  }
 
 -- Animations
 
-falls : AnimationModel -> AnimationModel
-falls = 
-  Animation.interrupt
-    [ Animation.loop
-        [ Animation.set initStyles
-        , Animation.toWith growing grownStyles
-        , Animation.toWith falling fallenStyles
+falls : DropletData {} -> AnimationModel
+falls {droplet, desiredDripRate} =
+  case desiredDripRate.value of
+    Nothing ->
+      droplet
+    Just float -> 
+      Animation.interrupt
+        [ Animation.loop
+            [ Animation.set initStyles
+            , Animation.toWith (growing float) grownStyles
+            , Animation.toWith falling fallenStyles
+            ]
         ]
-    ]
+        droplet
 
 stops : AnimationModel -> AnimationModel
 stops =
@@ -64,7 +74,11 @@ fallenStyles =
 dropStreamCutoff = 6.0
 
 -- Following is slower than reality (in a vacuum), but looks better
-timeForDropToFall = (1 / dropStreamCutoff ) * Time.second
+timeForDropToFall = rateToSeconds dropStreamCutoff
+
+rateToSeconds : Float -> Float
+rateToSeconds rate = 
+  (1 / rate ) * Time.second
 
                     
 falling : Animation.Interpolation  
@@ -74,10 +88,10 @@ falling =
     , ease = Ease.inQuad
     }
 
-growing : Animation.Interpolation  
-growing =
+growing : Float -> Animation.Interpolation  
+growing rate =
   Animation.easing
-    { duration = Time.second * 0.7
+    { duration = (rateToSeconds rate) - timeForDropToFall
     , ease = Ease.linear
     }
 
