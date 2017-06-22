@@ -2,7 +2,6 @@ module IVFinal.View.Layout exposing (..)
 
 import Html as H exposing (Html)
 import Html.Attributes as HA
-import Html.Events as Event
 import Svg as S exposing (Svg)
 import Svg.Attributes as SA
 
@@ -32,7 +31,7 @@ canvas contents =
         contents
     ]
 
-
+form : List (Html msg) -> Html msg
 form contents = 
   H.div 
     [ HA.style [ ("width", "600 px")

@@ -31,8 +31,10 @@ hose =
 
 -- The droplet
 
+dropletSideLength : Float
 dropletSideLength = hoseWidth
 
+unmovedDroplet : Rectangle
 unmovedDroplet = Rectangle.fromOrigin dropletSideLength dropletSideLength
 
 startingDroplet : Rectangle
@@ -68,8 +70,12 @@ containerAppearance =
   
 fluidColor : Color
 fluidColor = rgb 211 215 207
+
+fluidColorString : String
 fluidColorString = Convert.colorToHex fluidColor
 
 variantFluidColor : Color                   
 variantFluidColor = rgb 193 193 193
+                    
+variantFluidColorString : String
 variantFluidColorString = Convert.colorToHex fluidColor

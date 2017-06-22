@@ -3,8 +3,8 @@ module IVFinal.View.AppHtml exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events as Event
-import Tagged exposing (Tagged(..))
 
+br : Html msg
 br = Html.br [] []
 
 button : String -> msg -> Html msg

@@ -3,13 +3,11 @@ module IVFinal.Apparatus.Droplet exposing (..)
 import Svg as S exposing (Svg)
 import Svg.Attributes as SA
 import Animation exposing (px)
-import Time
 import Ease
 import Tagged exposing (untag)
 
 import IVFinal.Types exposing (AnimationModel)
 import IVFinal.Apparatus.AppAnimation exposing (..)
-import IVFinal.Util.EuclideanTypes exposing (Rectangle)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
 import IVFinal.FloatInput as FloatInput exposing (FloatInput)
@@ -73,9 +71,11 @@ fallenStyles =
 
 -- Timing
 
+dropStreamCutoff : Measure.DropsPerSecond
 dropStreamCutoff = Measure.dripRate 6.0
 
 -- Following is slower than reality (in a vacuum), but looks better
+timeForDropToFall : Measure.TimePerDrop
 timeForDropToFall = Measure.rateToDuration dropStreamCutoff
 
 falling : Animation.Interpolation  

@@ -6,9 +6,16 @@ import IVFinal.Util.EuclideanTypes exposing (..)
 
 -- accessors
 
+x : Rectangle -> Float 
 x rect = rect.origin.x
+
+y : Rectangle -> Float 
 y rect = rect.origin.y
+
+width : Rectangle -> Float 
 width rect = rect.size.width
+
+height : Rectangle -> Float 
 height rect = rect.size.height
 
 -- constructors

@@ -1,31 +1,19 @@
 module IVFinal.IV exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
-import Tagged exposing (Tagged(..))
 import Animation
 import Animation.Messenger
 
-import IVFinal.Measures as Measure
 import IVFinal.Apparatus as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.FloatInput as FloatInput exposing (FloatInput)
-import IVFinal.Util.EuclideanTypes exposing (Rectangle)
-import IVFinal.Util.EuclideanRectangle as Rectangle
 
 import IVFinal.View.Layout as Layout
 import IVFinal.Form as Form
 
 import IVFinal.Types exposing (..)
 
--- Model
-
-updateDesiredDripRate candidate model =
-  { model |
-      desiredDripRate =
-        FloatInput.fromString candidate }
-
--- Update
+  
 
 startingModel : Model
 startingModel =
@@ -41,7 +29,10 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     ChangeDripRate candidate ->
-      ( model |> updateDesiredDripRate candidate
+      ( { model |
+            desiredDripRate =
+            FloatInput.fromString candidate
+        }
       , Cmd.none
       )
 
@@ -63,7 +54,7 @@ update msg model =
 
     _ -> (model , Cmd.none)
 
--- View
+
 
 view : Model -> Html Msg
 view model =
@@ -73,7 +64,7 @@ view model =
     ]
 
 
--- Main
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -82,6 +73,7 @@ subscriptions model =
     ]
 
       
+main : Program Never Model Msg
 main =
   Html.program
     { init = init

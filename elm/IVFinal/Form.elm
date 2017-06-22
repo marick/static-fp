@@ -5,7 +5,6 @@ import Html.Attributes exposing (..)
 import Html.Events as Event
 import IVFinal.View.AppHtml as H
 
-import Tagged exposing (Tagged(..))
 import IVFinal.Types exposing (..)
 
 view : Model -> List (Html Msg)
