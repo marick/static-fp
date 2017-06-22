@@ -4,7 +4,8 @@ import Svg as S exposing (Svg)
 import Svg.Attributes as SA
 import Animation exposing (px)
 import Time
-import Ease 
+import Ease
+import Tagged exposing (untag)
 
 import IVFinal.Types exposing (AnimationModel)
 import IVFinal.Apparatus.AppAnimation exposing (..)
@@ -12,6 +13,7 @@ import IVFinal.Util.EuclideanTypes exposing (Rectangle)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
 import IVFinal.FloatInput as FloatInput exposing (FloatInput)
+import IVFinal.Measures as Measure
 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
 
@@ -35,11 +37,11 @@ falls {droplet, desiredDripRate} =
   case desiredDripRate.value of
     Nothing ->
       droplet
-    Just float -> 
+    Just rate -> 
       Animation.interrupt
         [ Animation.loop
             [ Animation.set initStyles
-            , Animation.toWith (growing float) grownStyles
+            , Animation.toWith (growing rate) grownStyles
             , Animation.toWith falling fallenStyles
             ]
         ]
@@ -71,27 +73,28 @@ fallenStyles =
 
 -- Timing
 
-dropStreamCutoff = 6.0
+dropStreamCutoff = Measure.dripRate 6.0
 
 -- Following is slower than reality (in a vacuum), but looks better
-timeForDropToFall = rateToSeconds dropStreamCutoff
+timeForDropToFall = Measure.rateToDuration dropStreamCutoff
 
-rateToSeconds : Float -> Float
-rateToSeconds rate = 
-  (1 / rate ) * Time.second
-
-                    
 falling : Animation.Interpolation  
 falling =
   Animation.easing
-    { duration = timeForDropToFall
+    { duration = untag timeForDropToFall
     , ease = Ease.inQuad
     }
 
-growing : Float -> Animation.Interpolation  
+growing : Measure.DropsPerSecond -> Animation.Interpolation  
 growing rate =
-  Animation.easing
-    { duration = (rateToSeconds rate) - timeForDropToFall
-    , ease = Ease.linear
-    }
+  let
+    duration =
+      rate
+        |> Measure.rateToDuration
+        |> Measure.reduceBy timeForDropToFall
+  in
+    Animation.easing
+      { duration = untag duration
+      , ease = Ease.linear
+      }
 

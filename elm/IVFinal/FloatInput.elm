@@ -1,8 +1,10 @@
 module IVFinal.FloatInput exposing (..)
 
+import IVFinal.Measures as Measure
+
 type alias FloatInput =
   { literal : String
-  , value : Maybe Float
+  , value : Maybe Measure.DropsPerSecond
   }
 
 fromString : String -> FloatInput
@@ -16,4 +18,4 @@ fromString string =
       Ok 0.0 ->
         { withLiteral | value = Nothing }
       Ok float ->
-        { withLiteral | value = Just float } 
+        { withLiteral | value = Just <| Measure.dripRate float } 
