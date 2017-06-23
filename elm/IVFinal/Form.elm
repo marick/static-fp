@@ -30,10 +30,10 @@ view model =
           , Event.onBlur StartDripping
           ]
       , H.br
-      , H.askFor "Hours" model.desiredDripRate
+      , H.askFor "Hours" model.desiredHours
           [Event.onInput ChangeHours]
       , text " and minutes: "
-      , H.textInput model.desiredDripRate
+      , H.textInput model.desiredMinutes
           [Event.onInput ChangeMinutes]
       , H.br
       , H.br

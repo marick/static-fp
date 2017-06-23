@@ -1,8 +1,14 @@
 module IVFinal.Measures exposing
   ( DropsPerSecond
   , TimePerDrop
+  , Minutes
+  , Hours
 
   , dripRate
+  , minutes
+  , hours
+  , toMinutes
+    
   , rateToDuration
   , reduceBy
   )
@@ -22,9 +28,26 @@ rateToDuration dps =
   in
     Tagged.map calculation dps |> retag
 
-reduceBy : TimePerDrop -> TimePerDrop -> TimePerDrop
-reduceBy smaller larger =
-  Tagged.map2 (-) larger smaller
+changeBy : (number -> number -> number)
+        -> Tagged a number -> Tagged a number
+        -> Tagged a number
+changeBy f decrement value =
+  Tagged.map2 f value decrement
+
+reduceBy : Tagged a number -> Tagged a number -> Tagged a number
+reduceBy = changeBy (-)
+
+
+minutes : Int -> Minutes
+minutes = Tagged
+
+hours : Int -> Hours
+hours = Tagged
+
+toMinutes : Hours -> Minutes -> Minutes
+toMinutes (Tagged hourPart) (Tagged minutePart) =
+  minutes <| 60 * hourPart + minutePart
+  
 
 --- Support for tagging
 
@@ -33,4 +56,10 @@ type DropsPerSecondTag = DropsPerSecondTag UnusableConstructor
 
 type alias TimePerDrop = Tagged TimePerDropTag Float
 type TimePerDropTag = TimePerDropTag UnusableConstructor
+
+type alias Minutes = Tagged MinutesTag Int
+type MinutesTag = MinutesTag UnusableConstructor
+
+type alias Hours = Tagged HoursTag Int
+type HoursTag = HoursTag UnusableConstructor
 

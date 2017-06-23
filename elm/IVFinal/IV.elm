@@ -13,11 +13,21 @@ import IVFinal.Form as Form
 
 import IVFinal.Types exposing (..)
 
-  
+
+makeFieldsEmpty : Model -> Model
+makeFieldsEmpty model = 
+  { model
+      | desiredDripRate = Field.dripRate ""
+      , desiredMinutes = Field.minutes "0"
+      , desiredHours = Field.hours "0"
+  }
 
 startingModel : Model
 startingModel =
   { desiredDripRate = Field.dripRate ""
+  , desiredMinutes = Field.minutes "0"
+  , desiredHours = Field.hours "0"
+
   , droplet = Animation.style Droplet.initStyles
   }
 
@@ -35,10 +45,34 @@ update msg model =
       , Cmd.none
       )
 
+    ChangeHours candidate ->
+      ( { model |
+            desiredHours = Field.hours candidate
+        }
+      , Cmd.none
+      )
+
+    ChangeMinutes candidate ->
+      ( { model |
+            desiredMinutes = Field.minutes candidate
+        }
+      , Cmd.none
+      )
+
+    ResetFields ->
+      ( model |> makeFieldsEmpty
+      , Cmd.none
+      )
+
     StartDripping ->
       ( { model
             | droplet = Droplet.falls model
         }
+      , Cmd.none
+      )
+
+    StartSimulation ->
+      ( model
       , Cmd.none
       )
       
@@ -50,9 +84,6 @@ update msg model =
         ( { model | droplet = newDroplet }
         , Cmd.batch [dropletCmd]
         )
-
-    _ -> (model , Cmd.none)
-
 
 
 view : Model -> Html Msg

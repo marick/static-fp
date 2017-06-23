@@ -30,7 +30,7 @@ type alias DropletData r =
 
 -- Animations
 
-falls : DropletData {} -> AnimationModel
+falls : DropletData a -> AnimationModel
 falls {droplet, desiredDripRate} =
   Field.whenValid desiredDripRate droplet
     (\ rate -> 

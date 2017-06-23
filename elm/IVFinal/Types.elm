@@ -12,14 +12,16 @@ type Msg
   | ChangeMinutes String
   | ResetFields
 
-  | StartSimulation
   | StartDripping
+  | StartSimulation
 
   | Tick Animation.Msg
 
 type alias Model =
   { desiredDripRate : Field.DripRate
-
+  , desiredMinutes : Field.Minutes
+  , desiredHours : Field.Hours
+      
   , droplet : AnimationModel
   }
 
