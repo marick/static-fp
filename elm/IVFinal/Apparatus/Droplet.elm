@@ -6,7 +6,7 @@ import Animation exposing (px)
 import Ease
 import Tagged exposing (untag)
 
-import IVFinal.Types exposing (AnimationModel)
+import IVFinal.Types exposing (AnimationModel, DropletData)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
@@ -22,11 +22,6 @@ view =
     , SA.fill C.fluidColorString
     , SA.x ^^ (Rect.x C.startingDroplet)
     ]
-
-type alias DropletData r =
-  { r | droplet : AnimationModel
-      , desiredDripRate : Field.DripRate
-  }
 
 -- Animations
 

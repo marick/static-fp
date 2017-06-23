@@ -25,3 +25,20 @@ type alias Model =
   , droplet : AnimationModel
   }
 
+
+
+type alias DropletData r =
+  { r
+    | droplet : AnimationModel
+    , desiredDripRate : Field.DripRate
+  }
+
+  
+type alias FormData r =
+  { r
+    | desiredDripRate : Field.DripRate
+    , desiredHours : Field.Hours
+    , desiredMinutes : Field.Minutes
+  }
+
+  
