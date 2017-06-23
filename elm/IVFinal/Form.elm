@@ -6,6 +6,21 @@ import Html.Events as Event
 import IVFinal.View.AppHtml as H
 
 import IVFinal.Types exposing (..)
+import Maybe.Extra as Maybe
+
+
+isFormReady : Model -> Bool
+isFormReady model =
+  let
+    validDripRate = Maybe.isJust model.desiredDripRate.value
+  in
+    validDripRate
+
+startButtonBehavior : msg -> Model -> Maybe msg      
+startButtonBehavior msg model =
+  case isFormReady model of
+    True -> Just msg
+    False -> Nothing
 
 view : Model -> List (Html Msg)
 view model = 
@@ -22,8 +37,8 @@ view model =
           [Event.onInput ChangeMinutes]
       , H.br
       , H.br
-      , H.button "Start" StartSimulation
-      , H.button "Reset Fields" ResetFields
+      , H.button "Start" (startButtonBehavior StartSimulation model)
+      , H.button "Reset Fields" (Just ResetFields)
       ]
   ]
   

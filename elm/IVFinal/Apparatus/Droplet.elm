@@ -10,7 +10,7 @@ import IVFinal.Types exposing (AnimationModel)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
-import IVFinal.FloatInput as FloatInput exposing (FloatInput)
+import IVFinal.View.InputFields as Field
 import IVFinal.Measures as Measure
 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
@@ -25,25 +25,23 @@ view =
 
 type alias DropletData r =
   { r | droplet : AnimationModel
-      , desiredDripRate : FloatInput
+      , desiredDripRate : Field.DripRate
   }
 
 -- Animations
 
 falls : DropletData {} -> AnimationModel
 falls {droplet, desiredDripRate} =
-  case desiredDripRate.value of
-    Nothing ->
-      droplet
-    Just rate -> 
-      Animation.interrupt
-        [ Animation.loop
-            [ Animation.set initStyles
-            , Animation.toWith (growing rate) grownStyles
-            , Animation.toWith falling fallenStyles
-            ]
-        ]
-        droplet
+  Field.whenValid desiredDripRate droplet
+    (\ rate -> 
+       Animation.interrupt
+       [ Animation.loop
+           [ Animation.set initStyles
+           , Animation.toWith (growing rate) grownStyles
+           , Animation.toWith falling fallenStyles
+           ]
+       ]
+       droplet)
 
 stops : AnimationModel -> AnimationModel
 stops =

@@ -1,6 +1,6 @@
 module IVFinal.Types exposing (..)
 
-import IVFinal.FloatInput as FloatInput exposing (FloatInput)
+import IVFinal.View.InputFields as Field
 import Animation
 import Animation.Messenger
 
@@ -18,7 +18,7 @@ type Msg
   | Tick Animation.Msg
 
 type alias Model =
-  { desiredDripRate : FloatInput
+  { desiredDripRate : Field.DripRate
 
   , droplet : AnimationModel
   }

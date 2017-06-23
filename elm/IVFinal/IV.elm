@@ -6,7 +6,7 @@ import Animation.Messenger
 
 import IVFinal.Apparatus as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
-import IVFinal.FloatInput as FloatInput exposing (FloatInput)
+import IVFinal.View.InputFields as Field
 
 import IVFinal.View.Layout as Layout
 import IVFinal.Form as Form
@@ -17,7 +17,7 @@ import IVFinal.Types exposing (..)
 
 startingModel : Model
 startingModel =
-  { desiredDripRate = FloatInput.fromString "0"
+  { desiredDripRate = Field.dripRate ""
   , droplet = Animation.style Droplet.initStyles
   }
 
@@ -30,8 +30,7 @@ update msg model =
   case msg of
     ChangeDripRate candidate ->
       ( { model |
-            desiredDripRate =
-            FloatInput.fromString candidate
+            desiredDripRate = Field.dripRate candidate
         }
       , Cmd.none
       )
