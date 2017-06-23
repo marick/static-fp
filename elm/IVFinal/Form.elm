@@ -18,34 +18,34 @@ drainMinutes {desiredHours, desiredMinutes} =
     Maybe.map2 Measure.toMinutes desiredHours.value desiredMinutes.value
       |> Maybe.filter bigEnough
 
-isFormReady : Model -> Bool
-isFormReady model =
-  case (model.desiredDripRate.value, drainMinutes model) of
+isFormReady : FormData a -> Bool
+isFormReady formData =
+  case (formData.desiredDripRate.value, drainMinutes formData) of
     (Just _, Just _) -> True
     _ -> False
 
-startButtonBehavior : msg -> Model -> Maybe msg      
-startButtonBehavior msg model =
-  case isFormReady model of
+startButtonBehavior : msg -> FormData a -> Maybe msg      
+startButtonBehavior msg formData =
+  case isFormReady formData of
     True -> Just msg
     False -> Nothing
 
-view : Model -> List (Html Msg)
-view model = 
+view : FormData a -> List (Html Msg)
+view formData = 
   [ div []
-      [ H.askFor "Drops per second" model.desiredDripRate
+      [ H.askFor "Drops per second" formData.desiredDripRate
           [ Event.onInput ChangeDripRate
           , Event.onBlur StartDripping
           ]
       , H.br
-      , H.askFor "Hours" model.desiredHours
+      , H.askFor "Hours" formData.desiredHours
           [Event.onInput ChangeHours]
       , text " and minutes: "
-      , H.textInput model.desiredMinutes
+      , H.textInput formData.desiredMinutes
           [Event.onInput ChangeMinutes]
       , H.br
       , H.br
-      , H.button "Start" (startButtonBehavior StartSimulation model)
+      , H.button "Start" (startButtonBehavior StartSimulation formData)
       , H.button "Reset Fields" (Just ResetFields)
       ]
   ]
