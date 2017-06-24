@@ -12,9 +12,3 @@ checked literal value =
   { literal = literal
   , value = value
   }
-
-
-whenValid : ValidatedString a -> result -> (a -> result) -> result
-whenValid field animation f =
-  Maybe.unwrap animation f field.value
-            

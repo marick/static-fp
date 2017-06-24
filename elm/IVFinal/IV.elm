@@ -6,7 +6,9 @@ import Animation.Messenger
 
 import IVFinal.Apparatus as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
+import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.View.InputFields as Field
+import IVFinal.Measures as Measure
 
 import IVFinal.View.Layout as Layout
 import IVFinal.Form as Form
@@ -29,11 +31,14 @@ startingModel =
   , desiredHours = Field.hours "0"
 
   , droplet = Animation.style Droplet.initStyles
+  , bagFluid = Animation.style BagFluid.initStyles
   }
 
 init : (Model, Cmd Msg)
 init = ( startingModel, Cmd.none )
 
+
+       
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -65,14 +70,21 @@ update msg model =
       )
 
     StartDripping ->
-      ( { model
-            | droplet = Droplet.falls model
-        }
-      , Cmd.none
-      )
+      case model.desiredDripRate.value of
+        Nothing ->
+          ( model, Cmd.none)
+        Just rate ->
+          ( { model
+              | droplet = Droplet.falls rate model.droplet
+            }
+          , Cmd.none
+          )
+          
 
     StartSimulation ->
-      ( model
+      ( { model
+            | bagFluid = BagFluid.drains (Measure.percent 0.5) (Measure.minutes 100) model.bagFluid
+        }
       , Cmd.none
       )
       
@@ -80,9 +92,14 @@ update msg model =
       let
         (newDroplet, dropletCmd) =
           Animation.Messenger.update subMsg model.droplet
+        (newFluid, fluidCmd) =
+          Animation.Messenger.update subMsg model.bagFluid
       in
-        ( { model | droplet = newDroplet }
-        , Cmd.batch [dropletCmd]
+        ( { model
+            | droplet = newDroplet
+            , bagFluid = newFluid
+          }
+        , Cmd.batch [dropletCmd, fluidCmd]
         )
 
 
@@ -100,6 +117,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   Animation.subscription Tick
     [ model.droplet
+    , model.bagFluid
     ]
 
       

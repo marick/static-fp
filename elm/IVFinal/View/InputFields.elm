@@ -12,10 +12,6 @@ type alias DripRate = ValidatedString Measure.DropsPerSecond
 type alias Hours = ValidatedString Measure.Hours
 type alias Minutes = ValidatedString Measure.Minutes
 
--- re-expose so clients don't have to also import ValidatedString
-whenValid : ValidatedString a -> result -> (a -> result) -> result
-whenValid = ValidatedString.whenValid
-
 border : ValidatedString a -> Html.Attribute msg
 border validated =
   case validated.value of

@@ -9,6 +9,7 @@ import IVFinal.Apparatus.Constants as C
 import IVFinal.Util.EuclideanTypes exposing (..)
 
 import IVFinal.Apparatus.Droplet as Droplet
+import IVFinal.Apparatus.BagFluid as BagFluid
 
 view : Model -> List (Svg msg)
 view model = 
@@ -21,7 +22,7 @@ view model =
   , container C.chamber
 
   -- Bag    
-  , fluid C.bagFluid
+  , BagFluid.view model.bagFluid
   , container C.bag
   , tickMarks
 

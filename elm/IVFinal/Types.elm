@@ -23,14 +23,7 @@ type alias Model =
   , desiredHours : Field.Hours
       
   , droplet : AnimationModel
-  }
-
-
-
-type alias DropletData r =
-  { r
-    | droplet : AnimationModel
-    , desiredDripRate : Field.DripRate
+  , bagFluid : AnimationModel
   }
 
   
