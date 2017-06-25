@@ -1,15 +1,20 @@
 module IVFinal.Measures exposing
   ( DropsPerSecond
   , TimePerDrop
+  , LitersPerMinute
   , Minutes
   , Hours
   , Percent
 
   , dripRate
+  , flowRate
+  , liters
   , minutes
   , hours
   , toMinutes
   , percent
+  , percentDecrease
+  , percentRemaining
     
   , rateToDuration
   , reduceBy
@@ -45,13 +50,16 @@ flowRate (Tagged dropsPerSecond) =
 percent : Float -> Percent
 percent = Tagged
 
-totalPercentRemaining : Liters -> DropsPerSecond -> Minutes -> Percent
-totalPercentRemaining (Tagged liters) dps (Tagged minutes) =
+percentDecrease : Float -> Float -> Percent
+percentDecrease start amountRemoved =
+  (start - amountRemoved) / start |> percent
+
+percentRemaining : Float -> Float -> Percent
+percentRemaining start amountRemoved =
   let
-    litersPerMinute = flowRate dps |> untag
-    litersDrained = liters * litersPerMinute
+    (Tagged decrease) = percentDecrease start amountRemoved
   in
-    percent <| 1.0 - (liters - litersDrained) / liters
+    1.0 - decrease |> percent
 
 --
 minutes : Int -> Minutes
@@ -63,6 +71,11 @@ hours = Tagged
 toMinutes : Hours -> Minutes -> Minutes
 toMinutes (Tagged hourPart) (Tagged minutePart) =
   minutes <| 60 * hourPart + minutePart
+
+--
+liters : Float -> Liters
+liters = Tagged
+
 
 -- Generic
     

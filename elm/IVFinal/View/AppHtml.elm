@@ -21,6 +21,13 @@ button label onClick =
     (buttonAttributes onClick)
     [strong [] [text label]]
 
+
+button2 label events =
+  Html.button
+    events
+    [strong [] [text label]]
+      
+      
 textInput : ValidatedString a  -> List (Html.Attribute msg) -> Html msg
 textInput validated eventHandlers = 
   input ([ type_ "text"

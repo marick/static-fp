@@ -69,21 +69,16 @@ update msg model =
       , Cmd.none
       )
 
-    StartDripping ->
-      case model.desiredDripRate.value of
-        Nothing ->
-          ( model, Cmd.none)
-        Just rate ->
-          ( { model
-              | droplet = Droplet.falls rate model.droplet
-            }
-          , Cmd.none
-          )
-          
-
-    StartSimulation ->
+    StartDripping rate ->
       ( { model
-            | bagFluid = BagFluid.drains (Measure.percent 0.5) (Measure.minutes 100) model.bagFluid
+          | droplet = Droplet.falls rate model.droplet
+        }
+      , Cmd.none
+      )
+
+    StartSimulation flowRate minutes ->
+      ( { model
+            | bagFluid = BagFluid.drains flowRate minutes model.bagFluid
         }
       , Cmd.none
       )

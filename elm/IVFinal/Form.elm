@@ -24,29 +24,58 @@ isFormReady formData =
     (Just _, Just _) -> True
     _ -> False
 
-startButtonBehavior : msg -> FormData a -> Maybe msg      
-startButtonBehavior msg formData =
-  case isFormReady formData of
-    True -> Just msg
-    False -> Nothing
+alwaysAllow f c = Just (f c)
+              
+events = Maybe.values
 
+whenReady value f2 f1 =
+  case value of
+    Just v ->
+      v |> f1 |> f2 |> Just
+    _ ->
+      Nothing
+
+whenReady2 (value1, value2) f2 f1 =
+  case (value1, value2) of
+    (Just v1, Just v2) ->
+      f1 v1 v2 |> f2 |> Just
+    _ ->
+      Nothing
+      
+         
 view : FormData a -> List (Html Msg)
-view formData = 
-  [ div []
-      [ H.askFor "Drops per second" formData.desiredDripRate
-          [ Event.onInput ChangeDripRate
-          , Event.onBlur StartDripping
-          ]
-      , H.br
-      , H.askFor "Hours" formData.desiredHours
-          [Event.onInput ChangeHours]
-      , text " and minutes: "
-      , H.textInput formData.desiredMinutes
-          [Event.onInput ChangeMinutes]
-      , H.br
-      , H.br
-      , H.button "Start" (startButtonBehavior StartSimulation formData)
-      , H.button "Reset Fields" (Just ResetFields)
+view formData =
+  let 
+    dripRateEvents =
+      events
+      [ alwaysAllow
+          Event.onInput ChangeDripRate
+      , whenReady formData.desiredDripRate.value
+          Event.onBlur StartDripping
       ]
-  ]
-  
+    startButtonEvents =
+      events
+      [ whenReady2
+          ( Maybe.map Measure.flowRate 
+              formData.desiredDripRate.value
+          , Maybe.map2 Measure.toMinutes
+              formData.desiredHours.value
+              formData.desiredMinutes.value
+          )
+          Event.onClick StartSimulation
+      ]
+  in 
+    [ div []
+        [ H.askFor "Drops per second" formData.desiredDripRate dripRateEvents
+        , H.br
+        , H.askFor "Hours" formData.desiredHours
+          [Event.onInput ChangeHours]
+        , text " and minutes: "
+        , H.textInput formData.desiredMinutes
+          [Event.onInput ChangeMinutes]
+        , H.br
+        , H.br
+        , H.button2 "Start" startButtonEvents
+        , H.button "Reset Fields" (Just ResetFields)
+        ]
+    ]

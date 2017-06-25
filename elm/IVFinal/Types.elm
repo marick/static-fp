@@ -3,6 +3,7 @@ module IVFinal.Types exposing (..)
 import IVFinal.View.InputFields as Field
 import Animation
 import Animation.Messenger
+import IVFinal.Measures as Measure
 
 type alias AnimationModel = Animation.Messenger.State Msg
 
@@ -12,8 +13,8 @@ type Msg
   | ChangeMinutes String
   | ResetFields
 
-  | StartDripping
-  | StartSimulation
+  | StartDripping Measure.DropsPerSecond
+  | StartSimulation Measure.LitersPerMinute Measure.Minutes
 
   | Tick Animation.Msg
 

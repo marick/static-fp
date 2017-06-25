@@ -11,7 +11,7 @@ bag : Rectangle
 bag = Rectangle.fromOrigin 120 200
 
 bagFluid : Rectangle      
-bagFluid = bag |> Rectangle.lower 0.85
+bagFluid = bag |> Rectangle.lowerTo 0.85
     
 -- The chamber is above the hose. Droplets fall into it.
 -- It has a puddle in the bottom.
@@ -20,7 +20,7 @@ chamber =
   Rectangle.fromOrigin 30 90 |> centeredBelow bag
 
 chamberFluid : Rectangle          
-chamberFluid = chamber |> lower 0.3
+chamberFluid = chamber |> lowerTo 0.3
 
 hoseWidth : Float
 hoseWidth = 10

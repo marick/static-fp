@@ -34,8 +34,8 @@ nudgeDown : Float -> Rectangle -> Rectangle
 nudgeDown i =
   translate (Point 0 i)
 
-lower : Float -> Rectangle -> Rectangle  
-lower percent { origin, size } =
+lowerTo : Float -> Rectangle -> Rectangle  
+lowerTo percent { origin, size } =
   let
     shift value byPercent = value * byPercent
 

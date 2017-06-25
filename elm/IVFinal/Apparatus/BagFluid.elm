@@ -4,8 +4,8 @@ import Svg as S exposing (Svg)
 import Svg.Attributes as SA
 import Animation exposing (px)
 import Ease
-import Time
-import Tagged exposing (untag)
+import Time exposing (Time)
+import Tagged exposing (untag, Tagged(..))
 
 import IVFinal.Types exposing (AnimationModel)
 import IVFinal.Apparatus.AppAnimation exposing (..)
@@ -25,34 +25,55 @@ view =
     ]
 
 -- Animations
-
-drains : Measure.Percent -> Measure.Minutes -> AnimationModel -> AnimationModel
-drains percent minutes =
+      
+drains : Measure.LitersPerMinute -> Measure.Minutes
+       -> AnimationModel
+       -> AnimationModel
+drains rate minutes =
   Animation.interrupt
-    [ Animation.toWith (draining minutes) (drainedStyles percent)
+    [ Animation.toWith
+        (draining minutes)
+        (drainedStyles <| finalPercent rate minutes)
     ]
     
 
 -- Styles
+
+animationStyles rect = 
+  [ Animation.y (Rect.y rect)
+  , Animation.height (Animation.px (Rect.height rect))
+  ]
     
 initStyles : List Animation.Property
 initStyles =
-  [ Animation.y (Rect.y C.bagFluid)
-  , Animation.height (Animation.px (Rect.height C.bagFluid))
-  ]
-
+  animationStyles C.bagFluid
+  
 drainedStyles : Measure.Percent -> List Animation.Property    
-drainedStyles percent =
-  [ Animation.y <| Rect.y C.bagFluid + 30
-  , Animation.height <| (Animation.px ((Rect.height C.bagFluid) - 30))
-  ]
+drainedStyles (Tagged percent) =
+  animationStyles <| Rect.lowerTo percent C.bagFluid 
 
 -- Timing
 
 draining : Measure.Minutes -> Animation.Interpolation  
 draining minutes =
   Animation.easing
-    { duration = Time.second * 3
+    { duration = toSimulationTime minutes
     , ease = Ease.linear
     }
 
+
+
+--- Default values and calculations
+
+bagLiters = Measure.liters 19.0
+
+finalPercent : Measure.LitersPerMinute -> Measure.Minutes -> Measure.Percent
+finalPercent (Tagged rate) (Tagged time) =
+  let
+    decrease = rate * (toFloat time)
+  in
+    Measure.percentRemaining (untag bagLiters) decrease
+
+toSimulationTime : Measure.Minutes -> Time
+toSimulationTime (Tagged minutes) =
+  Time.minute * (toFloat minutes) / 2000.0 
