@@ -10,7 +10,7 @@ import IVFinal.Apparatus as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.View.InputFields as Field
-import IVFinal.Calc as Calc
+import IVFinal.Scenario as Scenario exposing (Scenario)
 
 import IVFinal.View.Layout as Layout
 import IVFinal.Form as Form
@@ -26,18 +26,20 @@ makeFieldsEmpty model =
       , desiredHours = Field.hours "0"
   }
 
-startingModel : Model
-startingModel =
-  { desiredDripRate = Field.dripRate ""
+startingModel : Scenario -> Model
+startingModel scenario =
+  { scenario = scenario
+
+  , desiredDripRate = Field.dripRate ""
   , desiredMinutes = Field.minutes "0"
   , desiredHours = Field.hours "0"
 
   , droplet = Animation.style Droplet.initStyles
-  , bagFluid = Animation.style <| BagFluid.initStyles Calc.containerVolume Calc.startingFluid
+  , bagFluid = Animation.style <| BagFluid.initStyles scenario.containerVolume scenario.startingFluid
   }
 
 init : (Model, Cmd Msg)
-init = ( startingModel, Cmd.none )
+init = ( startingModel Scenario.carboy, Cmd.none )
 
 send : msg -> Cmd msg
 send msg =
@@ -102,11 +104,11 @@ update msg model =
 
     StartSimulation dropsPerSecond hours minutes ->
       let
-        justMinutes = Calc.justMinutes hours minutes
-        finalLevel = Calc.findLevel dropsPerSecond justMinutes
+        justMinutes = Scenario.justMinutes hours minutes
+        finalLevel = Scenario.findLevel dropsPerSecond justMinutes
       in
         ( { model
-            | bagFluid = BagFluid.drains Calc.containerVolume finalLevel justMinutes model.bagFluid
+            | bagFluid = BagFluid.drains model.scenario.containerVolume finalLevel justMinutes model.bagFluid
           }
         , Cmd.none
         )

@@ -4,6 +4,7 @@ import IVFinal.View.InputFields as Field
 import Animation
 import Animation.Messenger
 import IVFinal.Measures as Measure
+import IVFinal.Scenario exposing (Scenario)
 
 type alias AnimationModel = Animation.Messenger.State Msg
 
@@ -22,7 +23,9 @@ type Msg
   | Tick Animation.Msg
 
 type alias Model =
-  { desiredDripRate : Field.DripRate
+  { scenario : Scenario
+
+  , desiredDripRate : Field.DripRate
   , desiredMinutes : Field.Minutes
   , desiredHours : Field.Hours
       

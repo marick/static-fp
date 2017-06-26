@@ -1,4 +1,4 @@
-module IVFinal.Calc exposing (..)
+module IVFinal.Scenario exposing (..)
 
 import IVFinal.Measures as Measure
 import Tagged exposing (Tagged(..))
@@ -6,6 +6,23 @@ import IVFinal.Util.AppTagged exposing (UnusableConstructor)
 
 
 type alias LitersPerMinute = Tagged LitersPerMinuteTag Float
+
+type alias Scenario = 
+  { animal : String
+  , bagType : String
+  , containerVolume : Measure.Liters
+  , startingFluid : Measure.Liters
+  , dropsPerMil : Int
+  }
+
+carboy =
+  { animal = "a 1560 lb 3d lactation purebred Holstein"
+  , bagType = "5-gallon carboy"
+  , containerVolume = Measure.liters 20.0
+  , startingFluid = Measure.liters 19.0
+  , dropsPerMil = 15
+  }
+
 
 
 justMinutes : Measure.Hours -> Measure.Minutes -> Measure.Minutes
