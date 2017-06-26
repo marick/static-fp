@@ -105,7 +105,7 @@ update msg model =
     StartSimulation dropsPerSecond hours minutes ->
       let
         justMinutes = Scenario.justMinutes hours minutes
-        finalLevel = Scenario.findLevel dropsPerSecond justMinutes
+        finalLevel = Scenario.findLevel dropsPerSecond justMinutes model.scenario 
       in
         ( { model
             | bagFluid = BagFluid.drains model.scenario.containerVolume finalLevel justMinutes model.bagFluid
