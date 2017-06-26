@@ -51,6 +51,9 @@ sendWhenReady maybe =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
+
+    -- Form operations
+
     ChangeDripRate candidate ->
       ( { model |
             desiredDripRate = Field.dripRate candidate
@@ -72,30 +75,29 @@ update msg model =
       , Cmd.none
       )
 
-    ResetSimulation ->
-      ( model |> makeFieldsEmpty
-      , Cmd.none
-      )
-
     DrippingRequested ->
       ( model
-      , Maybe.map StartDripping model.desiredDripRate.value |> sendWhenReady
+      , sendWhenReady 
+          (Maybe.map StartDripping model.desiredDripRate.value)
       )
+
+    SimulationRequested ->
+      ( model
+      , sendWhenReady
+          (Maybe.map3 StartSimulation
+             model.desiredDripRate.value
+             model.desiredHours.value
+             model.desiredMinutes.value)
+      )
+
+
+    -- Running the simulation
 
     StartDripping rate ->
       ( { model
           | droplet = Droplet.falls rate model.droplet
         }
       , Cmd.none
-      )
-
-    SimulationRequested ->
-      ( model
-      , Maybe.map3 StartSimulation
-          model.desiredDripRate.value
-          model.desiredHours.value
-          model.desiredMinutes.value
-        |> sendWhenReady
       )
 
     StartSimulation dropsPerSecond hours minutes ->
@@ -122,6 +124,13 @@ update msg model =
           }
         , Cmd.batch [dropletCmd, fluidCmd]
         )
+
+    -- After the simulation
+        
+    ResetSimulation ->
+      ( model |> makeFieldsEmpty
+      , Cmd.none
+      )
 
 
 view : Model -> Html Msg
