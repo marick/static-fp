@@ -5,12 +5,16 @@ import Svg.Attributes as SA
 import Animation exposing (px)
 import Ease
 import Tagged exposing (untag)
+import Time
 
 import IVFinal.Types exposing (AnimationModel)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
 import IVFinal.Measures as Measure
+import Tagged exposing (Tagged(..), untag, retag)
+import IVFinal.Util.AppTagged exposing (UnusableConstructor)
+
 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
 
@@ -64,8 +68,8 @@ dropStreamCutoff : Measure.DropsPerSecond
 dropStreamCutoff = Measure.dripRate 6.0
 
 -- Following is slower than reality (in a vacuum), but looks better
-timeForDropToFall : Measure.TimePerDrop
-timeForDropToFall = Measure.rateToDuration dropStreamCutoff
+timeForDropToFall : TimePerDrop
+timeForDropToFall = rateToDuration dropStreamCutoff
 
 falling : Animation.Interpolation  
 falling =
@@ -79,7 +83,7 @@ growing rate =
   let
     duration =
       rate
-        |> Measure.rateToDuration
+        |> rateToDuration
         |> Measure.reduceBy timeForDropToFall
   in
     Animation.easing
@@ -87,3 +91,20 @@ growing rate =
       , ease = Ease.linear
       }
 
+
+
+
+
+--- Support for tagging
+
+type alias TimePerDrop = Tagged TimePerDropTag Float
+type TimePerDropTag = TimePerDropTag UnusableConstructor
+
+      
+rateToDuration : Measure.DropsPerSecond -> TimePerDrop
+rateToDuration dps =
+  let
+    calculation rate =
+      (1 / rate ) * Time.second
+  in
+    Tagged.map calculation dps |> retag

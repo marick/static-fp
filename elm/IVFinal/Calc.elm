@@ -5,7 +5,6 @@ import IVFinal.Measures as Measure
 
 import Tagged exposing (Tagged(..))
 
-
 justMinutes : Measure.Hours -> Measure.Minutes -> Measure.Minutes
 justMinutes (Tagged hourPart) (Tagged minutePart) =
   Measure.minutes <| 60 * hourPart + minutePart

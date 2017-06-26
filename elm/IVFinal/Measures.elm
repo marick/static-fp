@@ -1,6 +1,5 @@
 module IVFinal.Measures exposing
   ( DropsPerSecond
-  , TimePerDrop
   , Liters
   , LitersPerMinute
   , Minutes
@@ -16,25 +15,15 @@ module IVFinal.Measures exposing
   , percentDecrease
   , percentRemaining
     
-  , rateToDuration
   , reduceBy
   )
 
 import Tagged exposing (Tagged(..), untag, retag)
 import IVFinal.Util.AppTagged exposing (UnusableConstructor)
-import Time
 
 --
 dripRate : Float -> DropsPerSecond
 dripRate = Tagged
-
-rateToDuration : DropsPerSecond -> TimePerDrop
-rateToDuration dps =
-  let
-    calculation rate =
-      (1 / rate ) * Time.second
-  in
-    Tagged.map calculation dps |> retag
 
 --
 flowRate : DropsPerSecond -> LitersPerMinute
@@ -91,9 +80,6 @@ type DropsPerSecondTag = DropsPerSecondTag UnusableConstructor
 
 type alias LitersPerMinute = Tagged LitersPerMinuteTag Float
 type LitersPerMinuteTag = LitersPerMinuteTag UnusableConstructor
-
-type alias TimePerDrop = Tagged TimePerDropTag Float
-type TimePerDropTag = TimePerDropTag UnusableConstructor
 
 type alias Minutes = Tagged MinutesTag Int
 type MinutesTag = MinutesTag UnusableConstructor
