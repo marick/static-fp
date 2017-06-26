@@ -11,10 +11,13 @@ type Msg
   = ChangeDripRate String
   | ChangeHours String
   | ChangeMinutes String
-  | ResetFields
+  | ResetSimulation
 
+  | DrippingRequested
   | StartDripping Measure.DropsPerSecond
-  | StartSimulation Measure.LitersPerMinute Measure.Minutes
+
+  | SimulationRequested
+  | StartSimulation Measure.DropsPerSecond Measure.Hours Measure.Minutes
 
   | Tick Animation.Msg
 
@@ -27,12 +30,10 @@ type alias Model =
   , bagFluid : AnimationModel
   }
 
-  
+
 type alias FormData r =
   { r
     | desiredDripRate : Field.DripRate
     , desiredHours : Field.Hours
     , desiredMinutes : Field.Minutes
   }
-
-  

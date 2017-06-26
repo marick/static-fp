@@ -1,7 +1,5 @@
 module IVFinal.Util.ValidatedString exposing (..)
 
-import Maybe.Extra as Maybe
-
 type alias ValidatedString a =
   { literal : String
   , value : Maybe a

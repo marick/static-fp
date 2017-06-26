@@ -11,10 +11,12 @@ import IVFinal.Types exposing (AnimationModel)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
-import IVFinal.View.InputFields as Field
 import IVFinal.Measures as Measure
 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
+import IVFinal.Measures as Measure
+
+---- 
 
 view : AnimationModel -> Svg msg
 view =
@@ -26,31 +28,38 @@ view =
 
 -- Animations
       
-drains : Measure.LitersPerMinute -> Measure.Minutes
+drains : Measure.Liters -> Measure.Liters -> Measure.Minutes
        -> AnimationModel
        -> AnimationModel
-drains rate minutes =
+drains container fluid minutes =
   Animation.interrupt
     [ Animation.toWith
         (draining minutes)
-        (drainedStyles <| finalPercent rate minutes)
+        (drainedStyles container fluid)
     ]
     
 
 -- Styles
 
-animationStyles rect = 
-  [ Animation.y (Rect.y rect)
-  , Animation.height (Animation.px (Rect.height rect))
-  ]
+animationStyles : Measure.Liters -> Measure.Liters -> List Animation.Property
+animationStyles (Tagged container) (Tagged fluid) =
+  let
+    endingProportion = fluid / container
+    rect = C.bag |> Rect.lowerTo endingProportion
+  in
+    [ Animation.y (Rect.y rect)
+    , Animation.height (Animation.px (Rect.height rect))
+    ]
+
+-- None of the client's business that the same calculations are used
+-- for both styles.
     
-initStyles : List Animation.Property
-initStyles =
-  animationStyles C.bagFluid
+initStyles : Measure.Liters -> Measure.Liters -> List Animation.Property
+initStyles = animationStyles
   
-drainedStyles : Measure.Percent -> List Animation.Property    
-drainedStyles (Tagged percent) =
-  animationStyles <| Rect.lowerTo percent C.bagFluid 
+drainedStyles : Measure.Liters -> Measure.Liters -> List Animation.Property
+drainedStyles = animationStyles 
+  
 
 -- Timing
 
@@ -65,14 +74,6 @@ draining minutes =
 
 --- Default values and calculations
 
-bagLiters = Measure.liters 19.0
-
-finalPercent : Measure.LitersPerMinute -> Measure.Minutes -> Measure.Percent
-finalPercent (Tagged rate) (Tagged time) =
-  let
-    decrease = rate * (toFloat time)
-  in
-    Measure.percentRemaining (untag bagLiters) decrease
 
 toSimulationTime : Measure.Minutes -> Time
 toSimulationTime (Tagged minutes) =

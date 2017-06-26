@@ -3,12 +3,14 @@ module IVFinal.IV exposing (..)
 import Html exposing (..)
 import Animation
 import Animation.Messenger
+import Maybe.Extra as Maybe
+import Task
 
 import IVFinal.Apparatus as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.View.InputFields as Field
-import IVFinal.Measures as Measure
+import IVFinal.Calc as Calc
 
 import IVFinal.View.Layout as Layout
 import IVFinal.Form as Form
@@ -31,14 +33,20 @@ startingModel =
   , desiredHours = Field.hours "0"
 
   , droplet = Animation.style Droplet.initStyles
-  , bagFluid = Animation.style BagFluid.initStyles
+  , bagFluid = Animation.style <| BagFluid.initStyles Calc.containerVolume Calc.startingFluid
   }
 
 init : (Model, Cmd Msg)
 init = ( startingModel, Cmd.none )
 
+send : msg -> Cmd msg
+send msg =
+  Task.perform identity (Task.succeed msg)
 
-       
+sendWhenReady : Maybe msg -> Cmd msg
+sendWhenReady maybe =
+  Maybe.unwrap Cmd.none send maybe
+
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -64,9 +72,14 @@ update msg model =
       , Cmd.none
       )
 
-    ResetFields ->
+    ResetSimulation ->
       ( model |> makeFieldsEmpty
       , Cmd.none
+      )
+
+    DrippingRequested ->
+      ( model
+      , Maybe.map StartDripping model.desiredDripRate.value |> sendWhenReady
       )
 
     StartDripping rate ->
@@ -76,12 +89,25 @@ update msg model =
       , Cmd.none
       )
 
-    StartSimulation flowRate minutes ->
-      ( { model
-            | bagFluid = BagFluid.drains flowRate minutes model.bagFluid
-        }
-      , Cmd.none
+    SimulationRequested ->
+      ( model
+      , Maybe.map3 StartSimulation
+          model.desiredDripRate.value
+          model.desiredHours.value
+          model.desiredMinutes.value
+        |> sendWhenReady
       )
+
+    StartSimulation dropsPerSecond hours minutes ->
+      let
+        justMinutes = Calc.justMinutes hours minutes
+        finalLevel = Calc.findLevel dropsPerSecond justMinutes
+      in
+        ( { model
+            | bagFluid = BagFluid.drains Calc.containerVolume finalLevel justMinutes model.bagFluid
+          }
+        , Cmd.none
+        )
       
     Tick subMsg ->
       let
@@ -105,9 +131,6 @@ view model =
     , Layout.form <| Form.view model
     ]
 
-
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Animation.subscription Tick
@@ -125,3 +148,4 @@ main =
     , subscriptions = subscriptions
     }
     
+

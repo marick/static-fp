@@ -1,6 +1,7 @@
 module IVFinal.Measures exposing
   ( DropsPerSecond
   , TimePerDrop
+  , Liters
   , LitersPerMinute
   , Minutes
   , Hours
@@ -11,7 +12,6 @@ module IVFinal.Measures exposing
   , liters
   , minutes
   , hours
-  , toMinutes
   , percent
   , percentDecrease
   , percentRemaining
@@ -68,14 +68,9 @@ minutes = Tagged
 hours : Int -> Hours
 hours = Tagged
 
-toMinutes : Hours -> Minutes -> Minutes
-toMinutes (Tagged hourPart) (Tagged minutePart) =
-  minutes <| 60 * hourPart + minutePart
-
 --
 liters : Float -> Liters
 liters = Tagged
-
 
 -- Generic
     

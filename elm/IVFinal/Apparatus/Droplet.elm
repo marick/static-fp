@@ -10,7 +10,6 @@ import IVFinal.Types exposing (AnimationModel)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
-import IVFinal.View.InputFields as Field
 import IVFinal.Measures as Measure
 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))

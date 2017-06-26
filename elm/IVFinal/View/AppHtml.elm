@@ -22,6 +22,7 @@ button label onClick =
     [strong [] [text label]]
 
 
+button2 : String -> List (Attribute msg) -> Html msg
 button2 label events =
   Html.button
     events
