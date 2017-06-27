@@ -2,14 +2,15 @@ module IVFinal.Model exposing (..)
 
 import IVFinal.View.InputFields as Field
 import Animation.Messenger
-import IVFinal.Measures as Measure
+import IVFinal.Util.Measures as Measure
 import IVFinal.Scenario exposing (Scenario)
 import IVFinal.Msg exposing (..)
+import IVFinal.Stages.Models exposing (..)
 
 type alias AnimationModel = Animation.Messenger.State Msg
 
 type SimulationStage
-  = FormFilling
+  = FormFilling FormModel
   | WatchingAnimation Measure.LitersPerMinute  -- drain rate
   | Finished Measure.Liters -- ending state
 

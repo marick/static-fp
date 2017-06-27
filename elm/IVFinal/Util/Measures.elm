@@ -1,4 +1,4 @@
-module IVFinal.Measures exposing
+module IVFinal.Util.Measures exposing
   ( DropsPerSecond
   , LitersPerMinute
   , Liters

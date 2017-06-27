@@ -6,9 +6,8 @@ module IVFinal.Scenario exposing
   , justMinutes
   )
 
-import IVFinal.Measures as Measure
+import IVFinal.Util.Measures as Measure
 import Tagged exposing (Tagged(..))
-import IVFinal.Util.AppTagged exposing (UnusableConstructor)
 
 
 type alias Scenario = 

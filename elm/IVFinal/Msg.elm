@@ -2,7 +2,7 @@ module IVFinal.Msg exposing (..)
 
 import Animation
 import Animation.Messenger
-import IVFinal.Measures as Measure
+import IVFinal.Util.Measures as Measure
 
 type alias AnimationModel = Animation.Messenger.State Msg
 
