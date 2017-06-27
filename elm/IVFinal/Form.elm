@@ -28,7 +28,7 @@ isFormReady formData =
       Just (_, Tagged minutes, Tagged hours) ->
         minutes /= 0 || hours /= 0
 
-         
+
 view : FormData a -> List (Html Msg)
 view formData =
   let 
@@ -45,14 +45,6 @@ view formData =
 
     minuteFieldEvents = 
       [Event.onInput ChangeMinutes]
-      
-      -- [ whenReady2
-      --     ( Maybe.map Measure.flowRate 
-      --         formData.desiredDripRate.value
-      --     , Maybe.map2 Measure.toMinutes
-      --         formData.desiredHours.value
-      --         formData.desiredMinutes.value
-      --     )
   in 
     [ div []
         [ H.askFor "Drops per second"

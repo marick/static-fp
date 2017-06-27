@@ -22,8 +22,14 @@ type Msg
 
   | Tick Animation.Msg
 
+type SimulationStage
+  = FormFilling
+  | WatchingAnimation Measure.LitersPerMinute  -- drain rate
+  | Finished Measure.Liters -- ending state
+
 type alias Model =
   { scenario : Scenario
+  , stage : SimulationStage
 
   , desiredDripRate : Field.DripRate
   , desiredMinutes : Field.Minutes
@@ -33,10 +39,10 @@ type alias Model =
   , bagFluid : AnimationModel
   }
 
-
 type alias FormData r =
   { r
     | desiredDripRate : Field.DripRate
     , desiredHours : Field.Hours
     , desiredMinutes : Field.Minutes
+    , stage : SimulationStage
   }

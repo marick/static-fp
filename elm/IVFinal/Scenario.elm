@@ -19,6 +19,7 @@ type alias Scenario =
   , dropsPerMil : Int
   }
 
+carboy : Scenario  
 carboy =
   { animal = "a 1560 lb 3d lactation purebred Holstein"
   , bagType = "5-gallon carboy"
@@ -44,17 +45,15 @@ findLevel dropsPerSecond minutes scenario =
     
 -- Private
     
-type alias LitersPerMinute = Tagged LitersPerMinuteTag Float
-
-flowRate : Measure.DropsPerSecond -> Scenario -> LitersPerMinute
+flowRate : Measure.DropsPerSecond -> Scenario -> Measure.LitersPerMinute
 flowRate (Tagged dropsPerSecond) {dropsPerMil} =
   let
     milsPerSecond = dropsPerSecond / (toFloat dropsPerMil)
     milsPerHour = milsPerSecond * 60.0
   in
-    Tagged <| milsPerHour / 1000.0 
+    Measure.litersPerMinute (milsPerHour / 1000.0)
 
-litersOverTime : LitersPerMinute -> Measure.Minutes -> Measure.Liters
+litersOverTime : Measure.LitersPerMinute -> Measure.Minutes -> Measure.Liters
 litersOverTime (Tagged lpm) (Tagged minutes) =
   lpm * (toFloat minutes) |> Measure.liters
 
@@ -62,4 +61,3 @@ minusMinus : Tagged a Float -> Tagged a Float -> Tagged a Float -> Tagged a Floa
 minusMinus (Tagged x) (Tagged y) (Tagged z) =
   Tagged (x - y - z)
 
-type LitersPerMinuteTag = LitersPerMinuteTag UnusableConstructor

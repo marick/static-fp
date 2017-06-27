@@ -1,11 +1,13 @@
 module IVFinal.Measures exposing
   ( DropsPerSecond
+  , LitersPerMinute
   , Liters
   , Minutes
   , Hours
   , Percent
 
   , dripRate
+  , litersPerMinute
   , liters
   , minutes
   , hours
@@ -25,12 +27,17 @@ type alias Minutes = Tagged MinutesTag Int
 type alias Hours = Tagged HoursTag Int
 type alias Liters = Tagged LitersTag Float
 type alias Percent = Tagged PercentTag Float
+type alias LitersPerMinute = Tagged LitersPerMinuteTag Float
+
 
 
 
 --
 dripRate : Float -> DropsPerSecond
 dripRate = Tagged
+
+litersPerMinute : Float -> LitersPerMinute
+litersPerMinute = Tagged
 
 --
 percent : Float -> Percent
@@ -77,4 +84,4 @@ type MinutesTag = MinutesTag UnusableConstructor
 type HoursTag = HoursTag UnusableConstructor
 type LitersTag = LitersTag UnusableConstructor
 type PercentTag = PercentTag UnusableConstructor
-
+type LitersPerMinuteTag = LitersPerMinuteTag UnusableConstructor
