@@ -7,7 +7,7 @@ import Ease
 import Time exposing (Time)
 import Tagged exposing (untag, Tagged(..))
 
-import IVFinal.Types exposing (AnimationModel)
+import IVFinal.Model exposing (AnimationModel)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C

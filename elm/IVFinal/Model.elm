@@ -1,26 +1,12 @@
-module IVFinal.Types exposing (..)
+module IVFinal.Model exposing (..)
 
 import IVFinal.View.InputFields as Field
-import Animation
 import Animation.Messenger
 import IVFinal.Measures as Measure
 import IVFinal.Scenario exposing (Scenario)
+import IVFinal.Msg exposing (..)
 
 type alias AnimationModel = Animation.Messenger.State Msg
-
-type Msg
-  = ChangeDripRate String
-  | ChangeHours String
-  | ChangeMinutes String
-  | ResetSimulation
-
-  | DrippingRequested
-  | StartDripping Measure.DropsPerSecond
-
-  | SimulationRequested
-  | StartSimulation Measure.DropsPerSecond Measure.Hours Measure.Minutes
-
-  | Tick Animation.Msg
 
 type SimulationStage
   = FormFilling

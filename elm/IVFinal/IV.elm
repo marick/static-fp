@@ -15,7 +15,8 @@ import IVFinal.Scenario as Scenario exposing (Scenario)
 import IVFinal.View.Layout as Layout
 import IVFinal.Form as Form
 
-import IVFinal.Types exposing (..)
+import IVFinal.Model exposing (..)
+import IVFinal.Msg exposing (..)
 
 
 makeFieldsEmpty : Model -> Model

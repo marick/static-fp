@@ -1,7 +1,6 @@
 module IVFinal.Apparatus exposing (..)
 
-import IVFinal.Types exposing (..)
-
+import IVFinal.Model exposing (Model)
 import Svg exposing (Svg)
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
 import Svg.Attributes exposing (..)
