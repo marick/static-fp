@@ -50,6 +50,9 @@ endingDroplet =
     |> centeredAbove chamberFluid
     |> nudgeDown dropletSideLength
 
+streamLength : Float
+streamLength = Rectangle.height chamber - Rectangle.height chamberFluid
+  
 -- Utilities for constant transformations
        
 fluidAppearance : List (Svg.Attribute msg)
@@ -71,11 +74,8 @@ containerAppearance =
 fluidColor : Color
 fluidColor = rgb 211 215 207
 
-fluidColorString : String
+fluidColorString : String -- Grr
 fluidColorString = Convert.colorToHex fluidColor
 
-variantFluidColor : Color                   
-variantFluidColor = rgb 193 193 193
-                    
-variantFluidColorString : String
-variantFluidColorString = Convert.colorToHex fluidColor
+secondFluidColor : Color                   
+secondFluidColor = rgb 193 193 193

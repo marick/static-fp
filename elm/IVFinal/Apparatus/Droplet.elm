@@ -24,44 +24,52 @@ view : AnimationModel -> Svg msg
 view =
   animatable S.rect <| HasFixedPart
     [ SA.width ^^ (Rect.width C.startingDroplet)
-    , SA.fill C.fluidColorString
     , SA.x ^^ (Rect.x C.startingDroplet)
     ]
 
 -- Animations
 
+showStream : Measure.DropsPerSecond -> Measure.DropsPerSecond -> Bool
+showStream (Tagged rate) (Tagged cutoff) =
+  rate - cutoff > 0
+
 falls : Measure.DropsPerSecond -> AnimationModel -> AnimationModel
 falls rate =
   Animation.interrupt
-    (toStart ++ singleDrop rate ++ restartDrop)
+    (case showStream rate dropStreamCutoff of
+       True ->
+         toStartStep ++
+         [ Animation.toWith (streaming rate) pouredStyles
+         , Animation.loop
+             [ Animation.toWith (streaming rate) secondColorStyles
+             , Animation.toWith (streaming rate) pouredStyles
+             ]
+         ]
+       
+       False -> 
+         toStartStep ++
+         [ Animation.toWith (growing rate) grownStyles
+         , Animation.toWith falling fallenStyles
+         , Animation.Messenger.send DrippingRequested
+         ])
       
 stops : AnimationModel -> AnimationModel
 stops =
-  Animation.interrupt toStart
+  Animation.interrupt toStartStep
 
--- Animation helpers
+-- Animation steps
 
-toStart : List AnimationStep
-toStart =
+toStartStep : List AnimationStep
+toStartStep =
   [ Animation.set initStyles ]
 
-singleDrop : Measure.DropsPerSecond -> List AnimationStep
-singleDrop rate =
-  [ Animation.toWith (growing rate) grownStyles
-  , Animation.toWith falling fallenStyles
-  ]
 
-restartDrop : List AnimationStep
-restartDrop = 
-  [ Animation.Messenger.send DrippingRequested
-  ]
-  
-
--- Styles
+-- styles
     
 initStyles : List Animation.Property
 initStyles =
   [ Animation.y (Rect.y C.startingDroplet)
+  , Animation.fill C.fluidColor
   , Animation.height (px 0)
   ]
 
@@ -74,6 +82,16 @@ fallenStyles : List Animation.Property
 fallenStyles =
   [ Animation.y (Rect.y C.endingDroplet) ]
 
+pouredStyles : List Animation.Property
+pouredStyles =
+  [ Animation.height (px C.streamLength)
+  , Animation.fill C.fluidColor
+  ]
+
+secondColorStyles : List Animation.Property
+secondColorStyles =
+  [ Animation.fill C.secondFluidColor
+  ]
 
 -- Timing
 
@@ -104,7 +122,12 @@ growing rate =
       , ease = Ease.linear
       }
 
-
+streaming : Measure.DropsPerSecond -> Animation.Interpolation
+streaming rate =
+  Animation.easing
+    { duration = rateToDuration rate |> untag
+    , ease = Ease.inQuad
+    }
 
 
 
