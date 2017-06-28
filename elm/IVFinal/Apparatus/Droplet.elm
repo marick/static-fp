@@ -3,11 +3,13 @@ module IVFinal.Apparatus.Droplet exposing (..)
 import Svg as S exposing (Svg)
 import Svg.Attributes as SA
 import Animation exposing (px)
+import Animation.Messenger
 import Ease
 import Tagged exposing (untag)
 import Time
 
 import IVFinal.Model exposing (AnimationModel)
+import IVFinal.Msg exposing (..)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
@@ -31,18 +33,26 @@ view =
 falls : Measure.DropsPerSecond -> AnimationModel -> AnimationModel
 falls rate =
   Animation.interrupt
-    [ Animation.loop
-        [ Animation.set initStyles
-        , Animation.toWith (growing rate) grownStyles
-        , Animation.toWith falling fallenStyles
-        ]
-    ]
-
+    (toStart ++ singleDrop rate ++ restartDrop)
+      
 stops : AnimationModel -> AnimationModel
 stops =
-  Animation.interrupt
-    [ Animation.set initStyles ] -- reset back to invisible droplet
+  Animation.interrupt toStart
 
+-- Animation helpers
+
+toStart =
+  [ Animation.set initStyles ]
+
+singleDrop rate =
+  [ Animation.toWith (growing rate) grownStyles
+  , Animation.toWith falling fallenStyles
+  ]
+
+restartDrop = 
+  [ Animation.Messenger.send DrippingRequested
+  ]
+  
 
 -- Styles
     

@@ -4,8 +4,6 @@ import Animation
 import Animation.Messenger
 import IVFinal.Util.Measures as Measure
 
-type alias AnimationModel = Animation.Messenger.State Msg
-
 type Msg
   = ChangeDripRate String
   | ChangeHours String
