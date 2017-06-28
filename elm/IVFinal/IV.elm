@@ -30,7 +30,7 @@ makeFieldsEmpty model =
 startingModel : Scenario -> Model
 startingModel scenario =
   { scenario = scenario
-  , stage = FormFilling {}
+  , stage = FormFilling
 
   , desiredDripRate = Field.dripRate ""
   , desiredMinutes = Field.minutes "0"

@@ -5,12 +5,11 @@ import Animation.Messenger
 import IVFinal.Util.Measures as Measure
 import IVFinal.Scenario exposing (Scenario)
 import IVFinal.Msg exposing (..)
-import IVFinal.Stages.Models exposing (..)
 
 type alias AnimationModel = Animation.Messenger.State Msg
 
 type SimulationStage
-  = FormFilling FormModel
+  = FormFilling 
   | WatchingAnimation Measure.LitersPerMinute  -- drain rate
   | Finished Measure.Liters -- ending state
 
