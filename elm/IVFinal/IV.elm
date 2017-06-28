@@ -110,7 +110,11 @@ update msg model =
         finalLevel = Scenario.findLevel dropsPerSecond justMinutes model.scenario 
       in
         ( { model
-            | bagFluid = BagFluid.drains model.scenario.containerVolume finalLevel justMinutes model.bagFluid
+            | bagFluid =
+                BagFluid.drains
+                  model.scenario.startingFluid
+                  finalLevel justMinutes
+                  model.bagFluid
           }
         , Cmd.none
         )
