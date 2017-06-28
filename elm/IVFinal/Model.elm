@@ -7,6 +7,7 @@ import IVFinal.Scenario exposing (Scenario)
 import IVFinal.Msg exposing (..)
 
 type alias AnimationModel = Animation.Messenger.State Msg
+type alias AnimationStep = Animation.Messenger.Step Msg
 
 type SimulationStage
   = FormFilling 

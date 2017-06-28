@@ -8,7 +8,7 @@ import Ease
 import Tagged exposing (untag)
 import Time
 
-import IVFinal.Model exposing (AnimationModel)
+import IVFinal.Model exposing (AnimationModel, AnimationStep)
 import IVFinal.Msg exposing (..)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
@@ -41,14 +41,17 @@ stops =
 
 -- Animation helpers
 
+toStart : List AnimationStep
 toStart =
   [ Animation.set initStyles ]
 
+singleDrop : Measure.DropsPerSecond -> List AnimationStep
 singleDrop rate =
   [ Animation.toWith (growing rate) grownStyles
   , Animation.toWith falling fallenStyles
   ]
 
+restartDrop : List AnimationStep
 restartDrop = 
   [ Animation.Messenger.send DrippingRequested
   ]

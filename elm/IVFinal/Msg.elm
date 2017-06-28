@@ -1,7 +1,6 @@
 module IVFinal.Msg exposing (..)
 
 import Animation
-import Animation.Messenger
 import IVFinal.Util.Measures as Measure
 
 type Msg
