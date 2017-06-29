@@ -1,62 +1,77 @@
 module IVFinal.Form exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events as Event
 import IVFinal.View.AppHtml as H
+import IVFinal.Util.Measures as Measure
 
 import IVFinal.Types exposing (..)
-import Tagged exposing (Tagged(..))
-
-
-unwrap3 : (Maybe a, Maybe b, Maybe c) -> Maybe (a, b, c)
-unwrap3 tuple =
-  case tuple of
-    (Just a, Just b, Just c) -> Just (a, b, c)
-    _ -> Nothing
-
-isFormReady : FormData a -> Bool
-isFormReady formData =
-  let
-    fields = ( formData.desiredDripRate.value
-             , formData.desiredMinutes.value
-             , formData.desiredHours.value
-             )
-  in
-    case unwrap3 fields of
-      Nothing ->
-        False
-      Just (_, Tagged minutes, Tagged hours) ->
-        minutes /= 0 || hours /= 0
-
 
 view : FormData a -> List (Html Msg)
 view formData =
-  let 
-    dripRateFieldEvents =
-      [ Event.onInput ChangeDripRate
-      , Event.onBlur DrippingRequested
-      ]
-      
-    startButtonEvents =
-      [ Event.onClick SimulationRequested ]
-        
-    hourFieldEvents =
-      [ Event.onInput ChangeHours ]
+  [ div []
+      (case formData.stage of
+         FormFilling -> fillingView formData
+         WatchingAnimation flowRate -> watchingView formData flowRate
+         Finished litersDrained -> finishedView formData litersDrained)
+  ]
 
-    minuteFieldEvents = 
-      [Event.onInput ChangeMinutes]
-  in 
-    [ div []
-        [ H.askFor "Drops per second"
-            formData.desiredDripRate
-            dripRateFieldEvents
-        , H.br
-        , H.askFor "Hours" formData.desiredHours hourFieldEvents
-        , text " and minutes: "
-        , H.textInput formData.desiredMinutes minuteFieldEvents
-        , H.br
-        , H.br
-        , H.button2 "Start" startButtonEvents
-        , H.button "Try Again" (Just ResetSimulation)
+
+
+  
+type alias InputAttributes =
+  { dripRate : List (Attribute Msg)
+  , hour : List (Attribute Msg)
+  , minute : List (Attribute Msg)
+  }
+
+baseView : FormData a -> InputAttributes -> List (Html Msg)
+baseView formData {dripRate, hour, minute} = 
+  [ H.askFor "Drops per second"
+      formData.desiredDripRate
+      dripRate
+  , H.br
+  , H.askFor "Hours" formData.desiredHours hour
+  , text " and minutes: "
+  , H.textInput formData.desiredMinutes minute
+  ]
+  
+
+fillingView : FormData a -> List (Html Msg)
+fillingView formData =
+  baseView formData
+    { dripRate =
+        [ Event.onInput ChangeDripRate
+        , Event.onBlur DrippingRequested
+        , autofocus True
         ]
+    , hour =
+        [ Event.onInput ChangeHours ]
+    , minute =
+        [Event.onInput ChangeMinutes]
+    }
+    ++
+    [ H.soloButton "Start" 
+        [ Event.onClick SimulationRequested ]
     ]
+      
+staticView : FormData r -> List (Html Msg)
+staticView formData =
+  baseView formData
+    { dripRate = [ readonly True ]
+    , hour = [ readonly True ]
+    , minute = [ readonly True ]
+    }
+    
+watchingView : FormData r -> Measure.LitersPerMinute -> List (Html Msg)
+watchingView formData rate =
+  staticView formData
+    
+finishedView : FormData r -> Measure.Liters -> List (Html Msg)
+finishedView formData drained =
+  staticView formData
+  ++
+  [ H.soloButton "Try Again"
+      [ Event.onClick ResetSimulation ]
+  ]

@@ -11,7 +11,7 @@ import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.View.InputFields as Field
 import IVFinal.Scenario as Scenario exposing (Scenario)
-import IVFinal.Scenario.Runner as Scenario
+import IVFinal.Simulation as Simulation
 import IVFinal.Util.Measures as Measure
 
 import IVFinal.View.Layout as Layout
@@ -104,7 +104,7 @@ update msg model =
       )
 
     StartSimulation dropsPerSecond hours minutes ->
-      ( Scenario.run model.scenario dropsPerSecond hours minutes model
+      ( Simulation.run model.scenario dropsPerSecond hours minutes model
       , Cmd.none
       )
 
