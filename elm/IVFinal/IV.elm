@@ -11,13 +11,14 @@ import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.View.InputFields as Field
 import IVFinal.Scenario as Scenario exposing (Scenario)
+import IVFinal.Scenario.Runner as Scenario
+import IVFinal.Util.Measures as Measure
 
 import IVFinal.View.Layout as Layout
 import IVFinal.Form as Form
 
 import IVFinal.Model exposing (..)
 import IVFinal.Msg exposing (..)
-
 
 makeFieldsEmpty : Model -> Model
 makeFieldsEmpty model = 
@@ -36,8 +37,9 @@ startingModel scenario =
   , desiredMinutes = Field.minutes "0"
   , desiredHours = Field.hours "0"
 
+
   , droplet = Animation.style Droplet.initStyles
-  , bagFluid = Animation.style <| BagFluid.initStyles scenario.containerVolume scenario.startingFluid
+  , bagFluid = Animation.style <| BagFluid.initStyles <| Measure.proportion scenario.startingFluid scenario.containerVolume
   }
 
 init : (Model, Cmd Msg)
@@ -98,26 +100,17 @@ update msg model =
     -- Running the simulation
 
     StartDripping rate ->
-      ( { model
-          | droplet = Droplet.falls rate model.droplet
-        }
+      ( Droplet.falls rate model
       , Cmd.none
       )
 
     StartSimulation dropsPerSecond hours minutes ->
-      let
-        justMinutes = Scenario.justMinutes hours minutes
-        finalLevel = Scenario.findLevel dropsPerSecond justMinutes model.scenario 
-      in
-        ( { model
-            | bagFluid =
-                BagFluid.drains
-                  model.scenario.startingFluid
-                  finalLevel justMinutes
-                  model.bagFluid
-          }
-        , Cmd.none
-        )
+      ( Scenario.run model.scenario dropsPerSecond hours minutes model
+      , Cmd.none
+      )
+
+    NextAnimation f ->
+      (f model, Cmd.none)
       
     Tick subMsg ->
       let

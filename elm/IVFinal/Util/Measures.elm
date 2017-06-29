@@ -12,9 +12,7 @@ module IVFinal.Util.Measures exposing
   , minutes
   , hours
   , percent
-  , percentDecrease
-  , percentRemaining
-    
+  , proportion
   , reduceBy
   )
 
@@ -43,16 +41,9 @@ litersPerMinute = Tagged
 percent : Float -> Percent
 percent = Tagged
 
-percentDecrease : Float -> Float -> Percent
-percentDecrease start amountRemoved =
-  (start - amountRemoved) / start |> percent
-
-percentRemaining : Float -> Float -> Percent
-percentRemaining start amountRemoved =
-  let
-    (Tagged decrease) = percentDecrease start amountRemoved
-  in
-    1.0 - decrease |> percent
+proportion : Tagged a Float -> Tagged a Float -> Percent
+proportion (Tagged first) (Tagged second) =
+  percent (first / second)
 
 --
 minutes : Int -> Minutes

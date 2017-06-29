@@ -7,12 +7,13 @@ import Ease
 import Time exposing (Time)
 import Tagged exposing (untag, Tagged(..))
 
-import IVFinal.Model exposing (AnimationModel)
+import IVFinal.Model exposing (..)
+import IVFinal.Model exposing (BagFluidData, Model)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
 import IVFinal.Util.Measures as Measure
-
+import Animation.Messenger 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
 import IVFinal.Util.Measures as Measure
 
@@ -28,24 +29,23 @@ view =
 
 -- Animations
       
-drains : Measure.Liters -> Measure.Liters -> Measure.Minutes
-       -> AnimationModel
-       -> AnimationModel
-drains container fluid minutes =
-  Animation.interrupt
+drains : Measure.Percent -> Measure.Minutes
+       -> (Model -> Model)
+       -> (BagFluidData r -> BagFluidData r)
+drains percentOfContainer minutes continuation data =
+  reanimate data <|
     [ Animation.toWith
         (draining minutes)
-        (drainedStyles container fluid)
+        (drainedStyles percentOfContainer)
+    , Animation.Messenger.send (NextAnimation continuation) 
     ]
-    
 
 -- Styles
 
-animationStyles : Measure.Liters -> Measure.Liters -> List Animation.Property
-animationStyles (Tagged container) (Tagged fluid) =
+animationStyles : Measure.Percent -> List Animation.Property
+animationStyles (Tagged percentOfContainer) =
   let
-    endingProportion = fluid / container
-    rect = C.bag |> Rect.lowerTo endingProportion
+    rect = C.bag |> Rect.lowerTo percentOfContainer
   in
     [ Animation.y (Rect.y rect)
     , Animation.height (Animation.px (Rect.height rect))
@@ -54,10 +54,10 @@ animationStyles (Tagged container) (Tagged fluid) =
 -- None of the client's business that the same calculations are used
 -- for both styles.
     
-initStyles : Measure.Liters -> Measure.Liters -> List Animation.Property
+initStyles : Measure.Percent -> List Animation.Property
 initStyles = animationStyles
   
-drainedStyles : Measure.Liters -> Measure.Liters -> List Animation.Property
+drainedStyles : Measure.Percent -> List Animation.Property
 drainedStyles = animationStyles 
   
 
@@ -66,13 +66,16 @@ drainedStyles = animationStyles
 draining : Measure.Minutes -> Animation.Interpolation  
 draining minutes =
   Animation.easing
-    { duration = toSimulationTime minutes
+    { duration = toSimulationTime (Debug.log "min" minutes)
     , ease = Ease.linear
     }
 
 
 
 --- Default values and calculations
+
+reanimate data steps =
+  { data | bagFluid = Animation.interrupt steps data.bagFluid }
 
 
 toSimulationTime : Measure.Minutes -> Time

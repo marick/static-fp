@@ -5,6 +5,7 @@ import Animation.Messenger
 import IVFinal.Util.Measures as Measure
 import IVFinal.Scenario exposing (Scenario)
 import IVFinal.Msg exposing (..)
+import Animation
 
 type alias AnimationModel = Animation.Messenger.State Msg
 type alias AnimationStep = Animation.Messenger.Step Msg
@@ -33,3 +34,28 @@ type alias FormData r =
     , desiredMinutes : Field.Minutes
     , stage : SimulationStage
   }
+
+type alias DropletData r =
+  { r
+    | droplet : AnimationModel
+  }
+
+type alias BagFluidData r =
+  { r
+    | bagFluid : AnimationModel
+  }
+  
+type Msg
+  = ChangeDripRate String
+  | ChangeHours String
+  | ChangeMinutes String
+  | ResetSimulation
+
+  | DrippingRequested
+  | StartDripping Measure.DropsPerSecond
+
+  | SimulationRequested
+  | StartSimulation Measure.DropsPerSecond Measure.Hours Measure.Minutes
+
+  | Tick Animation.Msg
+  | NextAnimation (Model -> Model)

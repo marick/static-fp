@@ -8,7 +8,7 @@ import Ease
 import Tagged exposing (untag)
 import Time
 
-import IVFinal.Model exposing (AnimationModel, AnimationStep)
+import IVFinal.Model exposing (..)
 import IVFinal.Msg exposing (..)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
@@ -29,40 +29,52 @@ view =
 
 -- Animations
 
-showStream : Measure.DropsPerSecond -> Measure.DropsPerSecond -> Bool
-showStream (Tagged rate) (Tagged cutoff) =
+tooFastForDiscreteDrops : Measure.DropsPerSecond -> Measure.DropsPerSecond -> Bool
+tooFastForDiscreteDrops (Tagged rate) (Tagged cutoff) =
   rate - cutoff > 0
 
-falls : Measure.DropsPerSecond -> AnimationModel -> AnimationModel
-falls rate =
-  Animation.interrupt
-    (case showStream rate dropStreamCutoff of
-       True ->
-         toStartStep ++
-         [ Animation.toWith (streaming rate) pouredStyles
-         , Animation.loop
-             [ Animation.toWith (streaming rate) secondColorStyles
-             , Animation.toWith (streaming rate) pouredStyles
-             ]
-         ]
+    
+falls : Measure.DropsPerSecond -> DropletData r -> DropletData r
+falls rate data =
+  reanimate data <| 
+    case tooFastForDiscreteDrops rate dropStreamCutoff of
+      True -> flowSteps rate
+      False -> discreteDripSteps rate
        
-       False -> 
-         toStartStep ++
-         [ Animation.toWith (growing rate) grownStyles
-         , Animation.toWith falling fallenStyles
-         , Animation.Messenger.send DrippingRequested
-         ])
       
 stops : AnimationModel -> AnimationModel
 stops =
   Animation.interrupt toStartStep
 
--- Animation steps
+speedsUp : Measure.DropsPerSecond -> DropletData r -> DropletData r
+speedsUp rate data =
+  reanimate data <| flowSteps rate
+  
+
+slowsDown rate data =
+  reanimate data <| discreteDripSteps rate
 
 toStartStep : List AnimationStep
 toStartStep =
   [ Animation.set initStyles ]
 
+flowSteps rate =
+  toStartStep ++
+    [ Animation.toWith (streaming rate) pouredStyles
+    , Animation.loop
+      [ Animation.toWith (streaming rate) secondColorStyles
+      , Animation.toWith (streaming rate) pouredStyles
+      ]
+    ]
+
+discreteDripSteps rate = 
+  toStartStep ++
+    [ Animation.toWith (growing rate) grownStyles
+    , Animation.toWith falling fallenStyles
+    , Animation.Messenger.send (StartDripping rate)
+    ]
+
+  
 
 -- styles
     
@@ -129,7 +141,12 @@ streaming rate =
     , ease = Ease.inQuad
     }
 
+-- Misc
 
+reanimate data steps =
+  { data | droplet = Animation.interrupt steps data.droplet }
+
+  
 
 --- Support for tagging
 
@@ -144,3 +161,6 @@ rateToDuration dps =
       (1 / rate ) * Time.second
   in
     Tagged.map calculation dps |> retag
+
+
+      
