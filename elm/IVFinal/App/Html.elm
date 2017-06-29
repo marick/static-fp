@@ -1,8 +1,8 @@
-module IVFinal.View.AppHtml exposing (..)
+module IVFinal.App.Html exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import IVFinal.View.InputFields as Field
+import IVFinal.App.InputFields as Field
 import IVFinal.Generic.ValidatedString exposing (ValidatedString)
 
 br : Html msg

@@ -1,4 +1,4 @@
-module IVFinal.View.Layout exposing (..)
+module IVFinal.App.Layout exposing (..)
 
 import Html as H exposing (Html)
 import Html.Attributes as HA

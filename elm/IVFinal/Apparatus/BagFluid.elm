@@ -13,7 +13,7 @@ import IVFinal.Generic.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
 import IVFinal.Generic.Measures as Measure
 import Animation.Messenger 
-import IVFinal.View.AppSvg as AppSvg exposing ((^^))
+import IVFinal.App.Svg as AppSvg exposing ((^^))
 import IVFinal.Generic.Measures as Measure
 
 ---- 

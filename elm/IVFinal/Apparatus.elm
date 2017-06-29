@@ -2,7 +2,7 @@ module IVFinal.Apparatus exposing (view)
 
 import IVFinal.Types exposing (Model)
 import Svg exposing (Svg)
-import IVFinal.View.AppSvg as AppSvg exposing ((^^))
+import IVFinal.App.Svg as AppSvg exposing ((^^))
 import Svg.Attributes exposing (..)
 import IVFinal.Apparatus.Constants as C
 import IVFinal.Generic.EuclideanTypes exposing (..)

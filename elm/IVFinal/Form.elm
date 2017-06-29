@@ -3,7 +3,7 @@ module IVFinal.Form exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events as Event
-import IVFinal.View.AppHtml as H
+import IVFinal.App.Html as H
 import IVFinal.Generic.Measures as Measure
 
 import IVFinal.Types exposing (..)

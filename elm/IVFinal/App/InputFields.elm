@@ -1,4 +1,4 @@
-module IVFinal.View.InputFields exposing (..)
+module IVFinal.App.InputFields exposing (..)
 
 import Html
 import Html.Attributes as HA

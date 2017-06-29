@@ -17,7 +17,7 @@ import Tagged exposing (Tagged(..), untag, retag)
 import IVFinal.Generic.Tagged exposing (UnusableConstructor)
 
 
-import IVFinal.View.AppSvg as AppSvg exposing ((^^))
+import IVFinal.App.Svg as AppSvg exposing ((^^))
 
 view : AnimationModel -> Svg msg
 view =

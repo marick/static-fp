@@ -1,4 +1,4 @@
-module IVFinal.View.AppSvg exposing
+module IVFinal.App.Svg exposing
   ( (^^)
   , rect
   )

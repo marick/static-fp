@@ -9,12 +9,12 @@ import Task
 import IVFinal.Apparatus as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
-import IVFinal.View.InputFields as Field
+import IVFinal.App.InputFields as Field
 import IVFinal.Scenario as Scenario exposing (Scenario)
 import IVFinal.Simulation as Simulation
 import IVFinal.Generic.Measures as Measure
 
-import IVFinal.View.Layout as Layout
+import IVFinal.App.Layout as Layout
 import IVFinal.Form as Form
 
 import IVFinal.Types exposing (..)
