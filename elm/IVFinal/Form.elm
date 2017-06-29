@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events as Event
 import IVFinal.View.AppHtml as H
-import IVFinal.Util.Measures as Measure
+import IVFinal.Generic.Measures as Measure
 
 import IVFinal.Types exposing (..)
 

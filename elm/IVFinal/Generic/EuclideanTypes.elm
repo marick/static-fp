@@ -1,4 +1,4 @@
-module IVFinal.Util.EuclideanTypes exposing (..)
+module IVFinal.Generic.EuclideanTypes exposing (..)
 
 type alias Point = { x : Float, y : Float }
 type alias Size = { width : Float, height : Float }            

@@ -5,7 +5,7 @@ module IVFinal.View.AppSvg exposing
 
 import Svg exposing (svg, Svg, Attribute)
 import Svg.Attributes exposing (..)
-import IVFinal.Util.EuclideanTypes exposing (Rectangle) 
+import IVFinal.Generic.EuclideanTypes exposing (Rectangle) 
 
 (^^) : (String -> Attribute msg) -> number -> Attribute msg
 (^^) f n =

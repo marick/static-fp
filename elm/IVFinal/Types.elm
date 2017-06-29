@@ -2,7 +2,7 @@ module IVFinal.Types exposing (..)
 
 import IVFinal.View.InputFields as Field
 import Animation.Messenger
-import IVFinal.Util.Measures as Measure
+import IVFinal.Generic.Measures as Measure
 import IVFinal.Scenario exposing (Scenario)
 import Animation
 

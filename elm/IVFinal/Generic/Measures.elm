@@ -1,4 +1,4 @@
-module IVFinal.Util.Measures exposing
+module IVFinal.Generic.Measures exposing
   ( DropsPerSecond
   , LitersPerMinute
   , Liters
@@ -17,7 +17,7 @@ module IVFinal.Util.Measures exposing
   )
 
 import Tagged exposing (Tagged(..), untag, retag)
-import IVFinal.Util.AppTagged exposing (UnusableConstructor)
+import IVFinal.Generic.Tagged exposing (UnusableConstructor)
 
 -- Types
 type alias DropsPerSecond = Tagged DropsPerSecondTag Float

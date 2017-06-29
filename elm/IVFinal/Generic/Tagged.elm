@@ -1,4 +1,4 @@
-module IVFinal.Util.AppTagged exposing (..)
+module IVFinal.Generic.Tagged exposing (..)
 
 import Tagged exposing (Tagged(..))
 

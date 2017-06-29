@@ -1,4 +1,4 @@
-module IVFinal.Util.ValidatedString exposing (..)
+module IVFinal.Generic.ValidatedString exposing (..)
 
 type alias ValidatedString a =
   { literal : String

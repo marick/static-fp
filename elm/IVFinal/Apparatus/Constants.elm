@@ -2,8 +2,8 @@ module IVFinal.Apparatus.Constants exposing (..)
 
 import Svg
 import Svg.Attributes exposing (..)
-import IVFinal.Util.EuclideanTypes exposing (..)
-import IVFinal.Util.EuclideanRectangle as Rectangle exposing (..)
+import IVFinal.Generic.EuclideanTypes exposing (..)
+import IVFinal.Generic.EuclideanRectangle as Rectangle exposing (..)
 import Color exposing (Color, rgb)
 import Color.Convert as Convert
 

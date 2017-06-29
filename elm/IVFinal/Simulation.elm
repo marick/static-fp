@@ -3,7 +3,7 @@ module IVFinal.Simulation exposing
   )
 
 import IVFinal.Types exposing (Model, SimulationStage(..))
-import IVFinal.Util.Measures as Measure
+import IVFinal.Generic.Measures as Measure
 import Tagged exposing (Tagged(..))
 import IVFinal.Scenario exposing (..)
 import IVFinal.Apparatus.Droplet as Droplet

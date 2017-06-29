@@ -9,12 +9,12 @@ import Tagged exposing (untag, Tagged(..))
 
 import IVFinal.Types exposing (..)
 import IVFinal.Apparatus.AppAnimation exposing (..)
-import IVFinal.Util.EuclideanRectangle as Rect
+import IVFinal.Generic.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
-import IVFinal.Util.Measures as Measure
+import IVFinal.Generic.Measures as Measure
 import Animation.Messenger 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
-import IVFinal.Util.Measures as Measure
+import IVFinal.Generic.Measures as Measure
 
 ---- 
 

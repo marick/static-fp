@@ -12,7 +12,7 @@ import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.View.InputFields as Field
 import IVFinal.Scenario as Scenario exposing (Scenario)
 import IVFinal.Simulation as Simulation
-import IVFinal.Util.Measures as Measure
+import IVFinal.Generic.Measures as Measure
 
 import IVFinal.View.Layout as Layout
 import IVFinal.Form as Form

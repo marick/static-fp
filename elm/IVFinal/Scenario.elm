@@ -3,7 +3,7 @@ module IVFinal.Scenario exposing
   , carboy
   )
 
-import IVFinal.Util.Measures as Measure
+import IVFinal.Generic.Measures as Measure
 
 type alias Scenario = 
   { animal : String

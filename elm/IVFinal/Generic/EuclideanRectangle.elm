@@ -1,8 +1,8 @@
-module IVFinal.Util.EuclideanRectangle exposing
+module IVFinal.Generic.EuclideanRectangle exposing
   ( ..
   )
 
-import IVFinal.Util.EuclideanTypes exposing (..)
+import IVFinal.Generic.EuclideanTypes exposing (..)
 
 -- accessors
 

@@ -1,11 +1,11 @@
-module IVFinal.Apparatus exposing (..)
+module IVFinal.Apparatus exposing (view)
 
 import IVFinal.Types exposing (Model)
 import Svg exposing (Svg)
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
 import Svg.Attributes exposing (..)
 import IVFinal.Apparatus.Constants as C
-import IVFinal.Util.EuclideanTypes exposing (..)
+import IVFinal.Generic.EuclideanTypes exposing (..)
 
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid

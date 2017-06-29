@@ -2,8 +2,8 @@ module IVFinal.View.InputFields exposing (..)
 
 import Html
 import Html.Attributes as HA
-import IVFinal.Util.Measures as Measure
-import IVFinal.Util.ValidatedString as ValidatedString 
+import IVFinal.Generic.Measures as Measure
+import IVFinal.Generic.ValidatedString as ValidatedString 
   exposing (checked, ValidatedString)
 import Maybe.Extra as Maybe
 import Random

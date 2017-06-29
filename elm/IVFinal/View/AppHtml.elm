@@ -3,7 +3,7 @@ module IVFinal.View.AppHtml exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import IVFinal.View.InputFields as Field
-import IVFinal.Util.ValidatedString exposing (ValidatedString)
+import IVFinal.Generic.ValidatedString exposing (ValidatedString)
 
 br : Html msg
 br = Html.br [] []

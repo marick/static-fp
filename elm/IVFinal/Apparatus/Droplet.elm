@@ -10,11 +10,11 @@ import Time
 
 import IVFinal.Types exposing (..)
 import IVFinal.Apparatus.AppAnimation exposing (..)
-import IVFinal.Util.EuclideanRectangle as Rect
+import IVFinal.Generic.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
-import IVFinal.Util.Measures as Measure
+import IVFinal.Generic.Measures as Measure
 import Tagged exposing (Tagged(..), untag, retag)
-import IVFinal.Util.AppTagged exposing (UnusableConstructor)
+import IVFinal.Generic.Tagged exposing (UnusableConstructor)
 
 
 import IVFinal.View.AppSvg as AppSvg exposing ((^^))
