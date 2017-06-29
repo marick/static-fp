@@ -17,8 +17,7 @@ import IVFinal.Util.Measures as Measure
 import IVFinal.View.Layout as Layout
 import IVFinal.Form as Form
 
-import IVFinal.Model exposing (..)
-import IVFinal.Msg exposing (..)
+import IVFinal.Types exposing (..)
 
 makeFieldsEmpty : Model -> Model
 makeFieldsEmpty model = 

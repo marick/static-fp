@@ -2,7 +2,7 @@ module IVFinal.Scenario.Runner exposing
   ( run
   )
 
-import IVFinal.Model exposing (Model)
+import IVFinal.Types exposing (Model)
 import IVFinal.Util.Measures as Measure
 import Tagged exposing (Tagged(..))
 import IVFinal.Scenario exposing (..)

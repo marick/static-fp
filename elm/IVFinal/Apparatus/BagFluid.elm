@@ -7,8 +7,7 @@ import Ease
 import Time exposing (Time)
 import Tagged exposing (untag, Tagged(..))
 
-import IVFinal.Model exposing (..)
-import IVFinal.Model exposing (BagFluidData, Model)
+import IVFinal.Types exposing (..)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
@@ -74,9 +73,9 @@ draining minutes =
 
 --- Default values and calculations
 
+reanimate : BagFluidData a -> List AnimationStep -> BagFluidData a
 reanimate data steps =
   { data | bagFluid = Animation.interrupt steps data.bagFluid }
-
 
 toSimulationTime : Measure.Minutes -> Time
 toSimulationTime (Tagged minutes) =

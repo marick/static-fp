@@ -1,6 +1,6 @@
 module IVFinal.Apparatus.AppAnimation exposing (..)
 
-import IVFinal.Model exposing (AnimationModel)
+import IVFinal.Types exposing (AnimationModel)
 
 import Svg exposing (Svg)
 import Animation

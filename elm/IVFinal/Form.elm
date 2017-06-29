@@ -4,8 +4,7 @@ import Html exposing (..)
 import Html.Events as Event
 import IVFinal.View.AppHtml as H
 
-import IVFinal.Msg exposing (..)
-import IVFinal.Model exposing (..)
+import IVFinal.Types exposing (..)
 import Tagged exposing (Tagged(..))
 
 

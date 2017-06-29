@@ -1,10 +1,9 @@
-module IVFinal.Model exposing (..)
+module IVFinal.Types exposing (..)
 
 import IVFinal.View.InputFields as Field
 import Animation.Messenger
 import IVFinal.Util.Measures as Measure
 import IVFinal.Scenario exposing (Scenario)
-import IVFinal.Msg exposing (..)
 import Animation
 
 type alias AnimationModel = Animation.Messenger.State Msg

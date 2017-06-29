@@ -8,8 +8,7 @@ import Ease
 import Tagged exposing (untag)
 import Time
 
-import IVFinal.Model exposing (..)
-import IVFinal.Msg exposing (..)
+import IVFinal.Types exposing (..)
 import IVFinal.Apparatus.AppAnimation exposing (..)
 import IVFinal.Util.EuclideanRectangle as Rect
 import IVFinal.Apparatus.Constants as C
@@ -51,6 +50,7 @@ speedsUp rate data =
   reanimate data <| flowSteps rate
   
 
+slowsDown : Measure.DropsPerSecond -> DropletData r -> DropletData r
 slowsDown rate data =
   reanimate data <| discreteDripSteps rate
 
@@ -58,6 +58,7 @@ toStartStep : List AnimationStep
 toStartStep =
   [ Animation.set initStyles ]
 
+flowSteps : Measure.DropsPerSecond -> List AnimationStep
 flowSteps rate =
   toStartStep ++
     [ Animation.toWith (streaming rate) pouredStyles
@@ -67,6 +68,7 @@ flowSteps rate =
       ]
     ]
 
+discreteDripSteps : Measure.DropsPerSecond -> List AnimationStep
 discreteDripSteps rate = 
   toStartStep ++
     [ Animation.toWith (growing rate) grownStyles
@@ -143,6 +145,7 @@ streaming rate =
 
 -- Misc
 
+reanimate : DropletData a -> List AnimationStep -> DropletData a
 reanimate data steps =
   { data | droplet = Animation.interrupt steps data.droplet }
 

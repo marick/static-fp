@@ -4,7 +4,6 @@ module IVFinal.Scenario exposing
   )
 
 import IVFinal.Util.Measures as Measure
-import Tagged exposing (Tagged(..))
 
 type alias Scenario = 
   { animal : String
