@@ -22,6 +22,13 @@ type alias Model =
   , bagFluid : AnimationModel
   }
 
+
+type alias FinishedForm = 
+  { dripRate : Measure.DropsPerSecond
+  , hours : Measure.Hours
+  , minutes : Measure.Minutes
+  }
+
 type alias FormData r =
   { r
     | desiredDripRate : Field.DripRate
@@ -51,7 +58,7 @@ type Msg
   | StartDripping Measure.DropsPerSecond
 
   | SimulationRequested
-  | StartSimulation Measure.DropsPerSecond Measure.Hours Measure.Minutes
+  | StartSimulation FinishedForm
 
   | Tick Animation.Msg
   | NextAnimation (Model -> Model)

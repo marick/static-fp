@@ -13,7 +13,9 @@ module IVFinal.Generic.Measures exposing
   , hours
   , percent
   , proportion
+    
   , reduceBy
+  , isPositive
   )
 
 import Tagged exposing (Tagged(..), untag, retag)
@@ -67,6 +69,10 @@ changeBy f decrement value =
 reduceBy : Tagged a number -> Tagged a number -> Tagged a number
 reduceBy = changeBy (-)
 
+isPositive : Tagged a comparable -> Bool
+isPositive (Tagged n) = 
+  n > 0
+           
 
 --- Support for tagging
 

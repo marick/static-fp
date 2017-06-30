@@ -1,4 +1,8 @@
-module IVFinal.Form exposing (..)
+module IVFinal.Form exposing
+  ( view
+  , allValues
+  , dripRate
+  )
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -9,6 +13,17 @@ import Tagged exposing (Tagged(..), untag)
 import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
 
 import IVFinal.Types exposing (..)
+
+dripRate : FormData a -> Maybe Measure.DropsPerSecond
+dripRate formData =
+  formData.desiredDripRate.value           
+
+allValues : FormData a -> Maybe FinishedForm
+allValues formData =
+  Maybe.map3 FinishedForm
+    formData.desiredDripRate.value
+    formData.desiredHours.value
+    formData.desiredMinutes.value
 
 view : FormData a -> List (Html Msg)
 view formData =

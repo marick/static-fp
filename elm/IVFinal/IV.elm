@@ -3,7 +3,6 @@ module IVFinal.IV exposing (..)
 import Html exposing (..)
 import Animation
 import Animation.Messenger
-import Maybe.Extra as Maybe
 import Task
 
 import IVFinal.Apparatus as Apparatus
@@ -45,15 +44,6 @@ startingModel scenario =
 init : (Model, Cmd Msg)
 init = ( startingModel Scenario.carboy, Cmd.none )
 
-send : msg -> Cmd msg
-send msg =
-  Task.perform identity (Task.succeed msg)
-
-sendWhenReady : Maybe msg -> Cmd msg
-sendWhenReady maybe =
-  Maybe.unwrap Cmd.none send maybe
-
-
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -81,21 +71,13 @@ update msg model =
       , Cmd.none
       )
 
+    -- If the form is valid (expected) forward to simulation cases
+      
     DrippingRequested ->
-      ( model
-      , sendWhenReady 
-          (Maybe.map StartDripping model.desiredDripRate.value)
-      )
+      normallyForward (Form.dripRate model) StartDripping model
 
     SimulationRequested ->
-      ( model
-      , sendWhenReady
-          (Maybe.map3 StartSimulation
-             model.desiredDripRate.value
-             model.desiredHours.value
-             model.desiredMinutes.value)
-      )
-
+      normallyForward (Form.allValues model) StartSimulation model
 
     -- Running the simulation
 
@@ -104,8 +86,8 @@ update msg model =
       , Cmd.none
       )
 
-    StartSimulation dropsPerSecond hours minutes ->
-      ( Simulation.run model.scenario dropsPerSecond hours minutes model
+    StartSimulation finishedForm ->
+      ( Simulation.run model.scenario finishedForm model
       , Cmd.none
       )
 
@@ -157,5 +139,27 @@ main =
     , update = update
     , subscriptions = subscriptions
     }
-    
 
+
+
+
+-- Util
+
+send : msg -> Cmd msg
+send msg =
+  Task.perform identity (Task.succeed msg)
+
+maybeSend : (data -> msg) -> Maybe data -> Cmd msg
+maybeSend constructor maybe =
+  case maybe of
+    Nothing ->
+      Cmd.none
+    Just value ->
+      send (constructor value)
+
+normallyForward : Maybe value -> (value -> msg) -> model
+                -> (model, Cmd msg)        
+normallyForward checked destinationCase model =
+  ( model
+  , maybeSend destinationCase checked
+  )
