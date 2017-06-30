@@ -5,9 +5,6 @@ import Html.Attributes exposing (..)
 import IVFinal.App.InputFields as Field
 import IVFinal.Generic.ValidatedString exposing (ValidatedString)
 
-br : Html msg
-br = Html.br [] []
-
 soloButton : String -> List (Attribute msg) -> Html msg
 soloButton label attributes =
   Html.p []
@@ -24,10 +21,3 @@ textInput validated eventHandlers =
          ] ++ eventHandlers)
   []
 
-askFor : String -> ValidatedString a -> List (Html.Attribute msg) -> Html msg
-askFor label arg eventHandlers =
-  span [] 
-    [ text <| label ++ ": "
-    , textInput arg eventHandlers
-    ]
-    

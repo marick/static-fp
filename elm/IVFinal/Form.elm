@@ -99,12 +99,12 @@ describeFlow pronoun (Tagged rate) =
 watchingView : FormData r -> Measure.LitersPerMinute -> List (Html Msg)
 watchingView formData rate =
   let
-    spacer = List.repeat 3 H.br -- Put this below where cursor is now.
+    -- Put text below where cursor is now.
+    spacer = List.repeat 3 (br [] []) 
   in
     (disabled <| staticView formData)
     ++ spacer
     ++ describeFlow "is" rate
-    
     
 finishedView : FormData r -> Measure.LitersPerMinute -> Measure.Liters -> List (Html Msg)
 finishedView formData flowRate (Tagged drained) =
@@ -113,7 +113,7 @@ finishedView formData flowRate (Tagged drained) =
          [ Event.onClick ResetSimulation ]
      ]
   ++ describeFlow "was" flowRate
-  ++ [H.br]
+  ++ [br [] []]
   ++ ("The final level is " ++ toString drained ++ " liters."
        |> strongSentence)
      
