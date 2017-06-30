@@ -11,7 +11,7 @@ type Stage
   | Finished DrainRate HowFinished
 
 type HowFinished
-  = Successfully
+  = FluidLeft
     { finalLevel : Measure.Liters
     }
 

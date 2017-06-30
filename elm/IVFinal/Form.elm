@@ -6,25 +6,25 @@ import Html.Events as Event
 import IVFinal.App.Html as H
 import IVFinal.Generic.Measures as Measure
 import Tagged exposing (Tagged(..), untag)
-import IVFinal.Simulation.Types as Simulation
+import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
 
 import IVFinal.Types exposing (..)
 
 view : FormData a -> List (Html Msg)
 view formData =
   case formData.stage of
-    Simulation.FormFilling ->
+    FormFilling ->
       [ baseView formData formCanBeChanged
       , startButton
       ]
       
-    Simulation.WatchingAnimation flowRate ->
+    WatchingAnimation flowRate ->
       [ baseView formData formIsDisabled
       , verticalSpace -- so following text is below the cursor.
       , describeFlow "is" flowRate
       ]
 
-    Simulation.Finished flowRate howFinished ->
+    Finished flowRate howFinished ->
       let 
         common flowRate = 
           [ baseView formData formIsDisabled
@@ -33,7 +33,7 @@ view formData =
           ]
       in
         case howFinished of
-          Simulation.Successfully {finalLevel} ->
+          Simulation.FluidLeft {finalLevel} ->
             common flowRate
               ++ [ describeFinalLevel finalLevel
                  ]
@@ -70,24 +70,6 @@ baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
     div [] 
       [ para1, para2 ] 
 
-    
-watchingView : FormData r -> Measure.LitersPerMinute -> Html Msg
-watchingView formData rate =
-  div []
-    [ baseView formData formIsDisabled
-    , verticalSpace -- so following text is below the cursor.
-    , describeFlow "is" rate
-    ]
-    
-finishedView : FormData r -> Measure.LitersPerMinute -> Measure.Liters -> Html Msg
-finishedView formData flowRate (Tagged drained) =
-  div []
-    [ baseView formData formIsDisabled
-    , tryAgainButton
-    , describeFlow "was" flowRate
-    ,   ("The final level is " ++ toString drained ++ " liters."
-        |> strongSentence)
-    ]
   
 --- Attributes
 

@@ -27,12 +27,13 @@ run scenario dripRate inHours inMinutes model =
             (\ model ->
                model 
                 |> Droplet.slowsDown dripRate
-                |> finishAnimation flowRate finalLevel)
+                |> finishedWithFluidLeft flowRate finalLevel)
 
-finishAnimation : Measure.LitersPerMinute -> Measure.Liters -> Model -> Model     
-finishAnimation flowRate finalLevel model =
+finishedWithFluidLeft : Measure.LitersPerMinute -> Measure.Liters
+                      -> Model -> Model     
+finishedWithFluidLeft flowRate finalLevel model =
   let
-    howFinished = Successfully { finalLevel = finalLevel }
+    howFinished = FluidLeft { finalLevel = finalLevel }
   in
     { model | stage = Finished flowRate howFinished }
 
