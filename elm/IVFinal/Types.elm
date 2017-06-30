@@ -4,27 +4,15 @@ import IVFinal.App.InputFields as Field
 import Animation.Messenger
 import IVFinal.Generic.Measures as Measure
 import IVFinal.Scenario exposing (Scenario)
+import IVFinal.Simulation.Types as Simulation
 import Animation
 
 type alias AnimationModel = Animation.Messenger.State Msg
 type alias AnimationStep = Animation.Messenger.Step Msg
 
--- Just for clarity in sum type
-type alias DrainRate = Measure.LitersPerMinute
-
-type HowFinished
-  = Successfully
-    { finalLevel : Measure.Liters
-    }
-  
-type SimulationStage
-  = FormFilling 
-  | WatchingAnimation DrainRate
-  | Finished DrainRate HowFinished
-
 type alias Model =
   { scenario : Scenario
-  , stage : SimulationStage
+  , stage : Simulation.Stage
 
   , desiredDripRate : Field.DripRate
   , desiredMinutes : Field.Minutes
@@ -39,7 +27,7 @@ type alias FormData r =
     | desiredDripRate : Field.DripRate
     , desiredHours : Field.Hours
     , desiredMinutes : Field.Minutes
-    , stage : SimulationStage
+    , stage : Simulation.Stage
     , scenario : Scenario
   }
 

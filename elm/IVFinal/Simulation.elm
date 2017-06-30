@@ -2,12 +2,14 @@ module IVFinal.Simulation exposing
   ( run
   )
 
-import IVFinal.Types exposing (Model, SimulationStage(..), HowFinished(..))
+import IVFinal.Types exposing (Model)
+import IVFinal.Simulation.Types exposing (Stage)
 import IVFinal.Generic.Measures as Measure
 import IVFinal.Scenario exposing (..)
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.Simulation.Conversions as C 
+import IVFinal.Simulation.Types exposing (..)
 
 run : Scenario
     -> Measure.DropsPerSecond -> Measure.Hours -> Measure.Minutes

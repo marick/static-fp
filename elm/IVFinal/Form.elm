@@ -6,24 +6,25 @@ import Html.Events as Event
 import IVFinal.App.Html as H
 import IVFinal.Generic.Measures as Measure
 import Tagged exposing (Tagged(..), untag)
+import IVFinal.Simulation.Types as Simulation
 
 import IVFinal.Types exposing (..)
 
 view : FormData a -> List (Html Msg)
 view formData =
   case formData.stage of
-    FormFilling ->
+    Simulation.FormFilling ->
       [ baseView formData formCanBeChanged
       , startButton
       ]
       
-    WatchingAnimation flowRate ->
+    Simulation.WatchingAnimation flowRate ->
       [ baseView formData formIsDisabled
       , verticalSpace -- so following text is below the cursor.
       , describeFlow "is" flowRate
       ]
 
-    Finished flowRate howFinished ->
+    Simulation.Finished flowRate howFinished ->
       let 
         common flowRate = 
           [ baseView formData formIsDisabled
@@ -32,7 +33,7 @@ view formData =
           ]
       in
         case howFinished of
-          Successfully {finalLevel} ->
+          Simulation.Successfully {finalLevel} ->
             common flowRate
               ++ [ describeFinalLevel finalLevel
                  ]

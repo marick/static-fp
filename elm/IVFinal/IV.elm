@@ -18,6 +18,7 @@ import IVFinal.App.Layout as Layout
 import IVFinal.Form as Form
 
 import IVFinal.Types exposing (..)
+import IVFinal.Simulation.Types exposing (..)
 
 makeFieldsEmpty : Model -> Model
 makeFieldsEmpty model = 
