@@ -84,18 +84,6 @@ staticView formData =
     , minuteAttrs = [ readonly True ]
     }
 
-strongSentence : String -> List (Html msg)
-strongSentence s = 
-  [ strong [] [ text s ] ]
-
-describeFlow : String -> Measure.LitersPerMinute -> List (Html msg)
-describeFlow pronoun (Tagged rate) =
-  let
-    show = toString (rate * 60)
-  in
-    "The flow rate " ++ pronoun ++ " " ++ show ++ " liters/hour."
-      |> strongSentence
-    
 watchingView : FormData r -> Measure.LitersPerMinute -> List (Html Msg)
 watchingView formData rate =
   let
@@ -118,3 +106,17 @@ finishedView formData flowRate (Tagged drained) =
        |> strongSentence)
      
   
+--- Util
+
+strongSentence : String -> List (Html msg)
+strongSentence s = 
+  [ strong [] [ text s ] ]
+
+describeFlow : String -> Measure.LitersPerMinute -> List (Html msg)
+describeFlow pronoun (Tagged rate) =
+  let
+    show = toString (rate * 60)
+  in
+    "The flow rate " ++ pronoun ++ " " ++ show ++ " liters/hour."
+      |> strongSentence
+    
