@@ -11,12 +11,16 @@ type alias AnimationStep = Animation.Messenger.Step Msg
 
 -- Just for clarity in sum type
 type alias DrainRate = Measure.LitersPerMinute
-type alias EndingLevel = Measure.Liters
+
+type HowFinished
+  = Successfully
+    { finalLevel : Measure.Liters
+    }
   
 type SimulationStage
   = FormFilling 
   | WatchingAnimation DrainRate
-  | Finished DrainRate EndingLevel
+  | Finished DrainRate HowFinished
 
 type alias Model =
   { scenario : Scenario

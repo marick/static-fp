@@ -9,8 +9,6 @@ import Tagged exposing (Tagged(..), untag)
 
 import IVFinal.Types exposing (..)
 
-
-
 view : FormData a -> List (Html Msg)
 view formData =
   case formData.stage of
@@ -25,12 +23,20 @@ view formData =
       , describeFlow "is" flowRate
       ]
 
-    Finished flowRate litersLeft ->
-      [ baseView formData formIsDisabled
-      , tryAgainButton
-      , describeFlow "was" flowRate
-      , describeFinalLevel litersLeft
-      ]
+    Finished flowRate howFinished ->
+      let 
+        common flowRate = 
+          [ baseView formData formIsDisabled
+          , tryAgainButton
+          , describeFlow "was" flowRate
+          ]
+      in
+        case howFinished of
+          Successfully {finalLevel} ->
+            common flowRate
+              ++ [ describeFinalLevel finalLevel
+                 ]
+
   
 baseView : FormData a -> InputAttributes -> Html Msg
 baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}

@@ -2,7 +2,7 @@ module IVFinal.Simulation exposing
   ( run
   )
 
-import IVFinal.Types exposing (Model, SimulationStage(..))
+import IVFinal.Types exposing (Model, SimulationStage(..), HowFinished(..))
 import IVFinal.Generic.Measures as Measure
 import IVFinal.Scenario exposing (..)
 import IVFinal.Apparatus.Droplet as Droplet
@@ -29,5 +29,8 @@ run scenario dripRate inHours inMinutes model =
 
 finishAnimation : Measure.LitersPerMinute -> Measure.Liters -> Model -> Model     
 finishAnimation flowRate finalLevel model =
-  { model | stage = Finished flowRate finalLevel }
+  let
+    howFinished = Successfully { finalLevel = finalLevel }
+  in
+    { model | stage = Finished flowRate howFinished }
 
