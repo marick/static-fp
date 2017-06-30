@@ -15,11 +15,22 @@ view : FormData a -> List (Html Msg)
 view formData =
   case formData.stage of
     FormFilling ->
-      [ fillingView formData ]
+      [ baseView formData formCanBeChanged
+      , startButton
+      ]
+      
     WatchingAnimation flowRate ->
-      [ watchingView formData flowRate ] 
-    Finished flowRate litersDrained ->
-      [ finishedView formData flowRate litersDrained ]
+      [ baseView formData formIsDisabled
+      , verticalSpace -- so following text is below the cursor.
+      , describeFlow "is" flowRate
+      ]
+
+    Finished flowRate litersLeft ->
+      [ baseView formData formIsDisabled
+      , tryAgainButton
+      , describeFlow "was" flowRate
+      , describeFinalLevel litersLeft
+      ]
   
 baseView : FormData a -> InputAttributes -> Html Msg
 baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
@@ -52,62 +63,26 @@ baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
     div [] 
       [ para1, para2 ] 
 
-fillingView : FormData a -> Html Msg
-fillingView formData =
-  let
-    formReadyAttributes = 
-      { dripRateAttrs =
-          [ Event.onInput ChangeDripRate
-          , Event.onBlur DrippingRequested
-          , autofocus True
-          ]
-      , hourAttrs =
-          [ Event.onInput ChangeHours ]
-      , minuteAttrs =
-          [Event.onInput ChangeMinutes]
-      }
-  in
-    div []
-      [ baseView formData formReadyAttributes
-      , H.soloButton "Start" 
-        [ Event.onClick SimulationRequested ]
-      ]
-      
-staticView : FormData r -> Html Msg
-staticView formData =
-  div []
-    [ disabled <| baseView formData
-        { dripRateAttrs = [ readonly True ]
-        , hourAttrs = [ readonly True ]
-        , minuteAttrs = [ readonly True ]
-        }
-    ]
-
+    
 watchingView : FormData r -> Measure.LitersPerMinute -> Html Msg
 watchingView formData rate =
-  let
-    -- Put text below where cursor is now.
-    spacer = span [] (List.repeat 3 (br [] []))
-  in
-    div []
-      [ staticView formData
-      , spacer
-      , describeFlow "is" rate
-      ]
+  div []
+    [ baseView formData formIsDisabled
+    , verticalSpace -- so following text is below the cursor.
+    , describeFlow "is" rate
+    ]
     
 finishedView : FormData r -> Measure.LitersPerMinute -> Measure.Liters -> Html Msg
 finishedView formData flowRate (Tagged drained) =
   div []
-    [ staticView formData
-    , H.soloButton "Try Again With New Values"
-      [ Event.onClick ResetSimulation ]
+    [ baseView formData formIsDisabled
+    , tryAgainButton
     , describeFlow "was" flowRate
     ,   ("The final level is " ++ toString drained ++ " liters."
         |> strongSentence)
     ]
   
---- Util
-
+--- Attributes
 
 type alias InputAttributes =
   { dripRateAttrs : List (Attribute Msg)
@@ -115,7 +90,67 @@ type alias InputAttributes =
   , minuteAttrs : List (Attribute Msg)
   }
 
+formCanBeChanged : InputAttributes
+formCanBeChanged = 
+  { dripRateAttrs =
+      [ Event.onInput ChangeDripRate
+      , Event.onBlur DrippingRequested
+      , autofocus True
+      ]
+  , hourAttrs =
+      [ Event.onInput ChangeHours ]
+  , minuteAttrs =
+      [Event.onInput ChangeMinutes]
+  }
 
+formIsDisabled : InputAttributes
+formIsDisabled = 
+  let
+    disabled = style [ ("pointer-events", "none")
+                     , ("opacity", "0.6")
+                     ]
+  in
+    { dripRateAttrs = [disabled]
+    , hourAttrs = [disabled]
+    , minuteAttrs = [disabled]
+    }
+
+-- Buttons
+
+startButton : Html Msg
+startButton = 
+  H.soloButton "Start" 
+    [ Event.onClick SimulationRequested ]
+
+
+tryAgainButton : Html Msg
+tryAgainButton = 
+  H.soloButton "Try Again With New Values"
+    [ Event.onClick ResetSimulation ]
+
+
+-- Bits of message
+    
+describeFlow : String -> Measure.LitersPerMinute -> Html msg
+describeFlow pronoun (Tagged rate) =
+  let
+    show = toString (rate * 60)
+  in
+    "The flow rate " ++ pronoun ++ " " ++ show ++ " liters/hour."
+      |> strongSentence
+
+describeFinalLevel : Measure.Liters -> Html msg
+describeFinalLevel (Tagged litersLeft) =
+  "The final level is " ++ toString litersLeft ++ " liters."
+    |> strongSentence
+
+
+-- Misc
+         
+verticalSpace : Html msg
+verticalSpace = span [] (List.repeat 3 (br [] []))
+
+                
 
 strongSentence : String -> Html msg
 strongSentence s = 
@@ -124,19 +159,4 @@ strongSentence s =
     , br [] []
     ]
 
-describeFlow : String -> Measure.LitersPerMinute -> Html msg
-describeFlow pronoun (Tagged rate) =
-  let
-    show = toString (rate * 60)
-  in
-    "The flow rate " ++ pronoun ++ " " ++ show ++ " liters/hour."
-      |> strongSentence
-    
-disabled : Html msg -> Html msg
-disabled tree =
-  div [ style [ ("pointer-events", "none")
-              , ("opacity", "0.6")
-              ]
-      ]
-  [ tree ]
-  
+        
