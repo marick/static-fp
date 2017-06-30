@@ -11,7 +11,7 @@ wrapper : List (Html msg) -> Html msg
 wrapper contents = 
   H.div
     [ HA.style [ ("margin", "4em")
-               , ("width", "800px")
+               , ("width", "600px")
                , ("display", "flex")
                ]
     ]
@@ -19,10 +19,7 @@ wrapper contents =
       
 canvas : List (Svg msg) -> Html msg
 canvas contents =
-  H.div
-    [ HA.style [ ("width", "200 px")
-               ]
-    ]
+  H.div []
     [ S.svg 
         [ SA.version "1.1"
         , SA.width "200"
@@ -33,8 +30,4 @@ canvas contents =
 
 form : List (Html msg) -> Html msg
 form contents = 
-  H.div 
-    [ HA.style [ ("width", "600 px")
-               ]
-    ]
-    contents
+  H.div [] contents

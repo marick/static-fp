@@ -32,6 +32,7 @@ type alias FormData r =
     , desiredHours : Field.Hours
     , desiredMinutes : Field.Minutes
     , stage : SimulationStage
+    , scenario : Scenario
   }
 
 type alias DropletData r =
