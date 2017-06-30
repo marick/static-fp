@@ -16,8 +16,8 @@ view formData =
       fillingView formData
     WatchingAnimation flowRate ->
       watchingView formData flowRate
-    Finished litersDrained ->
-      finishedView formData litersDrained
+    Finished flowRate litersDrained ->
+      finishedView formData flowRate litersDrained
   
 type alias InputAttributes =
   { dripRateAttrs : List (Attribute Msg)
@@ -83,23 +83,38 @@ staticView formData =
     , hourAttrs = [ readonly True ]
     , minuteAttrs = [ readonly True ]
     }
+
+strongSentence : String -> List (Html msg)
+strongSentence s = 
+  [ strong [] [ text s ] ]
+
+describeFlow : String -> Measure.LitersPerMinute -> List (Html msg)
+describeFlow pronoun (Tagged rate) =
+  let
+    show = toString (rate * 60)
+  in
+    "The flow rate " ++ pronoun ++ " " ++ show ++ " liters/hour."
+      |> strongSentence
     
 watchingView : FormData r -> Measure.LitersPerMinute -> List (Html Msg)
-watchingView formData (Tagged rate) =
+watchingView formData rate =
   let
-    spacer = List.repeat 4 H.br -- Put this below where cursor is now.
-    perHour = rate * 60
+    spacer = List.repeat 3 H.br -- Put this below where cursor is now.
   in
-    (disabled <| staticView formData) ++ spacer
-    ++
-    [ strong []
-        [ text <| "The flow rate is " ++ (toString perHour) ++ " liters/hour." ]
-    ]
+    (disabled <| staticView formData)
+    ++ spacer
+    ++ describeFlow "is" rate
     
-finishedView : FormData r -> Measure.Liters -> List (Html Msg)
-finishedView formData drained =
-  staticView formData
-  ++
-  [ H.soloButton "Try Again"
-      [ Event.onClick ResetSimulation ]
-  ]
+    
+finishedView : FormData r -> Measure.LitersPerMinute -> Measure.Liters -> List (Html Msg)
+finishedView formData flowRate (Tagged drained) =
+  (disabled <| staticView formData)
+  ++ [ H.soloButton "Try Again With New Values"
+         [ Event.onClick ResetSimulation ]
+     ]
+  ++ describeFlow "was" flowRate
+  ++ [H.br]
+  ++ ("The final level is " ++ toString drained ++ " liters."
+       |> strongSentence)
+     
+  

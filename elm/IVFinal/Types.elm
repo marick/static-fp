@@ -9,10 +9,14 @@ import Animation
 type alias AnimationModel = Animation.Messenger.State Msg
 type alias AnimationStep = Animation.Messenger.Step Msg
 
+-- Just for clarity in sum type
+type alias DrainRate = Measure.LitersPerMinute
+type alias EndingLevel = Measure.Liters
+  
 type SimulationStage
   = FormFilling 
-  | WatchingAnimation Measure.LitersPerMinute  -- drain rate
-  | Finished Measure.Liters -- ending state
+  | WatchingAnimation DrainRate
+  | Finished DrainRate EndingLevel
 
 type alias Model =
   { scenario : Scenario
