@@ -9,13 +9,13 @@ toMinutes (Tagged hourPart) (Tagged minutePart) =
   Measure.minutes <| 60 * hourPart + minutePart
 
 toFinalLevel : Measure.LitersPerMinute -> Measure.Minutes
-             -> { r | startingFluid : Measure.Liters }
+             -> { r | startingVolume : Measure.Liters }
              -> Measure.Liters
-toFinalLevel litersPerMinute minutes {startingFluid} =
+toFinalLevel litersPerMinute minutes {startingVolume} =
   let 
     litersDrained = litersOverTime litersPerMinute minutes
   in
-    Tagged.map2 (-) startingFluid litersDrained
+    Tagged.map2 (-) startingVolume litersDrained
     
     
 toFlowRate : Measure.DropsPerSecond

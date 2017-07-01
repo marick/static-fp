@@ -9,7 +9,7 @@ type alias Scenario =
   { animal : String
   , bagType : String
   , containerVolume : Measure.Liters
-  , startingFluid : Measure.Liters
+  , startingVolume : Measure.Liters
   , dropsPerMil : Int
   }
 
@@ -18,7 +18,7 @@ carboy =
   { animal = "a 1560 lb 3d lactation purebred Holstein"
   , bagType = "5-gallon carboy"
   , containerVolume = Measure.liters 20.0
-  , startingFluid = Measure.liters 19.0
+  , startingVolume = Measure.liters 19.0
   , dropsPerMil = 15
   }
 

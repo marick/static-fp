@@ -48,9 +48,9 @@ view formData =
           ]
       in
         case howFinished of
-          Simulation.FluidLeft {finalLevel} ->
+          Simulation.FluidLeft {endingVolume} ->
             common flowRate
-              ++ [ describeFinalLevel finalLevel
+              ++ [ describeFinalLevel endingVolume
                  ]
 
   
@@ -58,7 +58,7 @@ baseView : FormData a -> InputAttributes -> Html Msg
 baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
          {dripRateAttrs, hourAttrs, minuteAttrs} =
   let
-    {startingFluid, containerVolume, animal, bagType} =
+    {startingVolume, containerVolume, animal, bagType} =
       scenario
 
     s (Tagged value) =
@@ -67,7 +67,7 @@ baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
     para1 =
       p []
         [ text <| "You are presented with " ++ animal ++ ". "
-        , text <| "You have " ++ s startingFluid ++ " liters of fluid in a "
+        , text <| "You have " ++ s startingVolume ++ " liters of fluid in a "
         , text <| bagType ++ " that holds " ++ s containerVolume ++ " liters."
         ]
 

@@ -25,45 +25,63 @@ moveToFinishedStage flowRate howFinished model =
 
 type alias CoreInfo =
   { minutes : Measure.Minutes           -- From hours and minutes
+  , dripRate : Measure.DropsPerSecond   -- used for animation timings
   , flowRate : Measure.LitersPerMinute  -- Liters are more convenient than mils
-  , containerVolume : Measure.Liters    -- from scenario
-  , startingFluid : Measure.Liters
+  , containerVolume : Measure.Liters   
+  , startingVolume : Measure.Liters
+  , endingVolume : Measure.Liters
   }
 
 toCoreInfo : Scenario -> FinishedForm -> CoreInfo
 toCoreInfo scenario form =
-  { minutes = C.toMinutes form.hours form.minutes
-  , flowRate = C.toFlowRate form.dripRate scenario
-  , containerVolume = scenario.containerVolume
-  , startingFluid = scenario.startingFluid
+  let 
+    minutes = C.toMinutes form.hours form.minutes
+    dripRate = form.dripRate
+    flowRate = C.toFlowRate dripRate scenario
+    containerVolume = scenario.containerVolume
+    startingVolume = scenario.startingVolume
+    endingVolume = C.toFinalLevel flowRate minutes scenario
+  in
+    { minutes = minutes
+    , flowRate = flowRate
+    , dripRate = dripRate
+    , containerVolume = containerVolume
+    , startingVolume = startingVolume
+    , endingVolume = endingVolume
   }
   
-run : Scenario -> FinishedForm 
-    -> (Model -> Model)
-run scenario form model =
+run : Scenario -> FinishedForm -> ModelTransform
+run scenario form =
   let
-    core = toCoreInfo scenario form
-    finalLevel = C.toFinalLevel core.flowRate core.minutes scenario
-    containerPercent = Measure.proportion finalLevel scenario.containerVolume
-  in
-    case Measure.isPositive finalLevel of
-      True -> 
-        { model | stage = WatchingAnimation core.flowRate }
-          |> Droplet.speedsUp form.dripRate
-          |> BagFluid.drains containerPercent core.minutes
-             (\ model ->
-               model 
-                |> Droplet.slowsDown form.dripRate
-                |> finishedWithFluidLeft core.flowRate finalLevel)
-      False ->
-        model
+    core =
+      toCoreInfo scenario form
 
-               
-finishedWithFluidLeft : Measure.LitersPerMinute -> Measure.Liters
-                      -> Model -> Model     
-finishedWithFluidLeft flowRate finalLevel model =
-  let
-    howFinished = FluidLeft { finalLevel = finalLevel }
+    animations =
+      case Measure.isStrictlyNegative core.endingVolume of
+        True ->
+          identity
+        False ->
+          runToMoreThanDrained core
   in
-    { model | stage = Finished flowRate howFinished }
+    moveToWatchingStage core.flowRate
+    >> animations
+         
+
+runToMoreThanDrained : CoreInfo -> ModelTransform
+runToMoreThanDrained core model = 
+  let 
+    containerPercent = Measure.proportion core.endingVolume core.containerVolume
+
+    finishC = moveToFinishedStage 
+                core.flowRate
+                (FluidLeft { endingVolume = core.endingVolume })
+  in
+    model
+      |> Droplet.speedsUp core.dripRate
+      |> BagFluid.drains containerPercent core.minutes
+         (\ model ->
+            model 
+         |> Droplet.slowsDown core.dripRate
+         |> finishC)
+
 

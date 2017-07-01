@@ -38,7 +38,7 @@ startingModel scenario =
 
 
   , droplet = Animation.style Droplet.initStyles
-  , bagFluid = Animation.style <| BagFluid.initStyles <| Measure.proportion scenario.startingFluid scenario.containerVolume
+  , bagFluid = Animation.style <| BagFluid.initStyles <| Measure.proportion scenario.startingVolume scenario.containerVolume
   }
 
 init : (Model, Cmd Msg)

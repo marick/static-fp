@@ -12,7 +12,7 @@ type Stage
 
 type HowFinished
   = FluidLeft
-    { finalLevel : Measure.Liters
+    { endingVolume : Measure.Liters
     }
 
 
