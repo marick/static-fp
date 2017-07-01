@@ -22,8 +22,9 @@ type alias Model =
   , bagFluid : AnimationModel
   }
 
-
-
+  
+type Continuation = Continuation (Model -> Model)
+type alias ModelTransform = Model -> Model
   
 
 type alias FinishedForm = 
@@ -32,27 +33,7 @@ type alias FinishedForm =
   , minutes : Measure.Minutes
   }
 
-type alias FormData r =
-  { r
-    | desiredDripRate : Field.DripRate
-    , desiredHours : Field.Hours
-    , desiredMinutes : Field.Minutes
-    , stage : Simulation.Stage
-    , scenario : Scenario
-  }
 
-type alias DropletData r =
-  { r
-    | droplet : AnimationModel
-  }
-
-type alias BagFluidData r =
-  { r
-    | bagFluid : AnimationModel
-  }
-
-type Continuation = Continuation (Model -> Model)
-  
 type Msg
   = ChangeDripRate String
   | ChangeHours String

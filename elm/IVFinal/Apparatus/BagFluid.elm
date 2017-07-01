@@ -16,6 +16,15 @@ import Animation.Messenger
 import IVFinal.App.Svg as AppSvg exposing ((^^))
 import IVFinal.Generic.Measures as Measure
 
+
+type alias Obscured model =
+  { model
+    | bagFluid : AnimationModel
+  }
+
+type alias Transformer model =
+  Obscured model -> Obscured model
+
 ---- 
 
 view : AnimationModel -> Svg msg
@@ -30,9 +39,9 @@ view =
       
 drains : Measure.Percent -> Measure.Minutes
        -> Continuation
-       -> (BagFluidData r -> BagFluidData r)
-drains percentOfContainer minutes continuation data =
-  reanimate data <|
+       -> Transformer model
+drains percentOfContainer minutes continuation =
+  reanimate
     [ Animation.toWith
         (draining minutes)
         (drainedStyles percentOfContainer)
@@ -73,9 +82,9 @@ draining minutes =
 
 --- Default values and calculations
 
-reanimate : BagFluidData a -> List AnimationStep -> BagFluidData a
-reanimate data steps =
-  { data | bagFluid = Animation.interrupt steps data.bagFluid }
+reanimate : List AnimationStep -> Transformer model
+reanimate steps model =
+  { model | bagFluid = Animation.interrupt steps model.bagFluid }
 
 toSimulationTime : Measure.Minutes -> Time
 toSimulationTime (Tagged minutes) =

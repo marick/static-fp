@@ -11,30 +11,41 @@ import IVFinal.App.Html as H
 import IVFinal.Generic.Measures as Measure
 import Tagged exposing (Tagged(..), untag)
 import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
+import IVFinal.App.InputFields as Field
+import IVFinal.Scenario exposing (Scenario)
 
-import IVFinal.Types exposing (..)
+import IVFinal.Types exposing (Msg(..), FinishedForm)
 
-dripRate : FormData a -> Maybe Measure.DropsPerSecond
-dripRate formData =
-  formData.desiredDripRate.value           
+type alias Obscured model =
+  { model
+    | desiredDripRate : Field.DripRate
+    , desiredHours : Field.Hours
+    , desiredMinutes : Field.Minutes
+    , stage : Simulation.Stage
+    , scenario : Scenario
+  }
 
-allValues : FormData a -> Maybe FinishedForm
-allValues formData =
+dripRate : Obscured model -> Maybe Measure.DropsPerSecond
+dripRate model =
+  model.desiredDripRate.value           
+
+allValues : Obscured model -> Maybe FinishedForm
+allValues model =
   Maybe.map3 FinishedForm
-    formData.desiredDripRate.value
-    formData.desiredHours.value
-    formData.desiredMinutes.value
+    model.desiredDripRate.value
+    model.desiredHours.value
+    model.desiredMinutes.value
 
-view : FormData a -> List (Html Msg)
-view formData =
-  case formData.stage of
+view : Obscured model -> List (Html Msg)
+view model =
+  case model.stage of
     FormFilling ->
-      [ baseView formData formCanBeChanged
+      [ baseView model formCanBeChanged
       , startButton
       ]
       
     WatchingAnimation flowRate ->
-      [ baseView formData formIsDisabled
+      [ baseView model formIsDisabled
       , verticalSpace -- so following text is below the cursor.
       , describeFlow "is" flowRate
       ]
@@ -42,7 +53,7 @@ view formData =
     Finished flowRate howFinished ->
       let 
         common flowRate = 
-          [ baseView formData formIsDisabled
+          [ baseView model formIsDisabled
           , tryAgainButton
           , describeFlow "was" flowRate
           ]
@@ -54,7 +65,7 @@ view formData =
                  ]
 
   
-baseView : FormData a -> InputAttributes -> Html Msg
+baseView : Obscured model -> InputAttributes -> Html Msg
 baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
          {dripRateAttrs, hourAttrs, minuteAttrs} =
   let

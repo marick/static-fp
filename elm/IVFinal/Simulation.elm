@@ -2,7 +2,7 @@ module IVFinal.Simulation exposing
   ( run
   )
 
-import IVFinal.Types exposing (Model, FinishedForm, Continuation(..))
+import IVFinal.Types exposing (..)
 import IVFinal.Simulation.Types exposing (Stage)
 import IVFinal.Generic.Measures as Measure
 import IVFinal.Scenario exposing (..)
@@ -10,9 +10,6 @@ import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.Simulation.Conversions as C 
 import IVFinal.Simulation.Types exposing (..)
-
-type alias ModelTransform = Model -> Model 
-
 
 moveToWatchingStage : Measure.LitersPerMinute -> ModelTransform
 moveToWatchingStage flowRate model = 
@@ -73,16 +70,12 @@ partlyDrain core model =
     containerPercent = Measure.proportion core.endingVolume core.containerVolume
     howFinished = FluidLeft { endingVolume = core.endingVolume }
 
-    slowDownC = 
+    slowDown = 
       Droplet.slowsDown core.dripRate
-      >> done
-
-    done =
-      moveToFinishedStage core.flowRate howFinished
-
+      >> moveToFinishedStage core.flowRate howFinished
   in
     model
       |> Droplet.speedsUp core.dripRate
-      |> BagFluid.drains containerPercent core.minutes (Continuation slowDownC)
+      |> BagFluid.drains containerPercent core.minutes (Continuation slowDown)
           
 
