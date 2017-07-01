@@ -29,14 +29,14 @@ view =
 -- Animations
       
 drains : Measure.Percent -> Measure.Minutes
-       -> (Model -> Model)
+       -> Continuation
        -> (BagFluidData r -> BagFluidData r)
 drains percentOfContainer minutes continuation data =
   reanimate data <|
     [ Animation.toWith
         (draining minutes)
         (drainedStyles percentOfContainer)
-    , Animation.Messenger.send (NextAnimation continuation) 
+    , Animation.Messenger.send (RunContinuation continuation) 
     ]
 
 -- Styles

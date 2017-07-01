@@ -91,7 +91,7 @@ update msg model =
       , Cmd.none
       )
 
-    NextAnimation f ->
+    RunContinuation (Continuation f) ->
       (f model, Cmd.none)
       
     Tick subMsg ->

@@ -23,6 +23,9 @@ type alias Model =
   }
 
 
+
+  
+
 type alias FinishedForm = 
   { dripRate : Measure.DropsPerSecond
   , hours : Measure.Hours
@@ -47,6 +50,8 @@ type alias BagFluidData r =
   { r
     | bagFluid : AnimationModel
   }
+
+type Continuation = Continuation (Model -> Model)
   
 type Msg
   = ChangeDripRate String
@@ -61,4 +66,4 @@ type Msg
   | StartSimulation FinishedForm
 
   | Tick Animation.Msg
-  | NextAnimation (Model -> Model)
+  | RunContinuation Continuation

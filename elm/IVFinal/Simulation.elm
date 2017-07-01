@@ -2,7 +2,7 @@ module IVFinal.Simulation exposing
   ( run
   )
 
-import IVFinal.Types exposing (Model, FinishedForm)
+import IVFinal.Types exposing (Model, FinishedForm, Continuation(..))
 import IVFinal.Simulation.Types exposing (Stage)
 import IVFinal.Generic.Measures as Measure
 import IVFinal.Scenario exposing (..)
@@ -61,27 +61,28 @@ run scenario form =
         True ->
           identity
         False ->
-          runToMoreThanDrained core
+          partlyDrain core
   in
     moveToWatchingStage core.flowRate
     >> animations
-         
 
-runToMoreThanDrained : CoreInfo -> ModelTransform
-runToMoreThanDrained core model = 
+
+partlyDrain : CoreInfo -> ModelTransform
+partlyDrain core model = 
   let 
     containerPercent = Measure.proportion core.endingVolume core.containerVolume
+    howFinished = FluidLeft { endingVolume = core.endingVolume }
 
-    finishC = moveToFinishedStage 
-                core.flowRate
-                (FluidLeft { endingVolume = core.endingVolume })
+    slowDownC = 
+      Droplet.slowsDown core.dripRate
+      >> done
+
+    done =
+      moveToFinishedStage core.flowRate howFinished
+
   in
     model
       |> Droplet.speedsUp core.dripRate
-      |> BagFluid.drains containerPercent core.minutes
-         (\ model ->
-            model 
-         |> Droplet.slowsDown core.dripRate
-         |> finishC)
-
+      |> BagFluid.drains containerPercent core.minutes (Continuation slowDownC)
+          
 
