@@ -29,9 +29,6 @@ type alias Liters = Tagged LitersTag Float
 type alias Percent = Tagged PercentTag Float
 type alias LitersPerMinute = Tagged LitersPerMinuteTag Float
 
-
-
-
 --
 dripRate : Float -> DropsPerSecond
 dripRate = Tagged
