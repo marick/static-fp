@@ -13,7 +13,6 @@ import IVFinal.App.Animation as AnimationX
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
-import IVFinal.Types exposing (AnimationModel)
 import IVFinal.App.Svg exposing ((^^))
 import IVFinal.Generic.EuclideanRectangle as Rect
 import IVFinal.Generic.Measures as Measure
@@ -30,7 +29,7 @@ import IVFinal.Generic.Tagged exposing (UnusableConstructor)
 
 type alias Obscured model =
   { model
-    | droplet : AnimationModel
+    | droplet : AnimationX.Model
   }
 
 type alias Transformer model =
@@ -171,7 +170,7 @@ transitioningOut =
 
 --- View
                     
-view : AnimationModel -> Svg msg
+view : AnimationX.Model -> Svg msg
 view =
   animatable S.rect <| HasFixedPart
     [ SA.width ^^ (Rect.width C.startingDroplet)

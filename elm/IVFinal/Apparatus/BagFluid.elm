@@ -27,7 +27,7 @@ import Tagged exposing (untag, Tagged(..))
 
 type alias Obscured model =
   { model
-    | bagFluid : AnimationModel
+    | bagFluid : AnimationX.Model
   }
 
 type alias Transformer model =
@@ -81,7 +81,7 @@ draining minutes =
 
 ---- View
 
-view : AnimationModel -> Svg msg
+view : AnimationX.Model -> Svg msg
 view =
   animatable S.rect <| HasFixedPart
     [ SA.width ^^ (Rect.width C.bagFluid)
