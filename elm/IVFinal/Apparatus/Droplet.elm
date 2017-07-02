@@ -92,33 +92,33 @@ leavesTimeLapseSteps =
 
 -- styles
     
-initStyles : List Animation.Property
+initStyles : List AnimationX.Styling
 initStyles =
   [ Animation.y (Rect.y C.startingDroplet)
   , Animation.fill C.fluidColor
   , Animation.height (px 0)
   ]
 
-grownStyles : List Animation.Property
+grownStyles : List AnimationX.Styling
 grownStyles =
   [ Animation.height (px C.dropletSideLength) ]
     
-fallenStyles : List Animation.Property
+fallenStyles : List AnimationX.Styling
 fallenStyles =
   [ Animation.y (Rect.y C.endingDroplet) ]
 
-flowedStyles_1 : List Animation.Property
+flowedStyles_1 : List AnimationX.Styling
 flowedStyles_1 =
   [ Animation.height (px C.flowLength)
   , Animation.fill C.fluidColor
   ]
 
-flowedStyles_2 : List Animation.Property
+flowedStyles_2 : List AnimationX.Styling
 flowedStyles_2 =
   [ Animation.fill C.secondFluidColor
   ]
 
-flowVanishedStyles : List Animation.Property
+flowVanishedStyles : List AnimationX.Styling
 flowVanishedStyles =
   [ Animation.height (px 0)
   , Animation.y (Rect.y C.endingDroplet)
@@ -127,14 +127,14 @@ flowVanishedStyles =
 
 --- Timings
 
-falling : Animation.Interpolation  
+falling : AnimationX.Timing  
 falling =
   Animation.easing
     { duration = untag timeForDropToFall
     , ease = Ease.inQuad
     }
 
-growing : Measure.DropsPerSecond -> Animation.Interpolation  
+growing : Measure.DropsPerSecond -> AnimationX.Timing  
 growing rate =
   let
     duration =
@@ -147,21 +147,21 @@ growing rate =
       , ease = Ease.linear
       }
 
-flowing : Measure.DropsPerSecond -> Animation.Interpolation
+flowing : Measure.DropsPerSecond -> AnimationX.Timing
 flowing rate =
   Animation.easing
     { duration = rateToDuration rate |> untag
     , ease = Ease.inQuad
     }
 
-transitioningIn : Animation.Interpolation
+transitioningIn : AnimationX.Timing
 transitioningIn =
   Animation.easing
     { duration = Time.second * 0.3
     , ease = Ease.inQuad
     }
 
-transitioningOut : Animation.Interpolation
+transitioningOut : AnimationX.Timing
 transitioningOut =
   Animation.easing
     { duration = Time.second * 0.1

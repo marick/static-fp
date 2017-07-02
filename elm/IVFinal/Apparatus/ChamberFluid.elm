@@ -51,7 +51,7 @@ empties continuation =
 -- None of the client's business that the same calculations are used
 -- for both styles.
     
-initStyles : List Animation.Property
+initStyles : List AnimationX.Styling
 initStyles = 
   [ Animation.y (Rect.y C.chamberFluid)
   , Animation.height <| px <| Rect.height C.chamberFluid
@@ -59,7 +59,7 @@ initStyles =
 
 -- Timing
 
-emptying : Measure.Minutes -> Animation.Interpolation  
+emptying : Measure.Minutes -> AnimationX.Timing  
 emptying minutes =
   Animation.easing
     { duration = Time.second * 1

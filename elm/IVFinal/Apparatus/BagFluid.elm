@@ -55,13 +55,13 @@ lowers percentOfContainer minutes continuation =
 -- None of the client's business that the same calculations are used
 -- for both styles.
     
-initStyles : Measure.Percent -> List Animation.Property
+initStyles : Measure.Percent -> List AnimationX.Styling
 initStyles = styles
   
-drainedStyles : Measure.Percent -> List Animation.Property
+drainedStyles : Measure.Percent -> List AnimationX.Styling
 drainedStyles = styles
 
-styles : Measure.Percent -> List Animation.Property
+styles : Measure.Percent -> List AnimationX.Styling
 styles (Tagged percentOfContainer) =
   let
     rect = C.bag |> Rect.lowerTo percentOfContainer
@@ -72,7 +72,7 @@ styles (Tagged percentOfContainer) =
 
 -- Timing
 
-draining : Measure.Minutes -> Animation.Interpolation  
+draining : Measure.Minutes -> AnimationX.Timing  
 draining minutes =
   Animation.easing
     { duration = Time.second * 1
