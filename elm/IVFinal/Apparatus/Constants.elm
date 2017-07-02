@@ -29,6 +29,9 @@ hose : Rectangle
 hose =
   Rectangle.fromOrigin hoseWidth 90 |> centeredBelow chamber
 
+hoseFluid : Rectangle    
+hoseFluid = hose  -- fills entire hose
+
 -- The droplet
 
 dropletSideLength : Float

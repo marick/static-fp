@@ -8,6 +8,8 @@ import Task
 import IVFinal.Apparatus as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
+import IVFinal.Apparatus.ChamberFluid as ChamberFluid
+import IVFinal.Apparatus.HoseFluid as HoseFluid
 import IVFinal.App.InputFields as Field
 import IVFinal.Scenario as Scenario exposing (Scenario)
 import IVFinal.Simulation as Simulation
@@ -39,6 +41,8 @@ startingModel scenario =
 
   , droplet = Animation.style Droplet.initStyles
   , bagFluid = Animation.style <| BagFluid.initStyles <| Measure.proportion scenario.startingVolume scenario.containerVolume
+  , chamberFluid = Animation.style ChamberFluid.initStyles
+  , hoseFluid = Animation.style HoseFluid.initStyles
   }
 
 init : (Model, Cmd Msg)

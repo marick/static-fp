@@ -20,6 +20,8 @@ type alias Model =
       
   , droplet : AnimationModel
   , bagFluid : AnimationModel
+  , chamberFluid : AnimationModel
+  , hoseFluid : AnimationModel
   }
 
   

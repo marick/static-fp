@@ -8,6 +8,8 @@ import IVFinal.Generic.Measures as Measure
 import IVFinal.Scenario exposing (..)
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
+import IVFinal.Apparatus.ChamberFluid as ChamberFluid
+import IVFinal.Apparatus.HoseFluid as HoseFluid
 import IVFinal.Simulation.Conversions as C 
 import IVFinal.Simulation.Types exposing (..)
 

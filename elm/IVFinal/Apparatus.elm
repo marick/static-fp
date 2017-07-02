@@ -9,15 +9,17 @@ import IVFinal.Generic.EuclideanTypes exposing (..)
 
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
+import IVFinal.Apparatus.ChamberFluid as ChamberFluid
+import IVFinal.Apparatus.HoseFluid as HoseFluid
 
 view : Model -> List (Svg msg)
 view model = 
   [ -- Hose
-    container C.hose
-  , fluid C.hose
+    container C.hoseFluid
+  , HoseFluid.view model.hoseFluid
     
   -- Chamber
-  , fluid C.chamberFluid
+  , ChamberFluid.view model.chamberFluid
   , container C.chamber
 
   -- Bag    
@@ -27,10 +29,6 @@ view model =
 
   , Droplet.view model.droplet
   ]
-
-fluid : Rectangle -> Svg msg
-fluid coordinates =
-  AppSvg.rect coordinates C.fluidAppearance
 
 container : Rectangle -> Svg msg
 container coordinates =
