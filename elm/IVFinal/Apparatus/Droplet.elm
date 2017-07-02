@@ -36,17 +36,14 @@ type alias Transformer model =
 
 reanimate : List AnimationX.Step -> Transformer model
 reanimate steps model =
-  { model | droplet = Animation.interrupt steps model.droplet }
+  { model | droplet = AnimationX.interrupt steps model.droplet }
 
 
 -- Animations
 
 falls : Measure.DropsPerSecond -> Transformer model
 falls rate =
-  reanimate 
-    (case isTooFastToSeeIndividualDrops rate of
-      True -> flowSteps rate
-      False -> discreteDripSteps rate)
+  reanimate <| fallsSteps rate
        
       
 entersTimeLapse : Measure.DropsPerSecond -> Transformer model
@@ -57,70 +54,93 @@ entersTimeLapse rate =
 leavesTimeLapse : Measure.DropsPerSecond -> Transformer model
 leavesTimeLapse rate =
   reanimate <|
-    leavesTimeLapseSteps ++ discreteDripSteps rate
+    leavesTimeLapseSteps ++ fallsSteps rate
 
 
 -- Steps
 
+fallsSteps : Measure.DropsPerSecond -> List AnimationX.Step
+fallsSteps rate = 
+  (case isTooFastToSeeIndividualDrops rate of
+     True -> flowSteps rate
+     False -> discreteDripSteps rate)
+
+
 entersTimeLapseSteps : List AnimationX.Step
 entersTimeLapseSteps = 
-    [ Animation.set initStyles
-    , Animation.toWith (transitioningIn) flowedStyles_1
+    [ AnimationX.set initStyles
+    , AnimationX.toWith (transitioningIn) flowedStyles_1
     ]
 
 flowSteps : Measure.DropsPerSecond -> List AnimationX.Step
 flowSteps rate =
-    [ Animation.loop
-      [ Animation.toWith (flowing rate) flowedStyles_2
-      , Animation.toWith (flowing rate) flowedStyles_1
+    [ AnimationX.loop
+      [ AnimationX.toWith (flowing rate) flowedStyles_2
+      , AnimationX.toWith (flowing rate) flowedStyles_1
       ]
     ]
 
 discreteDripSteps : Measure.DropsPerSecond -> List AnimationX.Step
 discreteDripSteps rate = 
-    [ Animation.loop
-        [ Animation.set initStyles
-        , Animation.toWith (growing rate) grownStyles
-        , Animation.toWith falling fallenStyles
+    [ AnimationX.loop
+        [ AnimationX.set initStyles
+        , AnimationX.toWith (growing rate) grownStyles
+        , AnimationX.toWith falling fallenStyles
         ]
     ]
 
 leavesTimeLapseSteps : List AnimationX.Step 
 leavesTimeLapseSteps =
-  [ Animation.toWith (transitioningOut) flowVanishedStyles ] 
+  [ AnimationX.set flowedStyles_1
+  , AnimationX.toWith (transitioningOut) flowVanishedStyles
+  ] 
 
 -- styles
+
+-- Because some of the `Styles` functions are called from different
+-- animation steps, it's safest to make all of them specify all the
+-- attributes that `initStyles` does
     
 initStyles : List AnimationX.Styling
 initStyles =
-  [ Animation.y (Rect.y C.startingDroplet)
-  , Animation.fill C.fluidColor
-  , Animation.height (px 0)
+  [ AnimationX.yFrom C.startingDroplet
+  , AnimationX.fill C.fluidColor
+  , AnimationX.height (px 0)
   ]
 
 grownStyles : List AnimationX.Styling
 grownStyles =
-  [ Animation.height (px C.dropletSideLength) ]
+  [ AnimationX.yFrom C.startingDroplet
+  , AnimationX.fill C.fluidColor
+  , AnimationX.height (px C.dropletSideLength)
+  ]
     
 fallenStyles : List AnimationX.Styling
 fallenStyles =
-  [ Animation.y (Rect.y C.endingDroplet) ]
+  [ AnimationX.y (Rect.y C.endingDroplet)
+  , AnimationX.fill C.fluidColor
+  , AnimationX.height (px C.dropletSideLength)
+  ]
 
 flowedStyles_1 : List AnimationX.Styling
 flowedStyles_1 =
-  [ Animation.height (px C.flowLength)
-  , Animation.fill C.fluidColor
+  [ AnimationX.yFrom C.startingDroplet
+  , AnimationX.fill C.fluidColor
+  , AnimationX.height (px C.flowLength)
   ]
 
 flowedStyles_2 : List AnimationX.Styling
 flowedStyles_2 =
-  [ Animation.fill C.secondFluidColor
+  [ AnimationX.yFrom C.startingDroplet
+  , AnimationX.fill C.fluidColor_alternate
+  , AnimationX.height (px C.flowLength)
   ]
 
 flowVanishedStyles : List AnimationX.Styling
 flowVanishedStyles =
-  [ Animation.height (px 0)
-  , Animation.y (Rect.y C.endingDroplet)
+  [ AnimationX.y (Rect.y C.endingDroplet)
+  , AnimationX.fill C.fluidColor
+  , AnimationX.height (px 0)
   ]
 
 
@@ -178,17 +198,17 @@ view =
 
 -- About timing calculations
     
-type alias TimePerDrop = Tagged TimePerDropTag Float
-type TimePerDropTag = TimePerDropTag UnusableConstructor
+type alias SecondsPerDrop = Tagged SecondsPerDropTag Float
+type SecondsPerDropTag = SecondsPerDropTag UnusableConstructor
 
 flowCutoff : Measure.DropsPerSecond
 flowCutoff = Measure.dripRate 6.0
 
 -- Following is slower than reality (in a vacuum), but looks better
-timeForDropToFall : TimePerDrop
+timeForDropToFall : SecondsPerDrop
 timeForDropToFall = rateToDuration flowCutoff
 
-rateToDuration : Measure.DropsPerSecond -> TimePerDrop
+rateToDuration : Measure.DropsPerSecond -> SecondsPerDrop
 rateToDuration dps =
   let
     calculation rate =

@@ -80,5 +80,5 @@ fluidColor = rgb 211 215 207
 fluidColorString : String -- Grr
 fluidColorString = Convert.colorToHex fluidColor
 
-secondFluidColor : Color                   
-secondFluidColor = rgb 193 193 193
+fluidColor_alternate : Color                   
+fluidColor_alternate = rgb 193 193 193

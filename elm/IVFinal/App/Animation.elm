@@ -52,6 +52,7 @@ type alias Step = Animation.Messenger.Step Msg
 height = Animation.height
 fill = Animation.fill
 px = Animation.px
+y = Animation.y
 
 interrupt = Animation.interrupt
 loop = Animation.loop
