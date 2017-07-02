@@ -50,8 +50,8 @@ endingDroplet =
     |> centeredAbove chamberFluid
     |> nudgeDown dropletSideLength
 
-streamLength : Float
-streamLength = Rectangle.height chamber - Rectangle.height chamberFluid
+flowLength : Float
+flowLength = Rectangle.height chamber - Rectangle.height chamberFluid
   
 -- Utilities for constant transformations
        

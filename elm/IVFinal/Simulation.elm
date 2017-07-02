@@ -72,7 +72,7 @@ partlyDrain core =
 
     step1_startFlow =
       Droplet.entersTimeLapse core.dripRate
-      >> BagFluid.drains containerPercent core.minutes
+      >> BagFluid.lowers containerPercent core.minutes
          (Continuation step2_backToDripping)
                   
     step2_backToDripping = 
