@@ -36,7 +36,7 @@ accelerating = timing Ease.inQuad
 
 yFrom = Rect.y >> Animation.y
 heightFrom = Rect.height >> px >> Animation.height
-requestContinuation = RunContinuation >> Animation.Messenger.send
+request = RunContinuation >> Animation.Messenger.send
 
 -- Aliasing
 

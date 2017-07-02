@@ -12,12 +12,7 @@ import IVFinal.Types exposing (..)
 import IVFinal.App.Svg exposing ((^^))
 import IVFinal.Generic.EuclideanRectangle as Rect
 import IVFinal.Generic.Measures as Measure
-
-import Animation exposing (px)
-import Animation.Messenger 
-import Ease
 import Svg.Attributes as SA
-import Time exposing (Time)
 
 import Tagged exposing (untag, Tagged(..))
 
@@ -34,7 +29,7 @@ type alias Transformer model =
 
 reanimate : List AnimationX.Step -> Transformer model
 reanimate steps model =
-  { model | hoseFluid = Animation.interrupt steps model.hoseFluid }
+  { model | hoseFluid = AnimationX.interrupt steps model.hoseFluid }
 
 
 -- Animations
@@ -42,7 +37,7 @@ reanimate steps model =
 empties : Continuation -> Transformer model
 empties continuation =
   reanimate
-    [ Animation.Messenger.send (RunContinuation continuation) 
+    [ AnimationX.request continuation
     ]
 
 -- Styles
@@ -52,18 +47,11 @@ empties continuation =
     
 initStyles : List AnimationX.Styling
 initStyles = 
-  [ Animation.y (Rect.y C.hoseFluid)
-  , Animation.height <| px <| Rect.height C.hoseFluid
+  [ AnimationX.yFrom C.hoseFluid
+  , AnimationX.heightFrom C.hoseFluid
   ]
 
 -- Timing
-
-emptying : Measure.Minutes -> AnimationX.Timing  
-emptying minutes =
-  Animation.easing
-    { duration = Time.second * 1
-    , ease = Ease.linear
-    }
 
 ---- View
 
