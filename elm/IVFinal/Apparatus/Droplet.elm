@@ -1,4 +1,12 @@
-module IVFinal.Apparatus.Droplet exposing (..)
+module IVFinal.Apparatus.Droplet exposing
+  (view
+
+  , falls
+  , entersTimeLapse
+  , leavesTimeLapse
+
+  , initStyles
+  )
 
 import Svg as S exposing (Svg)
 import Svg.Attributes as SA
@@ -18,6 +26,7 @@ import IVFinal.Generic.Tagged exposing (UnusableConstructor)
 
 import IVFinal.App.Svg as AppSvg exposing ((^^))
 
+--- Customizing `Model` to this module
 
 type alias Obscured model =
   { model
@@ -27,7 +36,13 @@ type alias Obscured model =
 type alias Transformer model =
   Obscured model -> Obscured model
 
+reanimate : List AnimationStep -> Transformer model
+reanimate steps model =
+  { model | droplet = Animation.interrupt steps model.droplet }
 
+
+--- View
+                    
 view : AnimationModel -> Svg msg
 view =
   animatable S.rect <| HasFixedPart
@@ -37,49 +52,43 @@ view =
 
 -- Animations
 
-tooFastToSeeDrops : Measure.DropsPerSecond -> Measure.DropsPerSecond -> Bool
-tooFastToSeeDrops (Tagged rate) (Tagged cutoff) =
-  rate - cutoff > 0
-
-    
 falls : Measure.DropsPerSecond -> Transformer model
 falls rate =
   reanimate 
-    (case tooFastToSeeDrops rate dropStreamCutoff of
+    (case isTooFastToSeeIndividualDrops rate of
       True -> flowSteps rate
       False -> discreteDripSteps rate)
        
       
-stops : AnimationModel -> AnimationModel
-stops =
-  Animation.interrupt toStartStep
+entersTimeLapse : Measure.DropsPerSecond -> Transformer model
+entersTimeLapse rate =
+  reanimate <|
+    entersTimeLapseSteps ++ flowSteps rate
 
-speedsUp : Measure.DropsPerSecond -> Obscured model -> Obscured model
-speedsUp rate =
-  reanimate <| flowSteps rate
-  
+leavesTimeLapse : Measure.DropsPerSecond -> Transformer model
+leavesTimeLapse rate =
+  reanimate <|
+    leavesTimeLapseSteps ++ discreteDripSteps rate
 
-slowsDown : Measure.DropsPerSecond -> Transformer model
-slowsDown rate =
-  reanimate <| discreteDripSteps rate
 
-toStartStep : List AnimationStep
-toStartStep =
-  [ Animation.set initStyles ]
+-- Steps
+
+entersTimeLapseSteps : List AnimationStep
+entersTimeLapseSteps = 
+    [ Animation.set initStyles
+    , Animation.toWith (transitioningIn) streamedStyles_1
+    ]
 
 flowSteps : Measure.DropsPerSecond -> List AnimationStep
 flowSteps rate =
-  toStartStep ++
-    [ Animation.toWith (initialStreaming) pouredStyles
-    , Animation.loop
-      [ Animation.toWith (streaming rate) secondColorStyles
-      , Animation.toWith (streaming rate) pouredStyles
+    [ Animation.loop
+      [ Animation.toWith (streaming rate) streamedStyles_2
+      , Animation.toWith (streaming rate) streamedStyles_1
       ]
     ]
 
 discreteDripSteps : Measure.DropsPerSecond -> List AnimationStep
 discreteDripSteps rate = 
-  toStartStep ++
     [ Animation.loop
         [ Animation.set initStyles
         , Animation.toWith (growing rate) grownStyles
@@ -87,7 +96,9 @@ discreteDripSteps rate =
         ]
     ]
 
-  
+leavesTimeLapseSteps : List AnimationStep
+leavesTimeLapseSteps =
+  [ Animation.toWith (transitioningOut) streamVanishedStyles ] 
 
 -- styles
     
@@ -101,31 +112,31 @@ initStyles =
 grownStyles : List Animation.Property
 grownStyles =
   [ Animation.height (px C.dropletSideLength) ]
-
     
 fallenStyles : List Animation.Property
 fallenStyles =
   [ Animation.y (Rect.y C.endingDroplet) ]
 
-pouredStyles : List Animation.Property
-pouredStyles =
+streamedStyles_1 : List Animation.Property
+streamedStyles_1 =
   [ Animation.height (px C.streamLength)
   , Animation.fill C.fluidColor
   ]
 
-secondColorStyles : List Animation.Property
-secondColorStyles =
+streamedStyles_2 : List Animation.Property
+streamedStyles_2 =
   [ Animation.fill C.secondFluidColor
   ]
 
--- Timing
+streamVanishedStyles : List Animation.Property
+streamVanishedStyles =
+  [ Animation.height (px 0)
+  , Animation.y (Rect.y C.endingDroplet)
+  ]
 
-dropStreamCutoff : Measure.DropsPerSecond
-dropStreamCutoff = Measure.dripRate 6.0
 
--- Following is slower than reality (in a vacuum), but looks better
-timeForDropToFall : TimePerDrop
-timeForDropToFall = rateToDuration dropStreamCutoff
+---
+
 
 falling : Animation.Interpolation  
 falling =
@@ -154,27 +165,29 @@ streaming rate =
     , ease = Ease.inQuad
     }
 
-initialStreaming : Animation.Interpolation
-initialStreaming =
+transitioningIn : Animation.Interpolation
+transitioningIn =
   Animation.easing
     { duration = Time.second * 0.3
     , ease = Ease.inQuad
     }
 
--- Misc
+transitioningOut : Animation.Interpolation
+transitioningOut =
+  Animation.easing
+    { duration = Time.second * 0.1
+    , ease = Ease.inQuad
+    }
 
-reanimate : List AnimationStep -> Transformer model
-reanimate steps model =
-  { model | droplet = Animation.interrupt steps model.droplet }
+-- About timings
+    
+dropStreamCutoff : Measure.DropsPerSecond
+dropStreamCutoff = Measure.dripRate 6.0
 
-  
+-- Following is slower than reality (in a vacuum), but looks better
+timeForDropToFall : TimePerDrop
+timeForDropToFall = rateToDuration dropStreamCutoff
 
---- Support for tagging
-
-type alias TimePerDrop = Tagged TimePerDropTag Float
-type TimePerDropTag = TimePerDropTag UnusableConstructor
-
-      
 rateToDuration : Measure.DropsPerSecond -> TimePerDrop
 rateToDuration dps =
   let
@@ -182,6 +195,19 @@ rateToDuration dps =
       (1 / rate ) * Time.second
   in
     Tagged.map calculation dps |> retag
+  
+isTooFastToSeeIndividualDrops : Measure.DropsPerSecond -> Bool
+isTooFastToSeeIndividualDrops (Tagged rate) =
+  let
+    (Tagged cutoff) = dropStreamCutoff
+  in
+    rate - cutoff > 0
 
+--- Support for tagging
+
+type alias TimePerDrop = Tagged TimePerDropTag Float
+type TimePerDropTag = TimePerDropTag UnusableConstructor
 
       
+-- Misc
+

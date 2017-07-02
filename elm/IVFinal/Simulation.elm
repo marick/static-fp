@@ -65,17 +65,19 @@ run scenario form =
 
 
 partlyDrain : CoreInfo -> ModelTransform
-partlyDrain core model = 
+partlyDrain core = 
   let 
     containerPercent = Measure.proportion core.endingVolume core.containerVolume
     howFinished = FluidLeft { endingVolume = core.endingVolume }
 
-    slowDown = 
-      Droplet.slowsDown core.dripRate
+    step1_startFlow =
+      Droplet.entersTimeLapse core.dripRate
+      >> BagFluid.drains containerPercent core.minutes
+         (Continuation step2_backToDripping)
+                  
+    step2_backToDripping = 
+      Droplet.leavesTimeLapse core.dripRate
       >> moveToFinishedStage core.flowRate howFinished
   in
-    model
-      |> Droplet.speedsUp core.dripRate
-      |> BagFluid.drains containerPercent core.minutes (Continuation slowDown)
-          
+    step1_startFlow
 
