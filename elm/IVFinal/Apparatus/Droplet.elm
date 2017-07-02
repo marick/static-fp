@@ -9,10 +9,11 @@ module IVFinal.Apparatus.Droplet exposing
   )
 
 import IVFinal.Apparatus.AppAnimation exposing (..)
+import IVFinal.App.Animation as AnimationX
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
-import IVFinal.Types exposing (AnimationModel, AnimationStep)
+import IVFinal.Types exposing (AnimationModel)
 import IVFinal.App.Svg exposing ((^^))
 import IVFinal.Generic.EuclideanRectangle as Rect
 import IVFinal.Generic.Measures as Measure
@@ -35,7 +36,7 @@ type alias Obscured model =
 type alias Transformer model =
   Obscured model -> Obscured model
 
-reanimate : List AnimationStep -> Transformer model
+reanimate : List AnimationX.Step -> Transformer model
 reanimate steps model =
   { model | droplet = Animation.interrupt steps model.droplet }
 
@@ -63,13 +64,13 @@ leavesTimeLapse rate =
 
 -- Steps
 
-entersTimeLapseSteps : List AnimationStep
+entersTimeLapseSteps : List AnimationX.Step
 entersTimeLapseSteps = 
     [ Animation.set initStyles
     , Animation.toWith (transitioningIn) flowedStyles_1
     ]
 
-flowSteps : Measure.DropsPerSecond -> List AnimationStep
+flowSteps : Measure.DropsPerSecond -> List AnimationX.Step
 flowSteps rate =
     [ Animation.loop
       [ Animation.toWith (flowing rate) flowedStyles_2
@@ -77,7 +78,7 @@ flowSteps rate =
       ]
     ]
 
-discreteDripSteps : Measure.DropsPerSecond -> List AnimationStep
+discreteDripSteps : Measure.DropsPerSecond -> List AnimationX.Step
 discreteDripSteps rate = 
     [ Animation.loop
         [ Animation.set initStyles
@@ -86,7 +87,7 @@ discreteDripSteps rate =
         ]
     ]
 
-leavesTimeLapseSteps : List AnimationStep
+leavesTimeLapseSteps : List AnimationX.Step 
 leavesTimeLapseSteps =
   [ Animation.toWith (transitioningOut) flowVanishedStyles ] 
 

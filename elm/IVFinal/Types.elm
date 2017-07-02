@@ -7,8 +7,9 @@ import IVFinal.Scenario exposing (Scenario)
 import IVFinal.Simulation.Types as Simulation
 import Animation
 
+-- This needs to be here to avoid circular dependencies.
+-- Elsewhere, use App.Animation.Model
 type alias AnimationModel = Animation.Messenger.State Msg
-type alias AnimationStep = Animation.Messenger.Step Msg
 
 type alias Model =
   { scenario : Scenario

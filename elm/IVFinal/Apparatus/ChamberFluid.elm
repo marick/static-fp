@@ -5,6 +5,7 @@ module IVFinal.Apparatus.ChamberFluid exposing
   )
 
 import IVFinal.Apparatus.AppAnimation exposing (..)
+import IVFinal.App.Animation as AnimationX
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
@@ -32,7 +33,7 @@ type alias Obscured model =
 type alias Transformer model =
   Obscured model -> Obscured model
 
-reanimate : List AnimationStep -> Transformer model
+reanimate : List AnimationX.Step -> Transformer model
 reanimate steps model =
   { model | chamberFluid = Animation.interrupt steps model.chamberFluid }
 
