@@ -74,7 +74,7 @@ styles (Tagged percentOfContainer) =
 draining : Measure.Minutes -> Animation.Interpolation  
 draining minutes =
   Animation.easing
-    { duration = toSimulationTime minutes
+    { duration = Time.second * 1
     , ease = Ease.linear
     }
 
@@ -87,10 +87,3 @@ view =
     , SA.fill C.fluidColorString
     , SA.x ^^ (Rect.x C.bagFluid)
     ]
-
---- Default values and calculations
-
-
-toSimulationTime : Measure.Minutes -> Time
-toSimulationTime (Tagged minutes) =
-  Time.minute * (toFloat minutes) * 0.00001
