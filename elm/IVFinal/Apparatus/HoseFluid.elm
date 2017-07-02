@@ -4,8 +4,7 @@ module IVFinal.Apparatus.HoseFluid exposing
   , initStyles
   )
 
-import IVFinal.Apparatus.AppAnimation exposing (..)
-import IVFinal.App.Animation as AnimationX
+import IVFinal.App.Animation as AnimationX exposing (FixedPart(..), animatable)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
