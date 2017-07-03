@@ -55,9 +55,11 @@ leavesTimeLapse rate =
   reanimate <|
     leavesTimeLapseSteps ++ fallsSteps rate
 
-stopsDuringTimeLapse : Transformer model
-stopsDuringTimeLapse = 
-  reanimate leavesTimeLapseSteps
+stopsDuringTimeLapse : Continuation -> Transformer model
+stopsDuringTimeLapse continuation = 
+  reanimate <|
+    leavesTimeLapseSteps
+    ++ [ Animation.request continuation ]
 
 -- Steps
 

@@ -106,7 +106,10 @@ overDrain core =
 
     backToDripping = 
       Droplet.stopsDuringTimeLapse
-        >> moveToFinishedStage core.flowRate howFinished
+        (Continuation finish)
+
+    finish =
+      moveToFinishedStage core.flowRate howFinished
   in
     beginTimeLapse
 
