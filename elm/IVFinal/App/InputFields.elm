@@ -62,37 +62,3 @@ createVia parser validator converter string =
     |> Maybe.filter validator
     |> Maybe.map converter
     |> checked string
-  
-
-      
-      
-    -- (\ int ->
-    --    if int < 0 then
-    --      Nothing
-    --    else if int > 59 then 
-    --      Nothing
-    --    else
-    --      Just <| Measure.minutes int)
-       
-  -- let
-  --   toValidMinute int = 
-  --     if int < 0 then
-  --       Nothing
-  --     else if int > 59 then 
-  --       Nothing
-  --     else
-  --       Just <| Measure.minutes int
-  -- in
-  --   String.toInt string
-  --     |> Result.toMaybe
-  --     |> Maybe.andThen toValidMinute
-  --     |> checked string
-       
--- dripRate : String -> DripRate
--- dripRate string =
---   validate string String.toFloat
---     (\ float ->
---        if float <= 0 then 
---          Nothing
---        else 
---          Just <| Measure.dripRate float)
