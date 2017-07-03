@@ -13,6 +13,7 @@ import Tagged exposing (Tagged(Tagged))
 import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
 import IVFinal.App.InputFields as Field
 import IVFinal.Scenario exposing (Scenario)
+import String.Extra as String
 
 import IVFinal.Types exposing (Msg(..), FinishedForm)
 
@@ -57,15 +58,15 @@ view model =
           , tryAgainButton
           , describeFlow "was" flowRate
           ]
-      in
-        case howFinished of
-          Simulation.FluidLeft endingVolume ->
-            common flowRate
-              ++ [ describeFinalLevel endingVolume
-                 ]
-          Simulation.RanOutAfter minutes -> 
-            common flowRate ++ [ p [] [text "DERP" ] ]
 
+        variant =
+          case howFinished of
+            Simulation.FluidLeft endingVolume ->
+              [ describeFinalLevel endingVolume ]
+            Simulation.RanOutAfter minutes ->
+              [ describeOverflow minutes ]
+      in
+        common flowRate ++ variant
   
 baseView : Obscured model -> InputAttributes -> Html Msg
 baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
@@ -158,16 +159,22 @@ describeFlow pronoun (Tagged rate) =
 
 describeFinalLevel : Measure.Liters -> Html msg
 describeFinalLevel (Tagged litersLeft) =
-  "The final level is " ++ toString litersLeft ++ " liters."
-    |> strongSentence
+  let
+    show = String.pluralize "liter" "liters" litersLeft
+  in
+    strongSentence <| "The final level is " ++ show ++ "."
 
+describeOverflow : Measure.Minutes -> Html msg
+describeOverflow (Tagged minutes) =
+  let
+    show = String.pluralize "minute" "minutes" minutes
+  in
+    alert <| "The fluid ran out after " ++ toString minutes ++ " minutes."
 
 -- Misc
          
 verticalSpace : Html msg
 verticalSpace = span [] (List.repeat 3 (br [] []))
-
-                
 
 strongSentence : String -> Html msg
 strongSentence s = 
@@ -176,4 +183,10 @@ strongSentence s =
     , br [] []
     ]
 
-        
+alert : String -> Html msg
+alert s =
+  span []
+    [ strong [style [("color", "red")]]
+        [text s]
+    , br [] []
+    ]
