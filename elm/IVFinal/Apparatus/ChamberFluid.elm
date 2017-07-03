@@ -4,7 +4,7 @@ module IVFinal.Apparatus.ChamberFluid exposing
   , initStyles
   )
 
-import IVFinal.App.Animation as AnimationX exposing (FixedPart(..), animatable)
+import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
@@ -14,22 +14,22 @@ import IVFinal.Generic.EuclideanRectangle as Rect
 import IVFinal.Generic.Measures as Measure
 import Svg.Attributes as SA
 
-import Tagged exposing (untag, Tagged(..))
+import Tagged exposing (Tagged(Tagged))
 
 
 --- Customizing `Model` to this module
 
 type alias Obscured model =
   { model
-    | chamberFluid : AnimationX.Model
+    | chamberFluid : Animation.Model
   }
 
 type alias Transformer model =
   Obscured model -> Obscured model
 
-reanimate : List AnimationX.Step -> Transformer model
+reanimate : List Animation.Step -> Transformer model
 reanimate steps model =
-  { model | chamberFluid = AnimationX.interrupt steps model.chamberFluid }
+  { model | chamberFluid = Animation.interrupt steps model.chamberFluid }
 
 
 -- Animations
@@ -37,7 +37,7 @@ reanimate steps model =
 empties : Continuation -> Transformer model
 empties continuation =
   reanimate
-    [ AnimationX.request continuation
+    [ Animation.request continuation
     ]
 
 -- Styles
@@ -45,17 +45,17 @@ empties continuation =
 -- None of the client's business that the same calculations are used
 -- for both styles.
     
-initStyles : List AnimationX.Styling
+initStyles : List Animation.Styling
 initStyles = 
-  [ AnimationX.yFrom C.chamberFluid
-  , AnimationX.heightFrom C.chamberFluid
+  [ Animation.yFrom C.chamberFluid
+  , Animation.heightFrom C.chamberFluid
   ]
 
 -- Timing
 
 ---- View
 
-view : AnimationX.Model -> Svg msg
+view : Animation.Model -> Svg msg
 view =
   animatable S.rect <| HasFixedPart
     [ SA.width ^^ (Rect.width C.chamberFluid)

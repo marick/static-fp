@@ -4,7 +4,7 @@ module IVFinal.Apparatus.BagFluid exposing
   , initStyles
   )
 
-import IVFinal.App.Animation as AnimationX exposing (FixedPart(..), animatable)
+import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
@@ -22,15 +22,15 @@ import Tagged exposing (Tagged(Tagged))
 
 type alias Obscured model =
   { model
-    | bagFluid : AnimationX.Model
+    | bagFluid : Animation.Model
   }
 
 type alias Transformer model =
   Obscured model -> Obscured model
 
-reanimate : List AnimationX.Step -> Transformer model
+reanimate : List Animation.Step -> Transformer model
 reanimate steps model =
-  { model | bagFluid = AnimationX.interrupt steps model.bagFluid }
+  { model | bagFluid = Animation.interrupt steps model.bagFluid }
 
 
 -- Animations
@@ -39,9 +39,9 @@ lowers : Measure.Percent -> Measure.Minutes -> Continuation
        -> Transformer model
 lowers percentOfContainer minutes continuation =
   reanimate
-    [ AnimationX.toWith timeLapsing
+    [ Animation.toWith timeLapsing
         (fluidRemovedStyles percentOfContainer)
-    , AnimationX.request continuation
+    , Animation.request continuation
     ]
 
 -- Styles
@@ -49,30 +49,30 @@ lowers percentOfContainer minutes continuation =
 -- None of the client's business that the same calculations are used
 -- for both styles.
     
-initStyles : Measure.Percent -> List AnimationX.Styling
+initStyles : Measure.Percent -> List Animation.Styling
 initStyles = styles
   
-fluidRemovedStyles : Measure.Percent -> List AnimationX.Styling
+fluidRemovedStyles : Measure.Percent -> List Animation.Styling
 fluidRemovedStyles = styles
 
-styles : Measure.Percent -> List AnimationX.Styling
+styles : Measure.Percent -> List Animation.Styling
 styles (Tagged percentOfContainer) =
   let
     rect = C.bag |> Rect.lowerTo percentOfContainer
   in
-    [ AnimationX.yFrom rect
-    , AnimationX.heightFrom rect
+    [ Animation.yFrom rect
+    , Animation.heightFrom rect
     ]
 
 -- Timing
 
-timeLapsing : AnimationX.Timing  
+timeLapsing : Animation.Timing  
 timeLapsing =
-  AnimationX.linear <| Measure.seconds 1.5
+  Animation.linear <| Measure.seconds 1.5
 
 ---- View
 
-view : AnimationX.Model -> Svg msg
+view : Animation.Model -> Svg msg
 view =
   animatable S.rect <| HasFixedPart
     [ SA.width ^^ (Rect.width C.bagFluid)

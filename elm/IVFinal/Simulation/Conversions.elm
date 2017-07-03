@@ -1,8 +1,7 @@
 module IVFinal.Simulation.Conversions exposing (..)
--- all exposed for testing
 
 import IVFinal.Generic.Measures as Measure
-import Tagged exposing (Tagged(..))
+import Tagged exposing (Tagged(Tagged))
 
 toMinutes : Measure.Hours -> Measure.Minutes -> Measure.Minutes
 toMinutes (Tagged hourPart) (Tagged minutePart) =

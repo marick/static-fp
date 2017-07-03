@@ -8,7 +8,7 @@ module IVFinal.Apparatus.Droplet exposing
   , initStyles
   )
 
-import IVFinal.App.Animation as AnimationX exposing (FixedPart(..), animatable, px)
+import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable, px)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
@@ -23,15 +23,15 @@ import Tagged exposing (Tagged(Tagged))
 
 type alias Obscured model =
   { model
-    | droplet : AnimationX.Model
+    | droplet : Animation.Model
   }
 
 type alias Transformer model =
   Obscured model -> Obscured model
 
-reanimate : List AnimationX.Step -> Transformer model
+reanimate : List Animation.Step -> Transformer model
 reanimate steps model =
-  { model | droplet = AnimationX.interrupt steps model.droplet }
+  { model | droplet = Animation.interrupt steps model.droplet }
 
 
 -- Animations
@@ -54,46 +54,46 @@ leavesTimeLapse rate =
 
 -- Steps
 
-fallsSteps : Measure.DropsPerSecond -> List AnimationX.Step
+fallsSteps : Measure.DropsPerSecond -> List Animation.Step
 fallsSteps rate = 
   (case isTooFastToSeeIndividualDrops rate of
      True -> flowSteps rate
      False -> discreteDripSteps rate)
 
 
-entersTimeLapseSteps : List AnimationX.Step
+entersTimeLapseSteps : List Animation.Step
 entersTimeLapseSteps =
   let
-    timing = AnimationX.accelerating <| Measure.seconds 0.3
+    timing = Animation.accelerating <| Measure.seconds 0.3
   in
-    [ AnimationX.set initStyles
-    , AnimationX.toWith timing flowedStyles_1
+    [ Animation.set initStyles
+    , Animation.toWith timing flowedStyles_1
     ]
 
-flowSteps : Measure.DropsPerSecond -> List AnimationX.Step
+flowSteps : Measure.DropsPerSecond -> List Animation.Step
 flowSteps rate =
-    [ AnimationX.loop
-      [ AnimationX.toWith (flowing rate) flowedStyles_2
-      , AnimationX.toWith (flowing rate) flowedStyles_1
+    [ Animation.loop
+      [ Animation.toWith (flowing rate) flowedStyles_2
+      , Animation.toWith (flowing rate) flowedStyles_1
       ]
     ]
 
-discreteDripSteps : Measure.DropsPerSecond -> List AnimationX.Step
+discreteDripSteps : Measure.DropsPerSecond -> List Animation.Step
 discreteDripSteps rate = 
-    [ AnimationX.loop
-        [ AnimationX.set initStyles
-        , AnimationX.toWith (growing rate) grownStyles
-        , AnimationX.toWith falling fallenStyles
+    [ Animation.loop
+        [ Animation.set initStyles
+        , Animation.toWith (growing rate) grownStyles
+        , Animation.toWith falling fallenStyles
         ]
     ]
 
-leavesTimeLapseSteps : List AnimationX.Step 
+leavesTimeLapseSteps : List Animation.Step 
 leavesTimeLapseSteps =
   let 
-    timing = AnimationX.accelerating <| Measure.seconds 0.1
+    timing = Animation.accelerating <| Measure.seconds 0.1
   in
-    [ AnimationX.set flowedStyles_1
-    , AnimationX.toWith timing flowVanishedStyles
+    [ Animation.set flowedStyles_1
+    , Animation.toWith timing flowVanishedStyles
     ] 
 
 -- styles
@@ -102,72 +102,72 @@ leavesTimeLapseSteps =
 -- animation steps, it's safest to make all of them specify all the
 -- attributes that `initStyles` does
     
-initStyles : List AnimationX.Styling
+initStyles : List Animation.Styling
 initStyles =
-  [ AnimationX.yFrom C.startingDroplet
-  , AnimationX.fill C.fluidColor
-  , AnimationX.height (px 0)
+  [ Animation.yFrom C.startingDroplet
+  , Animation.fill C.fluidColor
+  , Animation.height (px 0)
   ]
 
-grownStyles : List AnimationX.Styling
+grownStyles : List Animation.Styling
 grownStyles =
-  [ AnimationX.yFrom C.startingDroplet
-  , AnimationX.fill C.fluidColor
-  , AnimationX.height (px C.dropletSideLength)
+  [ Animation.yFrom C.startingDroplet
+  , Animation.fill C.fluidColor
+  , Animation.height (px C.dropletSideLength)
   ]
     
-fallenStyles : List AnimationX.Styling
+fallenStyles : List Animation.Styling
 fallenStyles =
-  [ AnimationX.y (Rect.y C.endingDroplet)
-  , AnimationX.fill C.fluidColor
-  , AnimationX.height (px C.dropletSideLength)
+  [ Animation.y (Rect.y C.endingDroplet)
+  , Animation.fill C.fluidColor
+  , Animation.height (px C.dropletSideLength)
   ]
 
-flowedStyles_1 : List AnimationX.Styling
+flowedStyles_1 : List Animation.Styling
 flowedStyles_1 =
-  [ AnimationX.yFrom C.startingDroplet
-  , AnimationX.fill C.fluidColor
-  , AnimationX.height (px C.flowLength)
+  [ Animation.yFrom C.startingDroplet
+  , Animation.fill C.fluidColor
+  , Animation.height (px C.flowLength)
   ]
 
-flowedStyles_2 : List AnimationX.Styling
+flowedStyles_2 : List Animation.Styling
 flowedStyles_2 =
-  [ AnimationX.yFrom C.startingDroplet
-  , AnimationX.fill C.fluidColor_alternate
-  , AnimationX.height (px C.flowLength)
+  [ Animation.yFrom C.startingDroplet
+  , Animation.fill C.fluidColor_alternate
+  , Animation.height (px C.flowLength)
   ]
 
-flowVanishedStyles : List AnimationX.Styling
+flowVanishedStyles : List Animation.Styling
 flowVanishedStyles =
-  [ AnimationX.y (Rect.y C.endingDroplet)
-  , AnimationX.fill C.fluidColor
-  , AnimationX.height (px 0)
+  [ Animation.y (Rect.y C.endingDroplet)
+  , Animation.fill C.fluidColor
+  , Animation.height (px 0)
   ]
 
 
 --- Timings
 
-falling : AnimationX.Timing  
+falling : Animation.Timing  
 falling =
   timeForDropToFall
-    |> AnimationX.accelerating 
+    |> Animation.accelerating 
 
-growing : Measure.DropsPerSecond -> AnimationX.Timing  
+growing : Measure.DropsPerSecond -> Animation.Timing  
 growing rate =
   rate
     |> Measure.toSeconds
     |> Measure.reduceBy timeForDropToFall
-    |> AnimationX.linear
+    |> Animation.linear
 
-flowing : Measure.DropsPerSecond -> AnimationX.Timing
+flowing : Measure.DropsPerSecond -> Animation.Timing
 flowing rate =
   rate
     |> Measure.toSeconds
-    |> AnimationX.linear
+    |> Animation.linear
 
 --- View
                     
-view : AnimationX.Model -> Svg msg
+view : Animation.Model -> Svg msg
 view =
   animatable S.rect <| HasFixedPart
     [ SA.width ^^ (Rect.width C.startingDroplet)

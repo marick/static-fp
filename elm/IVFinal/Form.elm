@@ -9,7 +9,7 @@ import Html.Attributes exposing (..)
 import Html.Events as Event
 import IVFinal.App.Html as H
 import IVFinal.Generic.Measures as Measure
-import Tagged exposing (Tagged(..), untag)
+import Tagged exposing (Tagged(Tagged))
 import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
 import IVFinal.App.InputFields as Field
 import IVFinal.Scenario exposing (Scenario)

@@ -1,9 +1,8 @@
 module IVFinal.IV exposing (..)
 
 import Html exposing (..)
-import Animation
-import Animation.Messenger
 import Task
+
 
 import IVFinal.Apparatus as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
@@ -14,7 +13,7 @@ import IVFinal.App.InputFields as Field
 import IVFinal.Scenario as Scenario exposing (Scenario)
 import IVFinal.Simulation as Simulation
 import IVFinal.Generic.Measures as Measure
-
+import IVFinal.App.Animation as Animation
 import IVFinal.App.Layout as Layout
 import IVFinal.Form as Form
 
@@ -101,9 +100,9 @@ update msg model =
     Tick subMsg ->
       let
         (newDroplet, dropletCmd) =
-          Animation.Messenger.update subMsg model.droplet
+          Animation.update subMsg model.droplet
         (newFluid, fluidCmd) =
-          Animation.Messenger.update subMsg model.bagFluid
+          Animation.update subMsg model.bagFluid
       in
         ( { model
             | droplet = newDroplet

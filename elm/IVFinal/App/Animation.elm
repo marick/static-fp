@@ -10,7 +10,7 @@ import IVFinal.Generic.Measures as Measure
 import IVFinal.Generic.EuclideanTypes exposing (Rectangle)
 import IVFinal.Generic.EuclideanRectangle as Rect
 import Color exposing (Color)
-import Tagged exposing (Tagged(..), untag, retag)
+import Tagged exposing (Tagged(Tagged))
 
 
 -- Aliasing
@@ -88,3 +88,13 @@ set = Animation.set
 
 toWith : Timing -> List Styling -> Step      
 toWith = Animation.toWith
+
+style : List Styling -> Model
+style = Animation.style
+
+update : Animation.Msg -> Model -> (Model, Cmd Msg)
+update = Animation.Messenger.update
+
+subscription : (Animation.Msg -> Msg) -> List Model -> Sub Msg
+subscription = Animation.subscription
+               

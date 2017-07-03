@@ -1,6 +1,6 @@
 module IVFinal.Generic.Tagged exposing (..)
 
-import Tagged exposing (Tagged(..))
+import Tagged exposing (Tagged(Tagged))
 
 {-| Use to make an instructor that can never be used because
     it's infinitely recursive

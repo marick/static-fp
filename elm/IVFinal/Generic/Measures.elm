@@ -21,7 +21,7 @@ module IVFinal.Generic.Measures exposing
   , isStrictlyNegative
   )
 
-import Tagged exposing (Tagged(..), untag, retag)
+import Tagged exposing (Tagged(Tagged))
 import IVFinal.Generic.Tagged exposing (UnusableConstructor)
 
 -- Types
