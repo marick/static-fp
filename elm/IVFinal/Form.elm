@@ -59,10 +59,12 @@ view model =
           ]
       in
         case howFinished of
-          Simulation.FluidLeft {endingVolume} ->
+          Simulation.FluidLeft endingVolume ->
             common flowRate
               ++ [ describeFinalLevel endingVolume
                  ]
+          Simulation.RanOutAfter minutes -> 
+            common flowRate ++ [ p [] [text "DERP" ] ]
 
   
 baseView : Obscured model -> InputAttributes -> Html Msg

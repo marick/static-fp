@@ -16,7 +16,8 @@ module IVFinal.Generic.Measures exposing
   , hours
   , percent
   , proportion
-    
+
+  , negate
   , reduceBy
   , isStrictlyNegative
   )
@@ -76,6 +77,10 @@ changeBy f decrement value =
 
 reduceBy : Tagged a number -> Tagged a number -> Tagged a number
 reduceBy = changeBy (-)
+
+negate : Tagged a number -> Tagged a number
+negate value =
+  Tagged.map (\n -> -n) value
 
 isStrictlyNegative : Tagged a comparable -> Bool
 isStrictlyNegative (Tagged n) = 

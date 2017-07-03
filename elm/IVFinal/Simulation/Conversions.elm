@@ -31,3 +31,14 @@ litersOverTime : Measure.LitersPerMinute -> Measure.Minutes -> Measure.Liters
 litersOverTime (Tagged lpm) (Tagged minutes) =
   lpm * (toFloat minutes) |> Measure.liters
 
+bagRanOutAfter : Measure.Minutes -> Measure.Liters -> Measure.Liters
+                   -> Measure.Minutes
+bagRanOutAfter (Tagged totalMinutes) (Tagged excess) (Tagged containerVolume) =
+  let
+    totalFluid = excess + containerVolume
+    containerDrainProportion = containerVolume / totalFluid
+    timeDraining = round (containerDrainProportion * (toFloat totalMinutes))
+  in
+    Measure.minutes (totalMinutes - timeDraining)
+  
+                     

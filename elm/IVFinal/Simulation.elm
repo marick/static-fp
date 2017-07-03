@@ -58,7 +58,7 @@ run scenario form =
     animations =
       case Measure.isStrictlyNegative core.endingVolume of
         True ->
-          identity
+          overDrain core
         False ->
           partlyDrain core
   in
@@ -68,9 +68,9 @@ run scenario form =
 
 partlyDrain : CoreInfo -> ModelTransform
 partlyDrain core = 
-  let 
+  let
     containerPercent = Measure.proportion core.endingVolume core.containerVolume
-    howFinished = FluidLeft { endingVolume = core.endingVolume }
+    howFinished = FluidLeft core.endingVolume
 
     step1_startFlow =
       Droplet.entersTimeLapse core.dripRate
@@ -82,4 +82,14 @@ partlyDrain core =
       >> moveToFinishedStage core.flowRate howFinished
   in
     step1_startFlow
+
+overDrain : CoreInfo -> ModelTransform
+overDrain core = 
+  let
+    excess =
+      Measure.negate core.endingVolume
+    emptyAt =
+      C.bagRanOutAfter core.minutes excess core.containerVolume
+  in
+    moveToFinishedStage core.flowRate (RanOutAfter emptyAt)
 

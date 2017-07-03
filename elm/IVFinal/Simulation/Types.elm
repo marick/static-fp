@@ -11,10 +11,8 @@ type Stage
   | Finished DrainRate HowFinished
 
 type HowFinished
-  = FluidLeft
-    { endingVolume : Measure.Liters
-    }
-
+  = FluidLeft Measure.Liters
+  | RanOutAfter Measure.Minutes
 
 
   
