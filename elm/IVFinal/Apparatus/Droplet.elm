@@ -4,6 +4,7 @@ module IVFinal.Apparatus.Droplet exposing
   , falls
   , entersTimeLapse
   , leavesTimeLapse
+  , stopsDuringTimeLapse
 
   , initStyles
   )
@@ -54,6 +55,9 @@ leavesTimeLapse rate =
   reanimate <|
     leavesTimeLapseSteps ++ fallsSteps rate
 
+stopsDuringTimeLapse : Transformer model
+stopsDuringTimeLapse = 
+  reanimate leavesTimeLapseSteps
 
 -- Steps
 

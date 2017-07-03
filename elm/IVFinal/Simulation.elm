@@ -72,11 +72,12 @@ partlyDrain core =
     containerPercent = Measure.proportion core.endingVolume core.containerVolume
     howFinished = FluidLeft core.endingVolume
 
+    -- animation
     beginTimeLapse =
       Droplet.entersTimeLapse core.dripRate
-        (Continuation lower)
+        (Continuation lowerBagLevel)
 
-    lower = 
+    lowerBagLevel = 
       BagFluid.lowers containerPercent core.minutes
          (Continuation backToDripping)
                   
@@ -93,6 +94,19 @@ overDrain core =
       Measure.timeRequired core.flowRate core.startingVolume
     howFinished =
       RanOutAfter emptyAt
+
+    -- animation
+    beginTimeLapse = 
+      Droplet.entersTimeLapse core.dripRate
+        (Continuation emptyBag)
+
+    emptyBag =
+      BagFluid.lowers (Measure.percent 0) emptyAt
+        (Continuation backToDripping)
+
+    backToDripping = 
+      Droplet.stopsDuringTimeLapse
+        >> moveToFinishedStage core.flowRate howFinished
   in
-    moveToFinishedStage core.flowRate howFinished
+    beginTimeLapse
 
