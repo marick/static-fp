@@ -8,6 +8,7 @@ module IVFinal.Apparatus.Droplet exposing
   , initStyles
   )
 
+import IVFinal.Types exposing (Continuation)
 import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable, px)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
@@ -41,10 +42,12 @@ falls rate =
   reanimate <| fallsSteps rate
        
       
-entersTimeLapse : Measure.DropsPerSecond -> Transformer model
-entersTimeLapse rate =
+entersTimeLapse : Measure.DropsPerSecond -> Continuation -> Transformer model
+entersTimeLapse rate continuation =
   reanimate <|
-    entersTimeLapseSteps ++ flowSteps rate
+    entersTimeLapseSteps
+    ++ [ Animation.request continuation ]
+    ++ flowSteps rate
 
 leavesTimeLapse : Measure.DropsPerSecond -> Transformer model
 leavesTimeLapse rate =

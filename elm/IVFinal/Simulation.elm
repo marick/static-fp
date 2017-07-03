@@ -72,22 +72,27 @@ partlyDrain core =
     containerPercent = Measure.proportion core.endingVolume core.containerVolume
     howFinished = FluidLeft core.endingVolume
 
-    step1_startFlow =
+    beginTimeLapse =
       Droplet.entersTimeLapse core.dripRate
-      >> BagFluid.lowers containerPercent core.minutes
-         (Continuation step2_backToDripping)
+        (Continuation lower)
+
+    lower = 
+      BagFluid.lowers containerPercent core.minutes
+         (Continuation backToDripping)
                   
-    step2_backToDripping = 
+    backToDripping = 
       Droplet.leavesTimeLapse core.dripRate
-      >> moveToFinishedStage core.flowRate howFinished
+        >> moveToFinishedStage core.flowRate howFinished
   in
-    step1_startFlow
+    beginTimeLapse
 
 overDrain : CoreInfo -> ModelTransform
 overDrain core = 
   let
     emptyAt =
       Measure.timeRequired core.flowRate core.startingVolume
+    howFinished =
+      RanOutAfter emptyAt
   in
-    moveToFinishedStage core.flowRate (RanOutAfter emptyAt)
+    moveToFinishedStage core.flowRate howFinished
 
