@@ -2,6 +2,7 @@ module IVFinal.Generic.Measures exposing
   ( DropsPerSecond
   , LitersPerMinute
   , Liters
+  , Seconds
   , Minutes
   , Hours
   , Percent
@@ -9,6 +10,8 @@ module IVFinal.Generic.Measures exposing
   , dripRate
   , litersPerMinute
   , liters
+  , seconds
+  , toSeconds
   , minutes
   , hours
   , percent
@@ -23,6 +26,7 @@ import IVFinal.Generic.Tagged exposing (UnusableConstructor)
 
 -- Types
 type alias DropsPerSecond = Tagged DropsPerSecondTag Float
+type alias Seconds = Tagged SecondsTag Float
 type alias Minutes = Tagged MinutesTag Int
 type alias Hours = Tagged HoursTag Int
 type alias Liters = Tagged LitersTag Float
@@ -45,6 +49,13 @@ proportion (Tagged first) (Tagged second) =
   percent (first / second)
 
 --
+seconds : Float -> Seconds
+seconds = Tagged
+
+toSeconds : DropsPerSecond -> Seconds
+toSeconds (Tagged rate) =
+  Tagged (1/rate)
+    
 minutes : Int -> Minutes
 minutes = Tagged
 
@@ -70,10 +81,10 @@ isStrictlyNegative : Tagged a comparable -> Bool
 isStrictlyNegative (Tagged n) = 
   n < 0
            
-
 --- Support for tagging
 
 type DropsPerSecondTag = DropsPerSecondTag UnusableConstructor
+type SecondsTag = SecondsTag UnusableConstructor
 type MinutesTag = MinutesTag UnusableConstructor
 type HoursTag = HoursTag UnusableConstructor
 type LitersTag = LitersTag UnusableConstructor

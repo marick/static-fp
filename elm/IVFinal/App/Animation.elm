@@ -6,9 +6,12 @@ import Animation
 import Animation.Messenger
 import Ease
 import Time
+import IVFinal.Generic.Measures as Measure
 import IVFinal.Generic.EuclideanTypes exposing (Rectangle)
 import IVFinal.Generic.EuclideanRectangle as Rect
 import Color exposing (Color)
+import Tagged exposing (Tagged(..), untag, retag)
+
 
 -- Aliasing
 
@@ -34,17 +37,17 @@ animatable shape (HasFixedPart attributes) animatedPart =
     (attributes ++ Animation.render animatedPart)
     []
 
-timing : EasingFunction -> Float -> Timing
-timing ease seconds = 
+timing : EasingFunction -> Measure.Seconds -> Timing
+timing ease (Tagged seconds) = 
   Animation.easing
     { duration = Time.second * seconds
     , ease = ease
     }
       
-linear : Float -> Timing
+linear : Measure.Seconds -> Timing
 linear = timing Ease.linear
 
-accelerating : Float -> Timing
+accelerating : Measure.Seconds -> Timing
 accelerating = timing Ease.inQuad
 
 yFrom : Rectangle -> Styling

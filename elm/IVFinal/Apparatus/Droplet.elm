@@ -8,21 +8,16 @@ module IVFinal.Apparatus.Droplet exposing
   , initStyles
   )
 
-import IVFinal.App.Animation as AnimationX exposing (FixedPart(..), animatable)
+import IVFinal.App.Animation as AnimationX exposing (FixedPart(..), animatable, px)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
 import IVFinal.App.Svg exposing ((^^))
 import IVFinal.Generic.EuclideanRectangle as Rect
 import IVFinal.Generic.Measures as Measure
-
-import Animation exposing (px)
-import Ease
 import Svg.Attributes as SA
-import Time
 
-import Tagged exposing (Tagged(..), untag, retag)
-import IVFinal.Generic.Tagged exposing (UnusableConstructor)
+import Tagged exposing (Tagged(Tagged))
 
 --- Customizing `Model` to this module
 
@@ -67,9 +62,12 @@ fallsSteps rate =
 
 
 entersTimeLapseSteps : List AnimationX.Step
-entersTimeLapseSteps = 
+entersTimeLapseSteps =
+  let
+    timing = AnimationX.accelerating <| Measure.seconds 0.3
+  in
     [ AnimationX.set initStyles
-    , AnimationX.toWith (transitioningIn) flowedStyles_1
+    , AnimationX.toWith timing flowedStyles_1
     ]
 
 flowSteps : Measure.DropsPerSecond -> List AnimationX.Step
@@ -91,9 +89,12 @@ discreteDripSteps rate =
 
 leavesTimeLapseSteps : List AnimationX.Step 
 leavesTimeLapseSteps =
-  [ AnimationX.set flowedStyles_1
-  , AnimationX.toWith (transitioningOut) flowVanishedStyles
-  ] 
+  let 
+    timing = AnimationX.accelerating <| Measure.seconds 0.1
+  in
+    [ AnimationX.set flowedStyles_1
+    , AnimationX.toWith timing flowVanishedStyles
+    ] 
 
 -- styles
 
@@ -148,44 +149,21 @@ flowVanishedStyles =
 
 falling : AnimationX.Timing  
 falling =
-  Animation.easing
-    { duration = untag timeForDropToFall
-    , ease = Ease.inQuad
-    }
+  timeForDropToFall
+    |> AnimationX.accelerating 
 
 growing : Measure.DropsPerSecond -> AnimationX.Timing  
 growing rate =
-  let
-    duration =
-      rate
-        |> rateToDuration
-        |> Measure.reduceBy timeForDropToFall
-  in
-    Animation.easing
-      { duration = untag duration
-      , ease = Ease.linear
-      }
+  rate
+    |> Measure.toSeconds
+    |> Measure.reduceBy timeForDropToFall
+    |> AnimationX.linear
 
 flowing : Measure.DropsPerSecond -> AnimationX.Timing
 flowing rate =
-  Animation.easing
-    { duration = rateToDuration rate |> untag
-    , ease = Ease.inQuad
-    }
-
-transitioningIn : AnimationX.Timing
-transitioningIn =
-  Animation.easing
-    { duration = Time.second * 0.3
-    , ease = Ease.inQuad
-    }
-
-transitioningOut : AnimationX.Timing
-transitioningOut =
-  Animation.easing
-    { duration = Time.second * 0.1
-    , ease = Ease.inQuad
-    }
+  rate
+    |> Measure.toSeconds
+    |> AnimationX.linear
 
 --- View
                     
@@ -198,24 +176,13 @@ view =
 
 -- About timing calculations
     
-type alias SecondsPerDrop = Tagged SecondsPerDropTag Float
-type SecondsPerDropTag = SecondsPerDropTag UnusableConstructor
-
 flowCutoff : Measure.DropsPerSecond
 flowCutoff = Measure.dripRate 6.0
 
 -- Following is slower than reality (in a vacuum), but looks better
-timeForDropToFall : SecondsPerDrop
-timeForDropToFall = rateToDuration flowCutoff
+timeForDropToFall : Measure.Seconds
+timeForDropToFall = Measure.toSeconds flowCutoff
 
-rateToDuration : Measure.DropsPerSecond -> SecondsPerDrop
-rateToDuration dps =
-  let
-    calculation rate =
-      (1 / rate ) * Time.second
-  in
-    Tagged.map calculation dps |> retag
-  
 isTooFastToSeeIndividualDrops : Measure.DropsPerSecond -> Bool
 isTooFastToSeeIndividualDrops (Tagged rate) =
   let
