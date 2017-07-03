@@ -165,11 +165,11 @@ describeFinalLevel (Tagged litersLeft) =
     strongSentence <| "The final level is " ++ show ++ "."
 
 describeOverflow : Measure.Minutes -> Html msg
-describeOverflow (Tagged minutes) =
+describeOverflow minutes =
   let
-    show = String.pluralize "minute" "minutes" minutes
+    show = Measure.friendlyMinutes minutes
   in
-    alert <| "The fluid ran out after " ++ toString minutes ++ " minutes."
+    alert <| "The fluid ran out after " ++ show ++ "."
 
 -- Misc
          

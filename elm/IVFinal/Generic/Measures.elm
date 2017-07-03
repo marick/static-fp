@@ -10,10 +10,15 @@ module IVFinal.Generic.Measures exposing
   , dripRate
   , litersPerMinute
   , liters
+  , litersOverTime
+  , timeRequired
   , seconds
   , toSeconds
   , minutes
   , hours
+  , toMinutes
+  , fromMinutes
+  , friendlyMinutes
   , percent
   , proportion
 
@@ -24,6 +29,7 @@ module IVFinal.Generic.Measures exposing
 
 import Tagged exposing (Tagged(Tagged))
 import IVFinal.Generic.Tagged exposing (UnusableConstructor)
+import String.Extra as String
 
 -- Types
 type alias DropsPerSecond = Tagged DropsPerSecondTag Float
@@ -63,9 +69,40 @@ minutes = Tagged
 hours : Int -> Hours
 hours = Tagged
 
+toMinutes : Hours -> Minutes -> Minutes
+toMinutes (Tagged hourPart) (Tagged minutePart) =
+  60 * hourPart + minutePart |> minutes
+
+fromMinutes : Minutes -> (Hours, Minutes)
+fromMinutes (Tagged source) =
+  ( source // 60 |> hours
+  , rem source 60 |> minutes
+  )
+
+friendlyMinutes : Minutes -> String
+friendlyMinutes source =
+  let
+    (Tagged hours, Tagged minutes) = fromMinutes source
+    outMinutes = String.pluralize "minute" "minutes" minutes
+    outHours = String.pluralize "hour" "hours" hours
+  in
+    case (hours, minutes) of
+      (0, 0) -> outMinutes
+      (_, 0) -> outHours
+      (0, _) -> outMinutes
+      _ -> outHours ++ " and " ++ outMinutes
+  
 --
 liters : Float -> Liters
 liters = Tagged
+
+litersOverTime : LitersPerMinute -> Minutes -> Liters
+litersOverTime (Tagged lpm) (Tagged minutes) =
+  lpm * (toFloat minutes) |> liters
+
+timeRequired : LitersPerMinute -> Liters -> Minutes
+timeRequired (Tagged lmp) (Tagged liters) = 
+  (1 / lmp) * liters |> round |> minutes
 
 -- Generic
     

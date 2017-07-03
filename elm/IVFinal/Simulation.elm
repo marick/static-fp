@@ -34,7 +34,7 @@ type alias CoreInfo =
 toCoreInfo : Scenario -> FinishedForm -> CoreInfo
 toCoreInfo scenario form =
   let 
-    minutes = C.toMinutes form.hours form.minutes
+    minutes = Measure.toMinutes form.hours form.minutes
     dripRate = form.dripRate
     flowRate = C.toFlowRate dripRate scenario
     containerVolume = scenario.containerVolume
@@ -86,10 +86,8 @@ partlyDrain core =
 overDrain : CoreInfo -> ModelTransform
 overDrain core = 
   let
-    excess =
-      Measure.negate core.endingVolume
     emptyAt =
-      C.bagRanOutAfter core.minutes excess core.containerVolume
+      Measure.timeRequired core.flowRate core.startingVolume
   in
     moveToFinishedStage core.flowRate (RanOutAfter emptyAt)
 
