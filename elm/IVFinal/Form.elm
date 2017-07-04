@@ -53,7 +53,7 @@ isFormReady model =
     allValues model
       |> Maybe.map runtime
       |> Maybe.map Measure.isStrictlyPositive
-      
+      |> Maybe.isJust
 
 view : Obscured model -> List (Html Msg)
 view model =
@@ -170,7 +170,7 @@ startButton : Obscured model -> Html Msg
 startButton model = 
   H.soloButton "Start" 
     [ Event.onClick SimulationRequested
-    , disabled (allValues model |> Maybe.isNothing)
+    , disabled (isFormReady model)
     ]
 
 tryAgainButton : Html Msg
