@@ -4,7 +4,7 @@ module IVFinal.Apparatus.HoseFluid exposing
   , initStyles
   )
 
-import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable, px)
+import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
@@ -57,7 +57,7 @@ emptyStyles  =
     rect = C.hoseFluid |> Rect.lowerTo 0
   in
     [ Animation.yFrom rect
-    , Animation.height (px 0)
+    , Animation.heightAttr 0
     ]
 
 -- Timing

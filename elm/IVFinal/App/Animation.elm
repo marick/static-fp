@@ -52,10 +52,10 @@ accelerating : Measure.Seconds -> Timing
 accelerating = timing Ease.inQuad
 
 yFrom : Rectangle -> Styling
-yFrom = Rect.y >> Animation.y
+yFrom = Rect.y >> y
 
 heightFrom : Rectangle -> Styling
-heightFrom = Rect.height >> px >> Animation.height
+heightFrom = Rect.height >> heightAttr
 
 request : App.Continuation -> Step             
 request = App.RunContinuation >> Animation.Messenger.send
@@ -63,14 +63,16 @@ request = App.RunContinuation >> Animation.Messenger.send
 
 -- re-exports
 
-height : Animation.Length -> Styling
-height = Animation.height
+{- Animation.height produces a *style* "height: xyzzy". But, for SVG,
+   we want the height *attribute*. I didn't override the name `height`
+   because that would be confusing if someone used this code to animate
+   HTML.
+-}
+heightAttr : Float -> Styling
+heightAttr val = Animation.attr "height" val "px"
 
 fill : Color -> Styling          
 fill = Animation.fill
-
-px : Float -> Animation.Length       
-px = Animation.px
 
 y : Float -> Styling     
 y = Animation.y

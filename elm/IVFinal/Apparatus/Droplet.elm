@@ -10,7 +10,7 @@ module IVFinal.Apparatus.Droplet exposing
   )
 
 import IVFinal.Types exposing (Continuation)
-import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable, px)
+import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
@@ -124,42 +124,42 @@ initStyles : List Animation.Styling
 initStyles =
   [ Animation.yFrom C.startingDroplet
   , Animation.fill C.fluidColor
-  , Animation.height (px 0)
+  , Animation.heightAttr 0
   ]
 
 grownStyles : List Animation.Styling
 grownStyles =
   [ Animation.yFrom C.startingDroplet
   , Animation.fill C.fluidColor
-  , Animation.height (px C.dropletSideLength)
+  , Animation.heightAttr C.dropletSideLength
   ]
     
 fallenStyles : List Animation.Styling
 fallenStyles =
   [ Animation.y (Rect.y C.endingDroplet)
   , Animation.fill C.fluidColor
-  , Animation.height (px C.dropletSideLength)
+  , Animation.heightAttr C.dropletSideLength
   ]
 
 flowedStyles_1 : List Animation.Styling
 flowedStyles_1 =
   [ Animation.yFrom C.startingDroplet
   , Animation.fill C.fluidColor
-  , Animation.height (px C.flowLength)
+  , Animation.heightAttr C.flowLength
   ]
 
 flowedStyles_2 : List Animation.Styling
 flowedStyles_2 =
   [ Animation.yFrom C.startingDroplet
   , Animation.fill C.fluidColor_alternate
-  , Animation.height (px C.flowLength)
+  , Animation.heightAttr C.flowLength
   ]
 
 flowVanishedStyles : List Animation.Styling
 flowVanishedStyles =
   [ Animation.y (Rect.y C.endingDroplet)
   , Animation.fill C.fluidColor
-  , Animation.height (px 0)
+  , Animation.heightAttr 0
   ]
 
 
