@@ -175,7 +175,7 @@ startButton model =
 
 tryAgainButton : Html Msg
 tryAgainButton = 
-  H.soloButton "Try Again With New Values"
+  H.soloButton "Restart"
     [ Event.onClick ResetSimulation ]
 
 
