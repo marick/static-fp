@@ -59,7 +59,9 @@ createVia : (String -> Result err base)  -- string parser
          -> String                       -- allow partial
          -> ValidatedString measure
 createVia parser validator converter string =
-  parser string
+  string
+    |> String.trim
+    |> parser
     |> Result.toMaybe
     |> Maybe.filter validator
     |> Maybe.map converter
