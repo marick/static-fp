@@ -15,8 +15,8 @@ import Tagged exposing (Tagged(Tagged))
 import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
 import IVFinal.App.InputFields as Field
 import IVFinal.Scenario exposing (Scenario)
-import String.Extra as String
 import Maybe.Extra as Maybe
+import Round
 
 import IVFinal.Types exposing (Msg(..), FinishedForm)
 
@@ -166,15 +166,15 @@ tryAgainButton =
 describeFlow : String -> Measure.LitersPerMinute -> Html msg
 describeFlow pronoun (Tagged rate) =
   let
-    show = toString (rate * 60)
+    show = format (rate * 60) "liter"
   in
-    "The flow rate " ++ pronoun ++ " " ++ show ++ " liters/hour."
+    "The flow rate " ++ pronoun ++ " " ++ show ++ "/hour."
       |> strongSentence
 
 describeFinalLevel : Measure.Liters -> Html msg
 describeFinalLevel (Tagged litersLeft) =
   let
-    show = String.pluralize "liter" "liters" litersLeft
+    show = format litersLeft "liter"
   in
     strongSentence <| "The final level is " ++ show ++ "."
 
@@ -204,3 +204,17 @@ alert s =
         [text s]
     , br [] []
     ]
+
+    
+format : Float -> String -> String
+format n singular =
+  let
+    suffix =
+      if n == 1 then
+        singular
+      else
+        singular ++ "s"
+    number =
+      Round.round 2 n
+  in
+    number ++ " " ++ suffix
