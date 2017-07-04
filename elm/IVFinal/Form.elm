@@ -14,6 +14,7 @@ import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
 import IVFinal.App.InputFields as Field
 import IVFinal.Scenario exposing (Scenario)
 import String.Extra as String
+import Maybe.Extra as Maybe
 
 import IVFinal.Types exposing (Msg(..), FinishedForm)
 
@@ -42,7 +43,7 @@ view model =
   case model.stage of
     FormFilling ->
       [ baseView model formCanBeChanged
-      , startButton
+      , startButton model
       ]
       
     WatchingAnimation flowRate ->
@@ -135,11 +136,12 @@ formIsDisabled =
 
 -- Buttons
 
-startButton : Html Msg
-startButton = 
+startButton : Obscured model -> Html Msg
+startButton model =
   H.soloButton "Start" 
-    [ Event.onClick SimulationRequested ]
-
+    [ Event.onClick SimulationRequested
+    , disabled (allValues model |> Maybe.isNothing)
+    ]
 
 tryAgainButton : Html Msg
 tryAgainButton = 
