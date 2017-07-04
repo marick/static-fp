@@ -2,9 +2,10 @@ module IVFinal.Apparatus.Droplet exposing
   (view
 
   , falls
+  , flows
   , entersTimeLapse
-  , leavesTimeLapse
-  , stopsDuringTimeLapse
+  , transitionsToDripping
+  , flowVanishes
 
   , initStyles
   )
@@ -40,64 +41,22 @@ reanimate steps model =
 
 falls : Measure.DropsPerSecond -> Transformer model
 falls rate =
-  reanimate <| fallsSteps rate
-       
-      
-entersTimeLapse : Measure.DropsPerSecond -> Continuation -> Transformer model
-entersTimeLapse rate continuation =
+  case alwaysFlowing rate of
+    True -> flows rate
+    False -> drips rate
+
+flows : Measure.DropsPerSecond -> Transformer model
+flows rate = 
   reanimate <|
-    entersTimeLapseSteps rate
-    ++ [ Animation.request continuation ]
-    ++ flowSteps rate
-
-leavesTimeLapse : Measure.DropsPerSecond -> Transformer model
-leavesTimeLapse rate =
-  reanimate <|
-    leavesTimeLapseSteps ++ fallsSteps rate
-
-stopsDuringTimeLapse : Continuation -> Transformer model
-stopsDuringTimeLapse continuation = 
-  reanimate <|
-    leavesTimeLapseSteps
-    ++ [ Animation.request continuation ]
-
--- Steps
-
-fallsSteps : Measure.DropsPerSecond -> List Animation.Step
-fallsSteps rate = 
-  (case isTooFastToSeeIndividualDrops rate of
-     True -> flowSteps rate
-     False -> discreteDripSteps rate)
-
-
-entersTimeLapseSteps : Measure.DropsPerSecond -> List Animation.Step
-entersTimeLapseSteps rate =
-  let
-    timing = Animation.accelerating <| Measure.seconds 0.3
-
-    noTransition =
-      [] -- when already being displayed as flowing
-
-    streamStartsByPouringDown = 
-      [ Animation.set initStyles
-      , Animation.toWith timing flowedStyles_1
-      ]
-  in
-    case isTooFastToSeeIndividualDrops rate of
-      True -> noTransition
-      False -> streamStartsByPouringDown
-    
-
-flowSteps : Measure.DropsPerSecond -> List Animation.Step
-flowSteps rate =
     [ Animation.loop
-      [ Animation.toWith (flowing rate) flowedStyles_2
-      , Animation.toWith (flowing rate) flowedStyles_1
-      ]
+        [ Animation.toWith (flowing rate) flowedStyles_2
+        , Animation.toWith (flowing rate) flowedStyles_1
+        ]
     ]
 
-discreteDripSteps : Measure.DropsPerSecond -> List Animation.Step
-discreteDripSteps rate = 
+drips : Measure.DropsPerSecond -> Transformer model
+drips rate = 
+  reanimate <|
     [ Animation.loop
         [ Animation.set initStyles
         , Animation.toWith (growing rate) grownStyles
@@ -105,14 +64,32 @@ discreteDripSteps rate =
         ]
     ]
 
-leavesTimeLapseSteps : List Animation.Step 
-leavesTimeLapseSteps =
-  let 
-    timing = Animation.accelerating <| Measure.seconds 0.1
-  in
+  
+entersTimeLapse : Measure.DropsPerSecond -> Continuation -> Transformer model
+entersTimeLapse rate continuation =
+  reanimate <|
+    withoutGlitches rate continuation 
+      [ Animation.set initStyles
+      , Animation.toWith enterTiming flowedStyles_1
+      ]
+
+transitionsToDripping : Measure.DropsPerSecond -> Continuation -> Transformer model
+transitionsToDripping rate continuation =
+  reanimate <|
+    withoutGlitches rate continuation
+      [ Animation.set flowedStyles_1
+      , Animation.toWith endingTiming flowVanishedStyles
+      ] 
+
+flowVanishes : Continuation -> Transformer model
+flowVanishes continuation =
+  reanimate <|
     [ Animation.set flowedStyles_1
-    , Animation.toWith timing flowVanishedStyles
+    , Animation.toWith endingTiming flowVanishedStyles
+    , Animation.set initStyles
+    , Animation.request continuation
     ] 
+
 
 -- styles
 
@@ -192,7 +169,7 @@ view =
     , SA.x ^^ (Rect.x C.startingDroplet)
     ]
 
--- About timing calculations
+---- About timing calculations
     
 flowCutoff : Measure.DropsPerSecond
 flowCutoff = Measure.dripRate 6.0
@@ -201,10 +178,30 @@ flowCutoff = Measure.dripRate 6.0
 timeForDropToFall : Measure.Seconds
 timeForDropToFall = Measure.toSeconds flowCutoff
 
-isTooFastToSeeIndividualDrops : Measure.DropsPerSecond -> Bool
-isTooFastToSeeIndividualDrops (Tagged rate) =
+alwaysFlowing : Measure.DropsPerSecond -> Bool
+alwaysFlowing (Tagged rate) =
   let
     (Tagged cutoff) = flowCutoff
   in
     rate - cutoff > 0
 
+withoutGlitches : Measure.DropsPerSecond -> Continuation
+                -> List Animation.Step
+                -> List Animation.Step
+withoutGlitches rate continuation steps =
+  let
+    continuationRequest =
+      [ Animation.request continuation ]
+
+    chosenSteps =
+      case alwaysFlowing rate of
+        True -> []
+        False -> steps
+  in
+    chosenSteps ++ continuationRequest
+
+enterTiming = 
+  Measure.seconds 0.3 |> Animation.accelerating 
+
+endingTiming  =
+  Measure.seconds 0.2 |> Animation.accelerating 
