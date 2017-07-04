@@ -1,6 +1,6 @@
 module IVFinal.App.Animation exposing (..)
 
-import IVFinal.Types exposing (Msg(RunContinuation), Continuation)
+import IVFinal.Types as App
 import Svg exposing (Svg)
 import Animation
 import Animation.Messenger
@@ -17,8 +17,9 @@ import Tagged exposing (Tagged(Tagged))
 
 type alias Styling = Animation.Property
 type alias Timing = Animation.Interpolation  
-type alias Model = Animation.Messenger.State Msg
-type alias Step = Animation.Messenger.Step Msg
+type alias Model = Animation.Messenger.State App.Msg
+type alias Step = Animation.Messenger.Step App.Msg
+type alias Msg = Animation.Msg
 
 type alias EasingFunction = Float -> Float      
 
@@ -56,8 +57,8 @@ yFrom = Rect.y >> Animation.y
 heightFrom : Rectangle -> Styling
 heightFrom = Rect.height >> px >> Animation.height
 
-request : Continuation -> Step             
-request = RunContinuation >> Animation.Messenger.send
+request : App.Continuation -> Step             
+request = App.RunContinuation >> Animation.Messenger.send
 
 
 -- re-exports
@@ -80,7 +81,7 @@ interrupt = Animation.interrupt
 loop : List Step -> Step
 loop = Animation.loop
 
-send : Msg -> Step       
+send : App.Msg -> Step       
 send = Animation.Messenger.send
 
 set : List Styling -> Step
@@ -92,9 +93,9 @@ toWith = Animation.toWith
 style : List Styling -> Model
 style = Animation.style
 
-update : Animation.Msg -> Model -> (Model, Cmd Msg)
+update : Animation.Msg -> Model -> (Model, Cmd App.Msg)
 update = Animation.Messenger.update
 
-subscription : (Animation.Msg -> Msg) -> List Model -> Sub Msg
+subscription : (Animation.Msg -> App.Msg) -> List Model -> Sub App.Msg
 subscription = Animation.subscription
                
