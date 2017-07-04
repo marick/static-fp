@@ -51,3 +51,7 @@ type Msg
 
   | Tick Animation.Msg
   | RunContinuation Continuation
+
+  -- Use this for tasks that produce no useful values, and
+  -- when we don't even care whether is succeeded or not.
+  | SideEffectTaskFinished

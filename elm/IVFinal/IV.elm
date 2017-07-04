@@ -16,17 +16,10 @@ import IVFinal.Generic.Measures as Measure
 import IVFinal.App.Animation as Animation
 import IVFinal.App.Layout as Layout
 import IVFinal.Form as Form
+import Dom
 
 import IVFinal.Types exposing (..)
 import IVFinal.Simulation.Types exposing (..)
-
-makeFieldsEmpty : Model -> Model
-makeFieldsEmpty model = 
-  { model
-      | desiredDripRate = Field.dripRate ""
-      , desiredMinutes = Field.minutes "0"
-      , desiredHours = Field.hours "0"
-  }
 
 startingModel : Scenario -> Model
 startingModel scenario =
@@ -98,32 +91,40 @@ update msg model =
       (f model, Cmd.none)
       
     Tick subMsg ->
-      let
-        (newDroplet, dropletCmd) =
-          Animation.update subMsg model.droplet
-        (newBagFluid, bagFluidCmd) =
-          Animation.update subMsg model.bagFluid
-        (newChamberFluid, chamberFluidCmd) =
-          Animation.update subMsg model.chamberFluid
-        (newHoseFluid, hoseFluidCmd) =
-          Animation.update subMsg model.hoseFluid
-      in
-        ( { model
-            | droplet = newDroplet
-            , bagFluid = newBagFluid
-            , chamberFluid = newChamberFluid
-            , hoseFluid = newHoseFluid
-          }
-        , Cmd.batch [dropletCmd, bagFluidCmd, chamberFluidCmd, hoseFluidCmd]
-        )
+      updateSimulations subMsg model
 
     -- After the simulation
         
     ResetSimulation ->
-      ( model |> makeFieldsEmpty
-      , Cmd.none
+      ( startingModel model.scenario
+      , Task.attempt
+          (always SideEffectTaskFinished)
+          (Dom.focus Form.firstFocusId)
       )
 
+    SideEffectTaskFinished ->
+      ( model, Cmd.none ) 
+
+updateSimulations : Animation.Msg -> Model -> (Model, Cmd Msg)
+updateSimulations subMsg model =
+  let
+    (newDroplet, dropletCmd) =
+      Animation.update subMsg model.droplet
+    (newBagFluid, bagFluidCmd) =
+      Animation.update subMsg model.bagFluid
+    (newChamberFluid, chamberFluidCmd) =
+      Animation.update subMsg model.chamberFluid
+    (newHoseFluid, hoseFluidCmd) =
+      Animation.update subMsg model.hoseFluid
+  in
+    ( { model
+        | droplet = newDroplet
+        , bagFluid = newBagFluid
+        , chamberFluid = newChamberFluid
+        , hoseFluid = newHoseFluid
+      }
+    , Cmd.batch [dropletCmd, bagFluidCmd, chamberFluidCmd, hoseFluidCmd]
+    )
 
 view : Model -> Html Msg
 view model =

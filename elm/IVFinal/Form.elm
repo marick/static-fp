@@ -2,6 +2,8 @@ module IVFinal.Form exposing
   ( view
   , allValues
   , dripRate
+
+  , firstFocusId
   )
 
 import Html exposing (..)
@@ -17,6 +19,11 @@ import String.Extra as String
 import Maybe.Extra as Maybe
 
 import IVFinal.Types exposing (Msg(..), FinishedForm)
+
+{- 
+   Note that there may be only one form on a page. This is not
+   *quite* an isolated component. (See use of `firstFocusId`.)
+-}
 
 type alias Obscured model =
   { model
@@ -68,7 +75,11 @@ view model =
               [ describeOverflow minutes ]
       in
         common flowRate ++ variant
-  
+
+-- Note that this prevents having more than one form on a page.
+firstFocusId : String          
+firstFocusId = "focusGoesHere"
+          
 baseView : Obscured model -> InputAttributes -> Html Msg
 baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
          {dripRateAttrs, hourAttrs, minuteAttrs} =
@@ -114,7 +125,8 @@ formCanBeChanged =
   { dripRateAttrs =
       [ Event.onInput ChangeDripRate
       , Event.onBlur DrippingRequested
-      , autofocus True
+      , autofocus True  -- sets focus on page load.
+      , id firstFocusId -- reset focus after `tryAgainButton`
       ]
   , hourAttrs =
       [ Event.onInput ChangeHours ]
@@ -137,7 +149,7 @@ formIsDisabled =
 -- Buttons
 
 startButton : Obscured model -> Html Msg
-startButton model =
+startButton model = 
   H.soloButton "Start" 
     [ Event.onClick SimulationRequested
     , disabled (allValues model |> Maybe.isNothing)
