@@ -45,6 +45,16 @@ allValues model =
     model.desiredHours.value
     model.desiredMinutes.value
 
+isFormReady model =
+  let
+    runtime {hours, minutes} =
+      Measure.toMinutes hours minutes
+  in
+    allValues model
+      |> Maybe.map runtime
+      |> Maybe.map Measure.isStrictlyPositive
+      
+
 view : Obscured model -> List (Html Msg)
 view model =
   case model.stage of

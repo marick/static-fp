@@ -25,6 +25,7 @@ module IVFinal.Generic.Measures exposing
   , negate
   , reduceBy
   , isStrictlyNegative
+  , isStrictlyPositive
   )
 
 import Tagged exposing (Tagged(Tagged))
@@ -122,6 +123,10 @@ negate value =
 isStrictlyNegative : Tagged a comparable -> Bool
 isStrictlyNegative (Tagged n) = 
   n < 0
+           
+isStrictlyPositive : Tagged a comparable -> Bool
+isStrictlyPositive (Tagged n) = 
+  n > 0
            
 --- Support for tagging
 
