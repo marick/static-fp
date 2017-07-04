@@ -200,8 +200,10 @@ withoutGlitches rate continuation steps =
   in
     chosenSteps ++ continuationRequest
 
+enterTiming : Animation.Timing      
 enterTiming = 
   Measure.seconds 0.3 |> Animation.accelerating 
 
+endingTiming : Animation.Timing      
 endingTiming  =
   Measure.seconds 0.2 |> Animation.accelerating 

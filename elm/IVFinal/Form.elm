@@ -45,6 +45,7 @@ allValues model =
     model.desiredHours.value
     model.desiredMinutes.value
 
+isFormReady : Obscured model -> Bool      
 isFormReady model =
   let
     runtime {hours, minutes} =

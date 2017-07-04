@@ -14,9 +14,6 @@ import IVFinal.Generic.EuclideanRectangle as Rect
 import IVFinal.Generic.Measures as Measure
 import Svg.Attributes as SA
 
-import Tagged exposing (Tagged(Tagged))
-
-
 --- Customizing `Model` to this module
 
 type alias Obscured model =

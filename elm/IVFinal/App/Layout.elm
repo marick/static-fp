@@ -38,6 +38,7 @@ form contents =
     contents
 
 
+boilerplate : List (Html msg)      
 boilerplate =
   [ H.p []
       [ H.text
