@@ -4,7 +4,7 @@ module IVFinal.Apparatus.HoseFluid exposing
   , initStyles
   )
 
-import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
+import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable, px)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
@@ -37,19 +37,28 @@ reanimate steps model =
 empties : Continuation -> Transformer model
 empties continuation =
   reanimate
-    [ Animation.request continuation
+    [ Animation.toWith
+        (Animation.linear <| Measure.seconds 0.3)
+        emptyStyles
+    , Animation.request continuation
     ]
 
 -- Styles
 
--- None of the client's business that the same calculations are used
--- for both styles.
-    
 initStyles : List Animation.Styling
 initStyles = 
   [ Animation.yFrom C.hoseFluid
   , Animation.heightFrom C.hoseFluid
   ]
+
+emptyStyles : List Animation.Styling
+emptyStyles  =
+  let
+    rect = C.hoseFluid |> Rect.lowerTo 0
+  in
+    [ Animation.yFrom rect
+    , Animation.height (px 0)
+    ]
 
 -- Timing
 

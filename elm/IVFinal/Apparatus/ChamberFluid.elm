@@ -45,9 +45,6 @@ empties continuation =
 
 -- Styles
 
--- None of the client's business that the same calculations are used
--- for both styles.
-    
 initStyles : List Animation.Styling
 initStyles = 
   [ Animation.yFrom C.chamberFluid

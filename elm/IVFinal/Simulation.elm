@@ -110,6 +110,10 @@ overDrain core =
 
     emptyChamber =
       ChamberFluid.empties
+        (Continuation emptyHose)
+
+    emptyHose =
+      HoseFluid.empties
         (Continuation finish)
 
     finish =
