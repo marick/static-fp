@@ -109,17 +109,25 @@ baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
 
     para2 =
       p []
-        [ text <| "Using your calculations, set the drip rate to "
+        [ text """
+                Using the numbers given you by your instructor,
+                find an appropriate drip rate and time to administer.
+               """
+        ]
+
+    para3 =
+      p []
+        [ text <| "Check if the ending fluid level is what you expected by setting the drip rate to "
         , H.textInput desiredDripRate dripRateAttrs
-        , text <| " drops/sec, then set the hours "
+        , text <| " drops/sec, then setting the hours "
         , H.textInput desiredHours hourAttrs
         , text <| " and minutes "
         , H.textInput desiredMinutes minuteAttrs
-        , text <| " until you plan to next look at the fluid level."
+        , text <| ", then clicking Start."
         ]
   in
     div [] 
-      [ para1, para2 ] 
+      [ para1, para2, para3 ] 
 
   
 --- Attributes

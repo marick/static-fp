@@ -5,6 +5,7 @@ import Html.Attributes as HA
 import Svg as S exposing (Svg)
 import Svg.Attributes as SA
 
+
 wrapper : List (Html msg) -> Html msg
 wrapper contents = 
   H.div
@@ -16,8 +17,7 @@ wrapper contents =
         [ HA.style [("display", "flex")]
         ]
         contents
-    , H.div []
-      boilerplate
+    , H.div [] boilerplate
     ]
       
 canvas : List (Svg msg) -> Html msg
@@ -33,7 +33,9 @@ canvas contents =
 
 form : List (Html msg) -> Html msg
 form contents = 
-  H.div [] contents
+  H.div [ HA.style [ ("width", "370px") ]
+        ]
+    contents
 
 
 boilerplate =
@@ -41,14 +43,11 @@ boilerplate =
       [ H.text
           """
               This example is derived from an app used to teach
-              students of veterinary medicine. They calculate the
-              appropriate drip rate and time (based on information
-              given to them by an instructor), then use the app to see
-              if the ending fluid level is what they expected.
+              students of veterinary medicine. Since you don't
+              have an instructor watching you, you don't have to get
+              the numbers right. Here are some interesting ones
+              to try:
           """
-      ]
-  , H.p []
-      [ H.text "Here are some interesting values to try: "
       , H.ul []
         [ H.li [] [H.text "Drip rate of 2 for 5 hours."]
         , H.li [] [H.text "Drip rate of 13 for 5 hours, 30 minutes."]
