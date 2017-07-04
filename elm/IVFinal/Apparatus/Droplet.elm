@@ -46,7 +46,7 @@ falls rate =
 entersTimeLapse : Measure.DropsPerSecond -> Continuation -> Transformer model
 entersTimeLapse rate continuation =
   reanimate <|
-    entersTimeLapseSteps
+    entersTimeLapseSteps rate
     ++ [ Animation.request continuation ]
     ++ flowSteps rate
 
@@ -70,14 +70,23 @@ fallsSteps rate =
      False -> discreteDripSteps rate)
 
 
-entersTimeLapseSteps : List Animation.Step
-entersTimeLapseSteps =
+entersTimeLapseSteps : Measure.DropsPerSecond -> List Animation.Step
+entersTimeLapseSteps rate =
   let
     timing = Animation.accelerating <| Measure.seconds 0.3
+
+    noTransition =
+      [] -- when already being displayed as flowing
+
+    streamStartsByPouringDown = 
+      [ Animation.set initStyles
+      , Animation.toWith timing flowedStyles_1
+      ]
   in
-    [ Animation.set initStyles
-    , Animation.toWith timing flowedStyles_1
-    ]
+    case isTooFastToSeeIndividualDrops rate of
+      True -> noTransition
+      False -> streamStartsByPouringDown
+    
 
 flowSteps : Measure.DropsPerSecond -> List Animation.Step
 flowSteps rate =
