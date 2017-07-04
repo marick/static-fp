@@ -16,7 +16,9 @@ border : ValidatedString a -> Html.Attribute msg
 border validated =
   case validated.value of
     Nothing ->
-      HA.style [("border", "1px solid red")]
+      HA.style [ ("border", "1px solid black")
+               , ("background-color", "pink")
+               ]
     Just _ -> 
       HA.style [("border", "1px solid grey")]
 
