@@ -102,10 +102,14 @@ overDrain core =
 
     emptyBag =
       BagFluid.lowers (Measure.percent 0) emptyAt
-        (Continuation backToDripping)
+        (Continuation stopDripping)
 
-    backToDripping = 
+    stopDripping = 
       Droplet.stopsDuringTimeLapse
+        (Continuation emptyChamber)
+
+    emptyChamber =
+      ChamberFluid.empties
         (Continuation finish)
 
     finish =

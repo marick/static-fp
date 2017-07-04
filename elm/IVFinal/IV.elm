@@ -101,14 +101,17 @@ update msg model =
       let
         (newDroplet, dropletCmd) =
           Animation.update subMsg model.droplet
-        (newFluid, fluidCmd) =
+        (newBagFluid, bagFluidCmd) =
           Animation.update subMsg model.bagFluid
+        (newChamberFluid, chamberFluidCmd) =
+          Animation.update subMsg model.chamberFluid
       in
         ( { model
             | droplet = newDroplet
-            , bagFluid = newFluid
+            , bagFluid = newBagFluid
+            , chamberFluid = newChamberFluid
           }
-        , Cmd.batch [dropletCmd, fluidCmd]
+        , Cmd.batch [dropletCmd, bagFluidCmd, chamberFluidCmd]
         )
 
     -- After the simulation
@@ -131,6 +134,7 @@ subscriptions model =
   Animation.subscription Tick
     [ model.droplet
     , model.bagFluid
+    , model.chamberFluid
     ]
 
       

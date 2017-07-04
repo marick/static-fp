@@ -4,7 +4,7 @@ module IVFinal.Apparatus.ChamberFluid exposing
   , initStyles
   )
 
-import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
+import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable, px)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
@@ -37,7 +37,10 @@ reanimate steps model =
 empties : Continuation -> Transformer model
 empties continuation =
   reanimate
-    [ Animation.request continuation
+    [ Animation.toWith
+        (Animation.linear <| Measure.seconds 0.3)
+        emptyStyles
+    , Animation.request continuation
     ]
 
 -- Styles
@@ -50,6 +53,17 @@ initStyles =
   [ Animation.yFrom C.chamberFluid
   , Animation.heightFrom C.chamberFluid
   ]
+
+emptyStyles : List Animation.Styling
+emptyStyles  =
+  let
+    rect = C.chamberFluid |> Rect.lowerTo 0
+  in
+    [ Animation.yFrom rect
+    , Animation.height (px 0)
+    ]
+
+  
 
 -- Timing
 
