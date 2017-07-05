@@ -1,5 +1,8 @@
 module IVFinal.App.Layout exposing (..)
 
+{- Random top-level HTML that I wanted to get out of `IV.elm`.
+-}
+
 import Html as H exposing (Html)
 import Html.Attributes as HA
 import Svg as S exposing (Svg)
