@@ -2,15 +2,10 @@ module IVFinal.Generic.MeasuresTest exposing (..)
 
 import Test exposing (..)
 import Expect exposing (Expectation)
+import TestUtil exposing ((=>))
 import Fuzz
 import IVFinal.Generic.Measures as M
 import Random
-
-(=>) : a -> a -> Expectation
-(=>) actual expected =
-  Expect.equal actual expected
-
-infixl 0 =>
 
 suite : Test
 suite =

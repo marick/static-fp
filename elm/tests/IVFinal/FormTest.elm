@@ -2,15 +2,11 @@ module IVFinal.FormTest exposing (..)
 
 import Test exposing (..)
 import Expect exposing (Expectation)
+import TestUtil exposing ((=>))
 import IVFinal.Types exposing (FinishedForm)
 import IVFinal.Form as Form exposing (JustFields)
-import IVFinal.App.InputFields as Field
+import IVFinal.Form.InputFields as Field
 import IVFinal.Generic.Measures as M
-
-(=>) : a -> a -> Expectation
-(=>) actual expected =
-  Expect.equal actual expected
-
 
 fields : String -> String -> String -> JustFields {}    
 fields dripRate hours minutes =

@@ -1,13 +1,10 @@
 module IVFinal.Simulation.ConversionsTest exposing (..)
 
 import Test exposing (..)
+import TestUtil exposing ((=>))
 import Expect exposing (Expectation)
 import IVFinal.Simulation.Conversions as C
 import IVFinal.Generic.Measures as M
-
-(=>) : a -> a -> Expectation
-(=>) actual expected =
-  Expect.equal actual expected
 
 suite : Test
 suite =
