@@ -18,7 +18,7 @@ model to avoid circular dependencies.
 
 import IVFinal.Scenario exposing (Scenario)
 import IVFinal.Simulation.Types as Simulation
-import IVFinal.App.InputFields as Field
+import IVFinal.Form.InputFields as Field
 import IVFinal.Generic.Measures as Measure
 import Animation.Messenger
 import Animation

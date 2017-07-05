@@ -17,7 +17,7 @@ import IVFinal.App.Html as H
 import IVFinal.Generic.Measures as Measure
 import Tagged exposing (Tagged(Tagged))
 import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
-import IVFinal.App.InputFields as Field
+import IVFinal.Form.InputFields as Field
 import IVFinal.Scenario exposing (Scenario)
 import Round
 
@@ -58,9 +58,6 @@ isFormIncomplete model =
   let
     runtime {hours, minutes} =
       Measure.toMinutes hours minutes
-
-    _ =
-      Debug.log "foo" (allValues model |> Maybe.map runtime)
   in
     case allValues model |> Maybe.map runtime of
       Nothing -> True

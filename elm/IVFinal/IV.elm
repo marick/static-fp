@@ -9,7 +9,7 @@ import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.Apparatus.ChamberFluid as ChamberFluid
 import IVFinal.Apparatus.HoseFluid as HoseFluid
-import IVFinal.App.InputFields as Field
+import IVFinal.Form.InputFields as Field
 import IVFinal.Scenario as Scenario exposing (Scenario)
 import IVFinal.Simulation as Simulation
 import IVFinal.Generic.Measures as Measure
