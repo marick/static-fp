@@ -35,7 +35,7 @@ constructors and conversion functions.
 put it somewhere else.
 -}
 
-import IVFinal.Generic.Tagged exposing (UnusableConstructor)
+import IVFinal.Generic.MakeConstructorUnusable as MakeConstructorUnusable
 import Tagged exposing (Tagged(Tagged))
 import String.Extra as String
 
@@ -154,10 +154,10 @@ isStrictlyPositive (Tagged n) =
            
 --- Support for tagging
 
-type DropsPerSecondTag = DropsPerSecondTag UnusableConstructor
-type SecondsTag = SecondsTag UnusableConstructor
-type MinutesTag = MinutesTag UnusableConstructor
-type HoursTag = HoursTag UnusableConstructor
-type LitersTag = LitersTag UnusableConstructor
-type PercentTag = PercentTag UnusableConstructor
-type LitersPerMinuteTag = LitersPerMinuteTag UnusableConstructor
+type DropsPerSecondTag = DropsPerSecondTag MakeConstructorUnusable.Recursive
+type SecondsTag = SecondsTag MakeConstructorUnusable.Recursive
+type MinutesTag = MinutesTag MakeConstructorUnusable.Recursive
+type HoursTag = HoursTag MakeConstructorUnusable.Recursive
+type LitersTag = LitersTag MakeConstructorUnusable.Recursive
+type PercentTag = PercentTag MakeConstructorUnusable.Recursive
+type LitersPerMinuteTag = LitersPerMinuteTag MakeConstructorUnusable.Recursive
