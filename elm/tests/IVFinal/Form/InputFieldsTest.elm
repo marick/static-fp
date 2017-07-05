@@ -84,6 +84,6 @@ suite =
         , test "it accepts 59" <| \_ ->
             (Field.minutes "59    ").value => Just (M.minutes 59)
         , test "but not 60 - that's a whole hour" <| \_ ->
-            (Field.minutes "60xshell").value => Nothing
+            (Field.minutes "60").value => Nothing
         ]
     ]
