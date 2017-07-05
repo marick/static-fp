@@ -15,7 +15,8 @@ import IVFinal.Simulation as Simulation
 import IVFinal.Generic.Measures as Measure
 import IVFinal.App.Animation as Animation
 import IVFinal.App.Layout as Layout
-import IVFinal.Form as Form
+import IVFinal.FormView as FormView
+import IVFinal.Form.Types as Form
 import Dom
 
 import IVFinal.Types exposing (..)
@@ -99,7 +100,7 @@ update msg model =
       ( startingModel model.scenario
       , Task.attempt
           (always SideEffectTaskFinished)
-          (Dom.focus Form.firstFocusId)
+          (Dom.focus FormView.firstFocusId)
       )
 
     SideEffectTaskFinished ->
@@ -130,7 +131,7 @@ view : Model -> Html Msg
 view model =
   Layout.wrapper 
     [ Layout.canvas <| Apparatus.view model
-    , Layout.form <| Form.view model
+    , Layout.form <| FormView.view model
     ]
 
 subscriptions : Model -> Sub Msg

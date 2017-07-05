@@ -4,6 +4,7 @@ module IVFinal.Simulation exposing
 
 import IVFinal.Types exposing (..)
 import IVFinal.Simulation.Types exposing (Stage)
+import IVFinal.Form.Types exposing (FinishedForm)
 import IVFinal.Generic.Measures as Measure
 import IVFinal.Scenario exposing (..)
 import IVFinal.Apparatus.Droplet as Droplet

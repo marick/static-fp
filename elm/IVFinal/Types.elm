@@ -2,7 +2,6 @@ module IVFinal.Types exposing
   ( Model
   , Msg(..)
   , Continuation(..)
-  , FinishedForm
   , ModelTransform
   )
 
@@ -13,12 +12,13 @@ model to avoid circular dependencies.
 @docs Model, Msg
 
 # Others
-@docs FinishedForm, ModelTransform, Continuation
+@docs ModelTransform, Continuation
 -}
 
 import IVFinal.Scenario exposing (Scenario)
 import IVFinal.Simulation.Types as Simulation
 import IVFinal.Form.InputFields as Field
+import IVFinal.Form.Types exposing (FinishedForm)
 import IVFinal.Generic.Measures as Measure
 import Animation.Messenger
 import Animation
@@ -42,16 +42,6 @@ type alias Model =
   , bagFluid : AnimationModel
   , chamberFluid : AnimationModel
   , hoseFluid : AnimationModel
-  }
-
-{-| When all the `Field` values exist and are valid, they can
-be extracted to this structure, which can then be used for
-processing without worrying about `Maybe`. 
--}
-type alias FinishedForm = 
-  { dripRate : Measure.DropsPerSecond
-  , hours : Measure.Hours
-  , minutes : Measure.Minutes
   }
 
 {-| Single-level `Msg` type. 

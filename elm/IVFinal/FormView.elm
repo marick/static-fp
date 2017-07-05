@@ -1,79 +1,53 @@
-module IVFinal.Form exposing
+module IVFinal.FormView exposing
   ( view
-  , allValues
-  , dripRate
-
   , firstFocusId
-
-  -- exposed for testing only
-  , isFormIncomplete
-  , JustFields
   )
+
+{-| Calculating the form that lives on the right-hand side of the page.
+
+**NOTE**: There may only be one form on the page at a time. (See the use
+of `firstFocusId`.
+-}                                                              
+
+import IVFinal.Form.Types exposing (isFormIncomplete)
+import IVFinal.Form.InputFields as Field
+import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
+import IVFinal.Scenario exposing (Scenario)
+
+import IVFinal.Generic.Measures as Measure
+import IVFinal.App.Html as H
+import IVFinal.Types exposing (Msg(..))
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events as Event
-import IVFinal.App.Html as H
-import IVFinal.Generic.Measures as Measure
 import Tagged exposing (Tagged(Tagged))
-import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
-import IVFinal.Form.InputFields as Field
-import IVFinal.Scenario exposing (Scenario)
 import Round
 
-import IVFinal.Types exposing (Msg(..), FinishedForm)
-
-{- 
-   Note that there may be only one form on a page. This is not
-   *quite* an isolated component. (See use of `firstFocusId`.)
+{-| The top-level `Model` fields this module is allowed to look at. Private.
 -}
-
-type alias JustFields model =
+type alias Obscured model =
   { model
     | desiredDripRate : Field.DripRate
     , desiredHours : Field.Hours
     , desiredMinutes : Field.Minutes
-  }
 
-type alias Obscured model =
-  JustFields
-  { model
-    | stage : Simulation.Stage
+    , stage : Simulation.Stage
     , scenario : Scenario
   }
 
-dripRate : JustFields model -> Maybe Measure.DropsPerSecond
-dripRate model =
-  model.desiredDripRate.value           
-
-allValues : JustFields model -> Maybe FinishedForm
-allValues model =
-  Maybe.map3 FinishedForm
-    model.desiredDripRate.value
-    model.desiredHours.value
-    model.desiredMinutes.value
-
-isFormIncomplete : JustFields model -> Bool      
-isFormIncomplete model =
-  let
-    runtime {hours, minutes} =
-      Measure.toMinutes hours minutes
-  in
-    case allValues model |> Maybe.map runtime of
-      Nothing -> True
-      Just (Tagged 0) -> True
-      _ -> False
-
+{-| Convert the Model into part of an `Html Msg`
+-}
 view : Obscured model -> List (Html Msg)
 view model =
   case model.stage of
     FormFilling ->
-      [ baseView model formCanBeChanged
+      [ formProper model formCanBeChanged
       , startButton model
       ]
       
     WatchingAnimation flowRate ->
-      [ baseView model formIsDisabled
+      [ formProper model formIsDisabled
       , verticalSpace -- so following text is below the cursor.
       , describeFlow "is" flowRate
       ]
@@ -81,7 +55,7 @@ view model =
     Finished flowRate howFinished ->
       let 
         common flowRate = 
-          [ baseView model formIsDisabled
+          [ formProper model formIsDisabled
           , tryAgainButton
           , describeFlow "was" flowRate
           ]
@@ -95,13 +69,20 @@ view model =
       in
         common flowRate ++ variant
 
--- Note that this prevents having more than one form on a page.
+{-| The drip rate field has autofocus set on it. However, we also need
+to set the focus explicitly when the `Restart` button is pressed. That
+means we need an `id` attribute.
+
+Note that this prevents having more than one form on a page.
+-}
 firstFocusId : String          
 firstFocusId = "focusGoesHere"
-          
-baseView : Obscured model -> InputAttributes -> Html Msg
-baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
-         {dripRateAttrs, hourAttrs, minuteAttrs} =
+
+{-| Everything above the buttons and commentary on the choices.
+-}
+formProper : Obscured model -> InputAttributes -> Html Msg
+formProper {scenario, desiredDripRate, desiredHours, desiredMinutes}
+           {dripRateAttrs, hourAttrs, minuteAttrs} =
   let
     {startingVolume, containerVolume, animal, bagType} =
       scenario
@@ -141,6 +122,10 @@ baseView {scenario, desiredDripRate, desiredHours, desiredMinutes}
   
 --- Attributes
 
+{-| Depending on the state of the form, buttons are disabled, input
+fields are specially colored, etc. This type describes the appropriate
+per-state attributes
+-}
 type alias InputAttributes =
   { dripRateAttrs : List (Attribute Msg)
   , hourAttrs : List (Attribute Msg)
@@ -188,7 +173,7 @@ tryAgainButton =
     [ Event.onClick ResetSimulation ]
 
 
--- Bits of message
+-- Bits of commentary (shown while or after the simulation runs)
     
 describeFlow : String -> Measure.LitersPerMinute -> Html msg
 describeFlow pronoun (Tagged rate) =
@@ -213,7 +198,7 @@ describeOverflow minutes =
     alert <| "The fluid ran out after " ++ show ++ "."
 
 -- Misc
-         
+
 verticalSpace : Html msg
 verticalSpace = span [] (List.repeat 3 (br [] []))
 
@@ -224,7 +209,7 @@ strongSentence s =
     , br [] []
     ]
 
-alert : String -> Html msg
+alert : String -> Html msg -- an even stronger sentence.
 alert s =
   span []
     [ strong [style [("color", "red")]]
@@ -232,7 +217,13 @@ alert s =
     , br [] []
     ]
 
-    
+{-| Display a float with two digits after the decimal point. 
+Pluralize the string argument when appropriate. 
+
+    format 1.1 "liter" == "1.1 liters"
+
+(Note that this will only work for words whose plural is <word>s)
+-}
 format : Float -> String -> String
 format n singular =
   let
