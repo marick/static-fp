@@ -1,7 +1,7 @@
 module IVFinal.Types exposing
   ( Model
-  , Msg
-  , Continuation
+  , Msg(..)
+  , Continuation(..)
   , FinishedForm
   , ModelTransform
   )

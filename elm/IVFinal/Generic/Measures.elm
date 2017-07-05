@@ -28,42 +28,54 @@ module IVFinal.Generic.Measures exposing
   , isStrictlyPositive
   )
 
-import Tagged exposing (Tagged(Tagged))
 import IVFinal.Generic.Tagged exposing (UnusableConstructor)
+import Tagged exposing (Tagged(Tagged))
 import String.Extra as String
 
--- Types
-type alias DropsPerSecond = Tagged DropsPerSecondTag Float
-type alias Seconds = Tagged SecondsTag Float
-type alias Minutes = Tagged MinutesTag Int
-type alias Hours = Tagged HoursTag Int
+--
 type alias Liters = Tagged LitersTag Float
-type alias Percent = Tagged PercentTag Float
-type alias LitersPerMinute = Tagged LitersPerMinuteTag Float
+
+liters : Float -> Liters
+liters = Tagged
 
 --
+type alias DropsPerSecond = Tagged DropsPerSecondTag Float
+
 dripRate : Float -> DropsPerSecond
 dripRate = Tagged
-
-litersPerMinute : Float -> LitersPerMinute
-litersPerMinute = Tagged
-
---
-percent : Float -> Percent
-percent = Tagged
-
-proportion : Tagged a Float -> Tagged a Float -> Percent
-proportion (Tagged first) (Tagged second) =
-  percent (first / second)
-
---
-seconds : Float -> Seconds
-seconds = Tagged
 
 toSeconds : DropsPerSecond -> Seconds
 toSeconds (Tagged rate) =
   Tagged (1/rate)
     
+--            
+type alias LitersPerMinute = Tagged LitersPerMinuteTag Float
+
+litersPerMinute : Float -> LitersPerMinute
+litersPerMinute = Tagged
+
+litersOverTime : LitersPerMinute -> Minutes -> Liters
+litersOverTime (Tagged lpm) (Tagged minutes) =
+  lpm * (toFloat minutes) |> liters
+
+timeRequired : LitersPerMinute -> Liters -> Minutes
+timeRequired (Tagged lmp) (Tagged liters) = 
+  (1 / lmp) * liters |> round |> minutes
+
+--
+
+{- This is somewhat peculiar in that seconds are floats and
+minutes and hours are ints. That's because the latter two
+are for human consumption and the former is internal to the program.
+-}
+
+type alias Seconds = Tagged SecondsTag Float
+type alias Minutes = Tagged MinutesTag Int
+type alias Hours = Tagged HoursTag Int
+
+seconds : Float -> Seconds
+seconds = Tagged
+
 minutes : Int -> Minutes
 minutes = Tagged
 
@@ -92,21 +104,26 @@ friendlyMinutes source =
       (_, 0) -> outHours
       (0, _) -> outMinutes
       _ -> outHours ++ " and " ++ outMinutes
-  
+
+
 --
-liters : Float -> Liters
-liters = Tagged
+type alias Percent = Tagged PercentTag Float
 
-litersOverTime : LitersPerMinute -> Minutes -> Liters
-litersOverTime (Tagged lpm) (Tagged minutes) =
-  lpm * (toFloat minutes) |> liters
+percent : Float -> Percent
+percent = Tagged
 
-timeRequired : LitersPerMinute -> Liters -> Minutes
-timeRequired (Tagged lmp) (Tagged liters) = 
-  (1 / lmp) * liters |> round |> minutes
+proportion : Tagged a Float -> Tagged a Float -> Percent
+proportion (Tagged first) (Tagged second) =
+  percent (first / second)
 
--- Generic
-    
+  
+-- Functions that apply to generic types
+
+{-| Apply a binary function to two numbers.
+
+    changeBy (-) (minutes 10) (minutes 1) == minutes 9
+
+-}
 changeBy : (number -> number -> number)
         -> Tagged a number -> Tagged a number
         -> Tagged a number
