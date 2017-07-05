@@ -18,6 +18,7 @@
         "elm-community/result-extra": "2.2.0 <= v < 3.0.0",
         "elm-community/string-extra": "1.4.0 <= v < 2.0.0",
         "elm-lang/core": "5.0.0 <= v < 6.0.0",
+        "elm-lang/dom": "1.1.1 <= v < 2.0.0",
         "elm-lang/html": "2.0.0 <= v < 3.0.0",
         "elm-lang/http": "1.0.0 <= v < 2.0.0",
         "elm-lang/navigation": "2.0.1 <= v < 3.0.0",
@@ -28,7 +29,8 @@
         "joneshf/elm-tagged": "1.1.1 <= v < 2.0.0",
         "justinmimbs/elm-date-extra": "2.0.3 <= v < 3.0.0",
         "krisajenkins/formatting": "4.2.0 <= v < 5.0.0",
-        "mdgriffith/elm-style-animation": "3.5.5 <= v < 4.0.0"
+        "mdgriffith/elm-style-animation": "3.5.5 <= v < 4.0.0",
+        "myrho/elm-round": "1.0.2 <= v < 2.0.0"
     },
     "elm-version": "0.18.0 <= v < 0.19.0"
 }

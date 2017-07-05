@@ -4,6 +4,10 @@ module IVFinal.Form exposing
   , dripRate
 
   , firstFocusId
+
+  -- exposed for testing only
+  , isFormIncomplete
+  , JustFields
   )
 
 import Html exposing (..)
@@ -15,7 +19,6 @@ import Tagged exposing (Tagged(Tagged))
 import IVFinal.Simulation.Types as Simulation exposing (Stage(..))
 import IVFinal.App.InputFields as Field
 import IVFinal.Scenario exposing (Scenario)
-import Maybe.Extra as Maybe
 import Round
 
 import IVFinal.Types exposing (Msg(..), FinishedForm)
@@ -25,36 +28,44 @@ import IVFinal.Types exposing (Msg(..), FinishedForm)
    *quite* an isolated component. (See use of `firstFocusId`.)
 -}
 
-type alias Obscured model =
+type alias JustFields model =
   { model
     | desiredDripRate : Field.DripRate
     , desiredHours : Field.Hours
     , desiredMinutes : Field.Minutes
-    , stage : Simulation.Stage
+  }
+
+type alias Obscured model =
+  JustFields
+  { model
+    | stage : Simulation.Stage
     , scenario : Scenario
   }
 
-dripRate : Obscured model -> Maybe Measure.DropsPerSecond
+dripRate : JustFields model -> Maybe Measure.DropsPerSecond
 dripRate model =
   model.desiredDripRate.value           
 
-allValues : Obscured model -> Maybe FinishedForm
+allValues : JustFields model -> Maybe FinishedForm
 allValues model =
   Maybe.map3 FinishedForm
     model.desiredDripRate.value
     model.desiredHours.value
     model.desiredMinutes.value
 
-isFormReady : Obscured model -> Bool      
-isFormReady model =
+isFormIncomplete : JustFields model -> Bool      
+isFormIncomplete model =
   let
     runtime {hours, minutes} =
       Measure.toMinutes hours minutes
+
+    _ =
+      Debug.log "foo" (allValues model |> Maybe.map runtime)
   in
-    allValues model
-      |> Maybe.map runtime
-      |> Maybe.map Measure.isStrictlyPositive
-      |> Maybe.isJust
+    case allValues model |> Maybe.map runtime of
+      Nothing -> True
+      Just (Tagged 0) -> True
+      _ -> False
 
 view : Obscured model -> List (Html Msg)
 view model =
@@ -171,7 +182,7 @@ startButton : Obscured model -> Html Msg
 startButton model = 
   H.soloButton "Start" 
     [ Event.onClick SimulationRequested
-    , disabled (isFormReady model)
+    , disabled (isFormIncomplete model)
     ]
 
 tryAgainButton : Html Msg
