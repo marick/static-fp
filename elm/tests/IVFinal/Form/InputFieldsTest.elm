@@ -3,7 +3,7 @@ module IVFinal.Form.InputFieldsTest exposing (..)
 import Test exposing (..)
 import Expect exposing (Expectation)
 import TestUtil exposing (..)
-import IVFinal.Types exposing (FinishedForm)
+import IVFinal.Form.Types exposing (FinishedForm)
 import IVFinal.Form.InputFields as Field
 import IVFinal.Generic.Measures as M
 import Random

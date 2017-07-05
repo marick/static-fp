@@ -1,10 +1,9 @@
-module IVFinal.FormTest exposing (..)
+module IVFinal.Form.TypesTest exposing (..)
 
 import Test exposing (..)
 import Expect exposing (Expectation)
 import TestUtil exposing ((=>))
-import IVFinal.Types exposing (FinishedForm)
-import IVFinal.Form as Form exposing (JustFields)
+import IVFinal.Form.Types as Form exposing (JustFields, FinishedForm)
 import IVFinal.Form.InputFields as Field
 import IVFinal.Generic.Measures as M
 
@@ -39,7 +38,12 @@ suite =
         , test "bad minutes" <| \_ ->
             Form.allValues (fields "1" "2" "OOPS")
             => Nothing
+        , test "both hours and minutes are zero" <| \_ ->
+            Form.allValues (fields "1" "0" "0")
+            => Nothing
         ]
+
+    -- This is where Midje-style mocks shine.
     , describe "isFormIncomplete"
       [ describe "bad values"
           [ test "bad drip rate" <| \_ ->
