@@ -28,6 +28,13 @@ module IVFinal.Generic.Measures exposing
   , isStrictlyPositive
   )
 
+{-| A variety of units implemented as tagged types, together with their
+constructors and conversion functions. 
+
+`DropsPerSecond` isn't actually generic, but it's too much of a hassle to
+put it somewhere else.
+-}
+
 import IVFinal.Generic.Tagged exposing (UnusableConstructor)
 import Tagged exposing (Tagged(Tagged))
 import String.Extra as String
