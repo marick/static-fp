@@ -6,7 +6,7 @@
     "source-directories": [
         "."
     ],
-    "exposed-modules": [],
+    "exposed-modules": ["IVFinal.Types"],
     "dependencies": {
         "arturopala/elm-monocle": "1.4.0 <= v < 2.0.0",
         "elm-community/easing-functions": "1.0.2 <= v < 2.0.0",
