@@ -1,15 +1,22 @@
 module IVFinal.App.Animation exposing (..)
 
-import IVFinal.Types as App
-import Svg exposing (Svg)
+{-| A facade over the different pieces used to implement animations. 
+Specifically, the first block of imports. Also some obsessive tweaking of
+type names.
+-}
+
 import Animation
 import Animation.Messenger
 import Ease
 import Time
+import Svg exposing (Svg)
+import Color exposing (Color)
+
+import IVFinal.Types as App
 import IVFinal.Generic.Measures as Measure
 import IVFinal.Generic.EuclideanTypes exposing (Rectangle)
 import IVFinal.Generic.EuclideanRectangle as Rect
-import Color exposing (Color)
+
 import Tagged exposing (Tagged(Tagged))
 
 
@@ -21,22 +28,33 @@ type alias Model = Animation.Messenger.State App.Msg
 type alias Step = Animation.Messenger.Step App.Msg
 type alias Msg = Animation.Msg
 
-type alias EasingFunction = Float -> Float      
+type alias EasingFunction = Float -> Float
 
--- Tag attributes (including styles) that a particular shape
--- never animates.
-type FixedPart msg =
-  HasFixedPart (List (Svg.Attribute msg))
 
-type alias Shape msg =
-  List (Svg.Attribute msg) -> List (Svg msg) -> Svg msg
-  
+{-| A little DSL for defining an animatable shape
+
+   animatable S.rect <| HasFixedPart
+     [ SA.width ^^ (Rect.width C.startingDroplet)
+     , SA.x ^^ (Rect.x C.startingDroplet)
+     ]
+-}
 animatable : Shape msg -> FixedPart msg -> Model
           -> Svg msg
 animatable shape (HasFixedPart attributes) animatedPart =
   shape
     (attributes ++ Animation.render animatedPart)
     []
+
+type alias Shape msg =
+  List (Svg.Attribute msg) -> List (Svg msg) -> Svg msg
+  
+{-| A "keyword argument" for the parts of the shape that never change.
+-}
+type FixedPart msg =
+  HasFixedPart (List (Svg.Attribute msg))
+
+
+-- Some shorthand for specifying timing    
 
 timing : EasingFunction -> Measure.Seconds -> Timing
 timing ease (Tagged seconds) = 
@@ -51,26 +69,49 @@ linear = timing Ease.linear
 accelerating : Measure.Seconds -> Timing
 accelerating = timing Ease.inQuad
 
+
+-- Shorthand, since we frequently grab values from rectangles
+               
 yFrom : Rectangle -> Styling
 yFrom = Rect.y >> y
 
 heightFrom : Rectangle -> Styling
 heightFrom = Rect.height >> heightAttr
 
+
+
+{- In multi-stage animation, continuations are used to send a
+`Msg` (`RunContinuation`) that starts the next set of animations. 
+This, I hope, makes their use more clear.
+
+    [ Animation.set flowedStyles_1
+    , Animation.toWith endingTiming flowVanishedStyles
+    , Animation.set initStyles
+    , Animation.request continuation     -----------------<<<
+    ] 
+-}
 request : App.Continuation -> Step             
 request = App.RunContinuation >> Animation.Messenger.send
 
 
--- re-exports
+-- Attributes and styles
 
-{- Animation.height produces a *style* "height: xyzzy". But, for SVG,
-   we want the height *attribute*. I didn't override the name `height`
-   because that would be confusing if someone used this code to animate
-   HTML.
+{-| Animation.height produces a *style* "height: xyzzy". But, for SVG,
+we want the height *attribute*. I didn't override the name `height`
+because that would be confusing if someone used this code to animate
+HTML.
+
+    [ Animation.yFrom C.startingDroplet
+    , Animation.fill C.fluidColor
+    , Animation.heightAttr C.dropletSideLength  --------<<<
+    ]
 -}
 heightAttr : Float -> Styling
 heightAttr val = Animation.attr "height" val "px"
 
+
+-- Re-exports
+                 
 fill : Color -> Styling          
 fill = Animation.fill
 
