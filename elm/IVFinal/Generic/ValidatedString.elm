@@ -4,6 +4,8 @@ module IVFinal.Generic.ValidatedString exposing
   )
 
 {-| A record that stores both a string and, Maybe, the value it parses to.
+
+Clients are responsible for parsing and validation.
 -}
 
 type alias ValidatedString a =
