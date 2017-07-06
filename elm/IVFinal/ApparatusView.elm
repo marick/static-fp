@@ -1,16 +1,25 @@
-module IVFinal.Apparatus exposing (view)
+module IVFinal.ApparatusView exposing
+  ( view
+  )
 
-import IVFinal.Types exposing (Model)
-import Svg exposing (Svg)
-import IVFinal.App.Svg as AppSvg exposing ((^^))
-import Svg.Attributes exposing (..)
+{-| The animated apparatus. Code here draws the static part (the containers).
+Each changing SVG shape has its own module with its own `view`, called from
+here.
+-}
+
 import IVFinal.Apparatus.Constants as C
-import IVFinal.Generic.EuclideanRectangle exposing (Rectangle)
-
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.Apparatus.ChamberFluid as ChamberFluid
 import IVFinal.Apparatus.HoseFluid as HoseFluid
+
+import IVFinal.Generic.EuclideanRectangle exposing (Rectangle)
+import IVFinal.Types exposing (Model)
+import IVFinal.App.Svg as AppSvg exposing ((^^))
+
+import Svg exposing (Svg)
+import Svg.Attributes exposing (..)
+
 
 view : Model -> List (Svg msg)
 view model = 
@@ -30,6 +39,9 @@ view model =
   , Droplet.view model.droplet
   ]
 
+
+
+  
 container : Rectangle -> Svg msg
 container coordinates =
   AppSvg.rect coordinates C.containerAppearance

@@ -4,7 +4,7 @@ import Html exposing (..)
 import Task
 
 
-import IVFinal.Apparatus as Apparatus
+import IVFinal.ApparatusView as Apparatus
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.Apparatus.ChamberFluid as ChamberFluid

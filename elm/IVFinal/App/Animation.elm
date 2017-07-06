@@ -5,17 +5,16 @@ Specifically, the first block of imports. Also some obsessive tweaking of
 type names.
 -}
 
+import IVFinal.Generic.EuclideanRectangle as Rect exposing (Rectangle)
+import IVFinal.Generic.Measures as Measure
+import IVFinal.Types as App
+
 import Animation
 import Animation.Messenger
 import Ease
 import Time
 import Svg exposing (Svg)
 import Color exposing (Color)
-
-import IVFinal.Types as App
-import IVFinal.Generic.Measures as Measure
-import IVFinal.Generic.EuclideanRectangle as Rect exposing (Rectangle)
-
 import Tagged exposing (Tagged(Tagged))
 
 
