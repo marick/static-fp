@@ -6,7 +6,7 @@ module IVFinal.App.Svg exposing
 {-| Some helpers for constructing SVG shapes.
 -}
 
-import IVFinal.Generic.EuclideanTypes exposing (Rectangle) 
+import IVFinal.Generic.EuclideanRectangle exposing (Rectangle) 
 import Svg exposing (svg, Svg, Attribute)
 import Svg.Attributes exposing (..)
 

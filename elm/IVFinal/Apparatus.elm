@@ -5,7 +5,7 @@ import Svg exposing (Svg)
 import IVFinal.App.Svg as AppSvg exposing ((^^))
 import Svg.Attributes exposing (..)
 import IVFinal.Apparatus.Constants as C
-import IVFinal.Generic.EuclideanTypes exposing (..)
+import IVFinal.Generic.EuclideanRectangle exposing (Rectangle)
 
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid

@@ -3,7 +3,7 @@ module IVFinal.Generic.ValidatedString exposing
   , checked
   )
 
-{-| A record that stores both a string and, maybe, the value it parses to.
+{-| A record that stores both a string and, Maybe, the value it parses to.
 -}
 
 type alias ValidatedString a =
@@ -15,7 +15,6 @@ type alias ValidatedString a =
 that the string has already been validated to produce the second argument
 (either a `Just` legitimate value or `Nothing`).
 -}
-  
 checked : String -> Maybe a -> ValidatedString a
 checked literal value =
   { literal = literal

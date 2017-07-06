@@ -14,8 +14,7 @@ import Color exposing (Color)
 
 import IVFinal.Types as App
 import IVFinal.Generic.Measures as Measure
-import IVFinal.Generic.EuclideanTypes exposing (Rectangle)
-import IVFinal.Generic.EuclideanRectangle as Rect
+import IVFinal.Generic.EuclideanRectangle as Rect exposing (Rectangle)
 
 import Tagged exposing (Tagged(Tagged))
 
