@@ -44,7 +44,10 @@ view model =
   
 container : Rectangle -> Svg msg
 container coordinates =
-  AppSvg.rect coordinates C.containerAppearance
+  AppSvg.rect coordinates
+    [ fill "none"
+    , stroke "black"
+    ]
 
 tickMarks : Svg msg    
 tickMarks =

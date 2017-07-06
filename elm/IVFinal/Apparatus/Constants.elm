@@ -1,17 +1,43 @@
-module IVFinal.Apparatus.Constants exposing (..)
+module IVFinal.Apparatus.Constants exposing
+  ( fluidColor
+  , fluidColorString
+  , fluidColor_alternate
+
+  , bag
+  , bagFluid
+
+  , hose
+  , hoseFluid
+
+  , chamber
+  , chamberFluid 
+
+  , startingDroplet
+  , endingDroplet
+  , dropletSideLength
+  , fallingDistance
+  )
+
+{-| These are all the values (mainly rectangles with their x, y,
+height, and width) that are needed to construct the initial picture of the
+apparatus.
+-}
 
 import IVFinal.Generic.EuclideanRectangle as Rect exposing (Rectangle)
-import Svg
-import Svg.Attributes exposing (..)
 import Color exposing (Color, rgb)
 import Color.Convert as Convert
+
+-- Bag
 
 bag : Rectangle    
 bag = Rect.fromOrigin 120 200
 
 bagFluid : Rectangle      
 bagFluid = bag |> Rect.lowerTo 0.85
-    
+
+
+-- Chamber
+
 -- The chamber is above the hose. Droplets fall into it.
 -- It has a puddle in the bottom.
 chamber : Rectangle
@@ -20,6 +46,9 @@ chamber =
 
 chamberFluid : Rectangle          
 chamberFluid = chamber |> Rect.lowerTo 0.3
+
+
+-- The hose is below the chamber
 
 hoseWidth : Float
 hoseWidth = 10
@@ -52,31 +81,17 @@ endingDroplet =
     |> Rect.centeredAbove chamberFluid
     |> Rect.nudgeDown dropletSideLength
 
-flowLength : Float
-flowLength = Rect.height chamber - Rect.height chamberFluid
-  
--- Utilities for constant transformations
-       
-fluidAppearance : List (Svg.Attribute msg)
-fluidAppearance =
-  [ fill <| Convert.colorToHex fluidColor
-  , stroke "none"
-  ]
+fallingDistance : Float
+fallingDistance = Rect.height chamber - Rect.height chamberFluid
 
-containerAppearance : List (Svg.Attribute msg)
-containerAppearance =   
-  [ fill "none"
-  , stroke "black"
-  ]
-
--- Colors
-
-
+-- Colors                  
   
 fluidColor : Color
 fluidColor = rgb 211 215 207
 
-fluidColorString : String -- Grr
+-- Grr. `Animation` works with `Color` values, but
+-- Svg works with strings.
+fluidColorString : String
 fluidColorString = Convert.colorToHex fluidColor
 
 fluidColor_alternate : Color                   

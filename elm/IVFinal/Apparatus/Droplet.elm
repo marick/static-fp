@@ -122,14 +122,14 @@ flowedStyles_1 : List Animation.Styling
 flowedStyles_1 =
   [ Animation.yFrom C.startingDroplet
   , Animation.fill C.fluidColor
-  , Animation.heightAttr C.flowLength
+  , Animation.heightAttr C.fallingDistance
   ]
 
 flowedStyles_2 : List Animation.Styling
 flowedStyles_2 =
   [ Animation.yFrom C.startingDroplet
   , Animation.fill C.fluidColor_alternate
-  , Animation.heightAttr C.flowLength
+  , Animation.heightAttr C.fallingDistance
   ]
 
 flowVanishedStyles : List Animation.Styling
