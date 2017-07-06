@@ -2,26 +2,18 @@ module IVFinal.Simulation exposing
   ( run
   )
 
-import IVFinal.Types exposing (..)
-import IVFinal.Simulation.Types exposing (Stage)
-import IVFinal.Form.Types exposing (FinishedForm)
-import IVFinal.Generic.Measures as Measure
-import IVFinal.Scenario exposing (..)
+import IVFinal.Simulation.Conversions as C 
+import IVFinal.Simulation.Types exposing (Stage(..), HowFinished(..))
+
 import IVFinal.Apparatus.Droplet as Droplet
 import IVFinal.Apparatus.BagFluid as BagFluid
 import IVFinal.Apparatus.ChamberFluid as ChamberFluid
 import IVFinal.Apparatus.HoseFluid as HoseFluid
-import IVFinal.Simulation.Conversions as C 
-import IVFinal.Simulation.Types exposing (..)
+import IVFinal.Form.Types exposing (FinishedForm)
+import IVFinal.Scenario exposing (Scenario)
+import IVFinal.Types exposing (..)
 
-moveToWatchingStage : Measure.LitersPerMinute -> ModelTransform
-moveToWatchingStage flowRate model = 
-  { model | stage = WatchingAnimation flowRate }
-
-moveToFinishedStage : Measure.LitersPerMinute -> HowFinished
-                    -> ModelTransform
-moveToFinishedStage flowRate howFinished model =
-  { model | stage = Finished flowRate howFinished }
+import IVFinal.Generic.Measures as Measure
 
 type alias CoreInfo =
   { minutes : Measure.Minutes           -- From hours and minutes
@@ -32,51 +24,27 @@ type alias CoreInfo =
   , endingVolume : Measure.Liters
   }
 
-toCoreInfo : Scenario -> FinishedForm -> CoreInfo
-toCoreInfo scenario form =
-  let 
-    minutes = Measure.toMinutes form.hours form.minutes
-    dripRate = form.dripRate
-    flowRate = C.toFlowRate dripRate scenario
-    containerVolume = scenario.containerVolume
-    startingVolume = scenario.startingVolume
-    endingVolume = C.toFinalLevel flowRate minutes scenario
-  in
-    { minutes = minutes
-    , flowRate = flowRate
-    , dripRate = dripRate
-    , containerVolume = containerVolume
-    , startingVolume = startingVolume
-    , endingVolume = endingVolume
-  }
-  
 run : Scenario -> FinishedForm -> ModelTransform
 run scenario form =
   let
     core =
-      toCoreInfo scenario form
-
-    animations =
-      case Measure.isStrictlyNegative core.endingVolume of
-        True ->
-          overDrain core
-        False ->
-          partlyDrain core
+      extractCoreInfo scenario form
   in
-    moveToWatchingStage core.flowRate
-    >> animations
-
+    case Measure.isStrictlyNegative core.endingVolume of
+      True -> overDrain core
+      False -> partlyDrain core
 
 partlyDrain : CoreInfo -> ModelTransform
 partlyDrain core = 
   let
-    containerPercent = Measure.proportion core.endingVolume core.containerVolume
-    howFinished = FluidLeft core.endingVolume
-
+    containerPercent =
+      Measure.proportion core.endingVolume core.containerVolume
+          
     -- animation
     beginTimeLapse =
-      Droplet.entersTimeLapse core.dripRate
-      (Continuation lowerBagLevel)
+      moveToWatchingStage core
+      >> Droplet.entersTimeLapse core.dripRate
+        (Continuation lowerBagLevel)
           
     lowerBagLevel =
       Droplet.flows core.dripRate
@@ -89,26 +57,25 @@ partlyDrain core =
 
     finish = 
         Droplet.falls core.dripRate
-        >> moveToFinishedStage core.flowRate howFinished
+        >> moveToFinishedStage (FluidLeft core.endingVolume) core
   in
     beginTimeLapse
 
 overDrain : CoreInfo -> ModelTransform
 overDrain core = 
   let
-    emptyAt =
+    emptyTime =
       Measure.timeRequired core.flowRate core.startingVolume
-    howFinished =
-      RanOutAfter emptyAt
 
     -- animation
-    beginTimeLapse = 
-      Droplet.entersTimeLapse core.dripRate
+    beginTimeLapse =
+      moveToWatchingStage core
+      >> Droplet.entersTimeLapse core.dripRate
         (Continuation emptyBag)
 
     emptyBag =
       Droplet.flows core.dripRate
-      >> BagFluid.lowers (Measure.percent 0) emptyAt
+      >> BagFluid.lowers (Measure.percent 0) emptyTime
         (Continuation stopDripping)
 
     stopDripping = 
@@ -124,7 +91,35 @@ overDrain core =
         (Continuation finish)
 
     finish =
-      moveToFinishedStage core.flowRate howFinished
+      moveToFinishedStage (RanOutAfter emptyTime) core
   in
     beginTimeLapse
 
+
+
+moveToWatchingStage : CoreInfo -> ModelTransform
+moveToWatchingStage core model = 
+  { model | stage = WatchingAnimation core.flowRate }
+
+moveToFinishedStage : HowFinished -> CoreInfo -> ModelTransform
+moveToFinishedStage howFinished core model =
+  { model | stage = Finished core.flowRate howFinished }
+
+extractCoreInfo : Scenario -> FinishedForm -> CoreInfo
+extractCoreInfo scenario form =
+  let 
+    minutes = Measure.toMinutes form.hours form.minutes
+    dripRate = form.dripRate
+    flowRate = C.toFlowRate dripRate scenario
+    containerVolume = scenario.containerVolume
+    startingVolume = scenario.startingVolume
+    endingVolume = C.toFinalLevel flowRate minutes scenario
+  in
+    { minutes = minutes
+    , flowRate = flowRate
+    , dripRate = dripRate
+    , containerVolume = containerVolume
+    , startingVolume = startingVolume
+    , endingVolume = endingVolume
+  }
+      
