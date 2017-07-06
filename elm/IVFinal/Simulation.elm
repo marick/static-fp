@@ -34,6 +34,9 @@ run scenario form =
       True -> overDrain core
       False -> partlyDrain core
 
+{- This is what the student *should* achieve: a case where the
+bag is still partly full at the end of the simulation.
+-}
 partlyDrain : CoreInfo -> ModelTransform
 partlyDrain core = 
   let
@@ -61,6 +64,8 @@ partlyDrain core =
   in
     beginTimeLapse
 
+{- If too much time is specified, the bag, chamber, and hose will all empty
+-}      
 overDrain : CoreInfo -> ModelTransform
 overDrain core = 
   let
