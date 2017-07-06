@@ -4,13 +4,14 @@ module IVFinal.Apparatus.HoseFluid exposing
   , initStyles
   )
 
+import IVFinal.Apparatus.CommonFluid as Common
 import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
 import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
 import IVFinal.Types exposing (..)
 import IVFinal.App.Svg exposing ((^^))
-import IVFinal.Generic.EuclideanRectangle as Rect
+import IVFinal.Generic.EuclideanRectangle as Rect exposing (Rectangle)
 import IVFinal.Generic.Measures as Measure
 import Svg.Attributes as SA
 
@@ -28,6 +29,8 @@ reanimate : List Animation.Step -> Transformer model
 reanimate steps model =
   { model | hoseFluid = Animation.interrupt steps model.hoseFluid }
 
+moduleRectangle : Rectangle
+moduleRectangle = C.hoseFluid
 
 -- Animations
       
@@ -62,9 +65,4 @@ emptyStyles  =
 ---- View
 
 view : Animation.Model -> Svg msg
-view =
-  animatable S.rect <| HasFixedPart
-    [ SA.width ^^ (Rect.width C.hoseFluid)
-    , SA.fill C.fluidColorString
-    , SA.x ^^ (Rect.x C.hoseFluid)
-    ]
+view = Common.view moduleRectangle
