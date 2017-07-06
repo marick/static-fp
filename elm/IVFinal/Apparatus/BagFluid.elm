@@ -10,11 +10,8 @@ import IVFinal.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
 import IVFinal.Types exposing (..)
-import IVFinal.App.Svg exposing ((^^))
 import IVFinal.Generic.EuclideanRectangle as Rect exposing (Rectangle)
 import IVFinal.Generic.Measures as Measure
-
-import Svg.Attributes as SA
 
 import Tagged exposing (Tagged(Tagged))
 

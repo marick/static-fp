@@ -4,16 +4,14 @@ module IVFinal.Apparatus.HoseFluid exposing
   , initStyles
   )
 
-import IVFinal.Apparatus.CommonFluid as Common
-import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
 import IVFinal.Apparatus.Constants as C
-import Svg as S exposing (Svg)
+import IVFinal.Apparatus.CommonFluid as Common
+import IVFinal.Types exposing (Continuation)
 
-import IVFinal.Types exposing (..)
-import IVFinal.App.Svg exposing ((^^))
-import IVFinal.Generic.EuclideanRectangle as Rect exposing (Rectangle)
+import IVFinal.App.Animation as Animation
+import IVFinal.Generic.EuclideanRectangle exposing (Rectangle)
 import IVFinal.Generic.Measures as Measure
-import Svg.Attributes as SA
+import Svg exposing (Svg)
 
 --- Customizing `Model` to this module
 
@@ -29,40 +27,21 @@ reanimate : List Animation.Step -> Transformer model
 reanimate steps model =
   { model | hoseFluid = Animation.interrupt steps model.hoseFluid }
 
-moduleRectangle : Rectangle
-moduleRectangle = C.hoseFluid
+fluid : Rectangle
+fluid = C.hoseFluid
 
--- Animations
-      
+duration : Measure.Seconds                   
+duration = Measure.seconds 0.3
+
+-- Standard functions, customized.
+
 empties : Continuation -> Transformer model
 empties continuation =
-  reanimate
-    [ Animation.toWith
-        (Animation.linear <| Measure.seconds 0.3)
-        emptyStyles
-    , Animation.request continuation
-    ]
-
--- Styles
+  reanimate <|
+    Common.emptySteps fluid duration continuation  
 
 initStyles : List Animation.Styling
-initStyles = 
-  [ Animation.yFrom C.hoseFluid
-  , Animation.heightFrom C.hoseFluid
-  ]
-
-emptyStyles : List Animation.Styling
-emptyStyles  =
-  let
-    rect = C.hoseFluid |> Rect.lowerTo 0
-  in
-    [ Animation.yFrom rect
-    , Animation.heightAttr 0
-    ]
-
--- Timing
-
----- View
+initStyles = Common.initStyles fluid
 
 view : Animation.Model -> Svg msg
-view = Common.view moduleRectangle
+view = Common.view fluid

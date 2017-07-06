@@ -4,17 +4,14 @@ module IVFinal.Apparatus.ChamberFluid exposing
   , initStyles
   )
 
-import IVFinal.Apparatus.CommonFluid as Common
-import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
 import IVFinal.Apparatus.Constants as C
-import Svg as S exposing (Svg)
+import IVFinal.Apparatus.CommonFluid as Common
+import IVFinal.Types exposing (Continuation)
 
-import IVFinal.Types exposing (..)
-import IVFinal.App.Svg exposing ((^^))
-import IVFinal.Generic.EuclideanRectangle as Rect exposing (Rectangle)
+import IVFinal.App.Animation as Animation
+import IVFinal.Generic.EuclideanRectangle exposing (Rectangle)
 import IVFinal.Generic.Measures as Measure
-import Svg.Attributes as SA
-
+import Svg exposing (Svg)
 
 --- Customizing `Model` to this module
 
@@ -30,43 +27,21 @@ reanimate : List Animation.Step -> Transformer model
 reanimate steps model =
   { model | chamberFluid = Animation.interrupt steps model.chamberFluid }
 
-moduleRectangle : Rectangle
-moduleRectangle = C.chamberFluid
+fluid : Rectangle
+fluid = C.chamberFluid
 
+duration : Measure.Seconds                   
+duration = Measure.seconds 0.3
 
--- Animations
+-- Standard functions, customized. You should never need to edit.
       
 empties : Continuation -> Transformer model
 empties continuation =
-  reanimate
-    [ Animation.toWith
-        (Animation.linear <| Measure.seconds 0.3)
-        emptyStyles
-    , Animation.request continuation
-    ]
-
--- Styles
+  reanimate <|
+    Common.emptySteps fluid duration continuation  
 
 initStyles : List Animation.Styling
-initStyles = 
-  [ Animation.yFrom C.chamberFluid
-  , Animation.heightFrom C.chamberFluid
-  ]
-
-emptyStyles : List Animation.Styling
-emptyStyles  =
-  let
-    rect = C.chamberFluid |> Rect.lowerTo 0
-  in
-    [ Animation.yFrom rect
-    , Animation.heightAttr 0
-    ]
-
-  
-
--- Timing
-
----- View
+initStyles = Common.initStyles fluid
 
 view : Animation.Model -> Svg msg
-view = Common.view moduleRectangle
+view = Common.view fluid
