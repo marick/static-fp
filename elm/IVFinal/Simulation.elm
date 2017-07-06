@@ -80,7 +80,7 @@ overDrain core =
 
     emptyBag =
       Droplet.flows core.dripRate
-      >> BagFluid.lowers (Measure.percent 0) emptyTime
+      >> BagFluid.empties emptyTime
         (Continuation stopDripping)
 
     stopDripping = 
