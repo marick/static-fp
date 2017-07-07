@@ -166,7 +166,7 @@ main =
 
 -- Util
 
-{-| Cause a message to be delivered. A roundabout way of calling what
+{- Cause a message to be delivered. A roundabout way of calling what
 could just be another function. Done this way to show how a program can
 create its own special-purpose commands.
 -} 

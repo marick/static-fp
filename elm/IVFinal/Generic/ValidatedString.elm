@@ -3,7 +3,7 @@ module IVFinal.Generic.ValidatedString exposing
   , checked
   )
 
-{-| A record that stores both a string and, Maybe, the value it parses to.
+{- A record that stores both a string and, Maybe, the value it parses to.
 
 Clients are responsible for parsing and validation.
 -}
@@ -13,7 +13,7 @@ type alias ValidatedString a =
   , value : Maybe a
   }
 
-{-| Construct a validated string with this. The name `checked` implies
+{- Construct a validated string with this. The name `checked` implies
 that the string has already been validated to produce the second argument
 (either a `Just` legitimate value or `Nothing`).
 -}

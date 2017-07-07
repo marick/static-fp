@@ -3,14 +3,14 @@ module IVFinal.App.Svg exposing
   , rect
   )
 
-{-| Some helpers for constructing SVG shapes.
+{- Some helpers for constructing SVG shapes.
 -}
 
 import IVFinal.Generic.EuclideanRectangle exposing (Rectangle) 
 import Svg exposing (svg, Svg, Attribute)
 import Svg.Attributes exposing (..)
 
-{-| SVG attributes are strings. But positions and lengths and whatnot
+{- SVG attributes are strings. But positions and lengths and whatnot
 are best represented by numbers so they can easily be added, etc.
 
 This operator is used between an `Svg` function and its numeric argument:
@@ -23,7 +23,7 @@ This operator is used between an `Svg` function and its numeric argument:
 (^^) f n =
   f <| toString n
 
-{-| Convert a Platonic (abstract, Euclidean) rectangle into an SVG rect.
+{- Convert a Platonic (abstract, Euclidean) rectangle into an SVG rect.
 
       platonic = Rectangle.fromOrigin 120 200
       svg = rect platonic 

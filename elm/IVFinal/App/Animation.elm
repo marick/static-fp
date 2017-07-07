@@ -1,6 +1,6 @@
 module IVFinal.App.Animation exposing (..)
 
-{-| A facade over the different pieces used to implement animations. 
+{- A facade over the different pieces used to implement animations. 
 Specifically, the first block of imports. Also some obsessive tweaking of
 type names.
 -}
@@ -29,7 +29,7 @@ type alias Msg = Animation.Msg
 type alias EasingFunction = Float -> Float
 
 
-{-| A little DSL for defining an animatable shape
+{- A little DSL for defining an animatable shape
 
    animatable S.rect <| HasFixedPart
      [ SA.width ^^ (Rect.width C.startingDroplet)
@@ -46,7 +46,7 @@ animatable shape (HasFixedPart attributes) animatedPart =
 type alias Shape msg =
   List (Svg.Attribute msg) -> List (Svg msg) -> Svg msg
   
-{-| A "keyword argument" for the parts of the shape that never change.
+{- A "keyword argument" for the parts of the shape that never change.
 -}
 type FixedPart msg =
   HasFixedPart (List (Svg.Attribute msg))
@@ -94,7 +94,7 @@ request = App.RunContinuation >> Animation.Messenger.send
 
 -- Attributes and styles
 
-{-| Animation.height produces a *style* "height: xyzzy". But, for SVG,
+{- Animation.height produces a *style* "height: xyzzy". But, for SVG,
 we want the height *attribute*. I didn't override the name `height`
 because that would be confusing if someone used this code to animate
 HTML.

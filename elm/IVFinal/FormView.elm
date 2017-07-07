@@ -3,7 +3,7 @@ module IVFinal.FormView exposing
   , firstFocusId
   )
 
-{-| Calculating the form that lives on the right-hand side of the page.
+{- Calculating the form that lives on the right-hand side of the page.
 
 **NOTE**: There may only be one form on the page at a time. (See the use
 of `firstFocusId`.
@@ -24,7 +24,7 @@ import Html.Events as Event
 import Tagged exposing (Tagged(Tagged))
 import Round
 
-{-| The top-level `Model` fields this module is allowed to look at. Private.
+{- The top-level `Model` fields this module is allowed to look at. Private.
 -}
 type alias Obscured model =
   { model
@@ -36,7 +36,7 @@ type alias Obscured model =
     , scenario : Scenario
   }
 
-{-| Convert the Model into part of an `Html Msg`
+{- Convert the Model into part of an `Html Msg`
 -}
 view : Obscured model -> List (Html Msg)
 view model =
@@ -69,7 +69,7 @@ view model =
       in
         common flowRate ++ variant
 
-{-| The drip rate field has autofocus set on it. However, we also need
+{- The drip rate field has autofocus set on it. However, we also need
 to set the focus explicitly when the `Restart` button is pressed. That
 means we need an `id` attribute.
 
@@ -78,7 +78,7 @@ Note that this prevents having more than one form on a page.
 firstFocusId : String          
 firstFocusId = "focusGoesHere"
 
-{-| Everything above the buttons and commentary on the choices.
+{- Everything above the buttons and commentary on the choices.
 -}
 formProper : Obscured model -> InputAttributes -> Html Msg
 formProper {scenario, desiredDripRate, desiredHours, desiredMinutes}
@@ -122,7 +122,7 @@ formProper {scenario, desiredDripRate, desiredHours, desiredMinutes}
   
 --- Attributes
 
-{-| Depending on the state of the form, buttons are disabled, input
+{- Depending on the state of the form, buttons are disabled, input
 fields are specially colored, etc. This type describes the appropriate
 per-state attributes
 -}
@@ -217,7 +217,7 @@ alert s =
     , br [] []
     ]
 
-{-| Display a float with two digits after the decimal point. 
+{- Display a float with two digits after the decimal point. 
 Pluralize the string argument when appropriate. 
 
     format 1.1 "liter" == "1.1 liters"

@@ -4,7 +4,7 @@ module IVFinal.Apparatus.HoseFluid exposing
   , initStyles
   )
 
-{-| The hose is at the bottom of the apparatus. The only animation
+{- The hose is at the bottom of the apparatus. The only animation
 is to drain it out.
 -}
 

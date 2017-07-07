@@ -10,7 +10,7 @@ module IVFinal.Apparatus.Droplet exposing
   , initStyles
   )
 
-{-| There are three animation scenarios:
+{- There are three animation scenarios:
 
 1. A droplet begins to form at the bottom of the bag, then falls into
    the fluid at the bottom of the chamber.
@@ -62,7 +62,7 @@ dripsOrStreams rate =
     True -> streams rate
     False -> drips rate
 
-{-| an undifferentiated stream of fluid - no droplets seen 
+{- an undifferentiated stream of fluid - no droplets seen 
 -}
 streams : Measure.DropsPerSecond -> Transformer model
 streams rate = 
@@ -73,7 +73,7 @@ streams rate =
         ]
     ]
 
-{-| Individual drips
+{- Individual drips
 -}    
 drips : Measure.DropsPerSecond -> Transformer model
 drips rate = 

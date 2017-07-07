@@ -1,7 +1,7 @@
 module IVFinal.Generic.MakeConstructorUnusable exposing
   ( Recursive )
 
-{-| Use this when you want to make a value constructor impossible to call.
+{- Use this when you want to make a value constructor impossible to call.
 The typical use is with phantom types:
 
     -- joneshf/elm-tagged

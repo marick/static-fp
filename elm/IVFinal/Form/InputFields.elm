@@ -8,7 +8,7 @@ module IVFinal.Form.InputFields exposing
   , minutes
   )
 
-{-| The logic backing the three form input fields. Each is a `ValidatedString`,
+{- The logic backing the three form input fields. Each is a `ValidatedString`,
 but they're given their own type aliases for convenience.
 -}
 
@@ -25,7 +25,7 @@ type alias Minutes = ValidatedString Measure.Minutes
 
 -- Exported functions
 
-{-| Create a DripRate from a string. The string must parse into a
+{- Create a DripRate from a string. The string must parse into a
 Float strictly greater than zero.
 -}
 dripRate : String -> DripRate

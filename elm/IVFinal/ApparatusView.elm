@@ -2,7 +2,7 @@ module IVFinal.ApparatusView exposing
   ( view
   )
 
-{-| The animated apparatus. Code here draws the static part (the containers).
+{- The animated apparatus. Code here draws the static part (the containers).
 Each changing SVG shape has its own module with its own `view`, called from
 here.
 -}

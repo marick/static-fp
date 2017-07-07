@@ -18,7 +18,7 @@ module IVFinal.Apparatus.Constants exposing
   , fallingDistance
   )
 
-{-| These are all the values (mainly rectangles with their x, y,
+{- These are all the values (mainly rectangles with their x, y,
 height, and width) that are needed to construct the initial picture of the
 apparatus.
 -}

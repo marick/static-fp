@@ -3,7 +3,7 @@ module IVFinal.Scenario exposing
   , carboy
   )
 
-{-| In the real app, there's more than one scenario students you, and they
+{- In the real app, there's more than one scenario students you, and they
 can create their own for practice. In this app, we have only the one.
 -}
 

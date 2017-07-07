@@ -5,7 +5,7 @@ module IVFinal.Apparatus.BagFluid exposing
   , initStyles
   )
 
-{-| The bag is the source of fluid. During an animation, the level of
+{- The bag is the source of fluid. During an animation, the level of
 fluid can lower, or the whole bag can empty (which triggers emptying
 of the chamber and hose).
 

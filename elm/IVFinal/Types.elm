@@ -5,7 +5,7 @@ module IVFinal.Types exposing
   , ModelTransform
   )
 
-{-| Mainly the `Model` and `Msg` types, collected in this one
+{- Mainly the `Model` and `Msg` types, collected in this one
 model to avoid circular dependencies.
 -}
 
@@ -22,7 +22,7 @@ import Animation
 -- Elsewhere, use App.Animation.Model
 type alias AnimationModel = Animation.Messenger.State Msg
 
-{-| A flat Model used by the whole app 
+{- A flat Model used by the whole app 
 -}  
 type alias Model =
   { scenario : Scenario
@@ -38,13 +38,13 @@ type alias Model =
   , hoseFluid : AnimationModel
   }
 
-{-| Varous animation functions are most conveniently thought of as
+{- Varous animation functions are most conveniently thought of as
 transformers for models, and are defined in point-free style. This
 alias labels them for easy recognition.
 -}
 type alias ModelTransform = Model -> Model
 
-{-| Single-level `Msg` type. 
+{- Single-level `Msg` type. 
 -}
 
 type Msg
@@ -67,7 +67,7 @@ type Msg
   | SideEffectTaskFinished
 
 
-{-| Parts of the app use continuation-passing style. The continuations
+{- Parts of the app use continuation-passing style. The continuations
 are tagged with this type to make their purpose more clear.
 
 This has to be defined here to avoid circular model dependencies.

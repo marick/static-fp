@@ -28,7 +28,7 @@ module IVFinal.Generic.Measures exposing
   , isStrictlyPositive
   )
 
-{-| A variety of units implemented as tagged types, together with their
+{- A variety of units implemented as tagged types, together with their
 constructors and conversion functions. 
 
 `DropsPerSecond` isn't actually generic, but it's too much of a hassle to
@@ -126,7 +126,7 @@ proportion (Tagged first) (Tagged second) =
   
 -- Functions that apply to generic types
 
-{-| Apply a binary function to two numbers.
+{- Apply a binary function to two numbers.
 
     changeBy (-) (minutes 10) (minutes 1) == minutes 9
 

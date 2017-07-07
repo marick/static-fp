@@ -12,7 +12,7 @@ module IVFinal.Generic.EuclideanRectangle exposing
   , centeredAbove
   )
 
-{-| An abstract rectangle as Euclid would have described it: just a
+{- An abstract rectangle as Euclid would have described it: just a
 bunch of lengths and positions.
 
 Note that the `y` coordinate of a rectangle is the location of its
@@ -39,20 +39,20 @@ height rect = rect.size.height
 
 -- constructors
 
-{-| Create a rectangle at the upper left (coordinate 0, 0)
+{- Create a rectangle at the upper left (coordinate 0, 0)
 -}
 
 fromOrigin : Float -> Float -> Rectangle  
 fromOrigin width height =
   { origin = Point 0 0, size = Size width height }
 
-{-| Increase the `y` value of a rectangle.
+{- Increase the `y` value of a rectangle.
 -}
 nudgeDown : Float -> Rectangle -> Rectangle
 nudgeDown i =
   translate (Point 0 i)
 
-{-| Make the rectangle vertically shorter by decreasing the
+{- Make the rectangle vertically shorter by decreasing the
 `height` and increasing the `y` value. The argument is a value
 between 0 and 1, where 1 means "no change", 0.5 means "half the size",
 and 1 would produce a degenerate rectangle with no height.

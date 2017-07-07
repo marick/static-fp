@@ -1,6 +1,6 @@
 module IVFinal.Simulation.Conversions exposing (..)
 
-{-| Various conversions relevant to calculating simulation values.
+{- Various conversions relevant to calculating simulation values.
 These are really in a separate module so they can be tested.
 -}
 

@@ -4,7 +4,7 @@ module IVFinal.Apparatus.ChamberFluid exposing
   , initStyles
   )
 
-{-| The chamber is the container that fluid drips into. The only animation
+{- The chamber is the container that fluid drips into. The only animation
 is to drain it out.
 -}
 

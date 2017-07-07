@@ -3,7 +3,7 @@ module IVFinal.Simulation.Types exposing
   , HowFinished(..)
   )
 
-{-| Interface types used by both simulation code and by other parts of
+{- Interface types used by both simulation code and by other parts of
 the app.
 -}
 
@@ -12,7 +12,7 @@ import IVFinal.Generic.Measures as Measure
 -- Just for clarity in sum type
 type alias DrainRate = Measure.LitersPerMinute
 
-{-| From the user's point of view, the app proceeds through three stages:
+{- From the user's point of view, the app proceeds through three stages:
 the one before the simulation (filling out the form), the one during the
 simulation (watching the fluid level descend), and the one after the simulation. 
 This type represents those stages.
@@ -22,7 +22,7 @@ type Stage
   | WatchingAnimation DrainRate
   | Finished DrainRate HowFinished
 
-{-| There are two relevant results of a simulation:
+{- There are two relevant results of a simulation:
 * the fluid descended in the bag, then stopped
 * the fluid ran out before the simulation ended
 

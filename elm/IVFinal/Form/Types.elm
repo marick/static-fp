@@ -9,7 +9,7 @@ module IVFinal.Form.Types exposing
   , JustFields
   )
 
-{-| Types and simplish accessors related to the content of the form. 
+{- Types and simplish accessors related to the content of the form. 
 -}
 
 import IVFinal.Generic.Measures as Measure
@@ -27,7 +27,7 @@ type alias JustFields model =
     , desiredMinutes : Field.Minutes
   }
 
-{-| When all the `Field` values exist and are valid, they can
+{- When all the `Field` values exist and are valid, they can
 be extracted to this structure. Client code therefore needn't worry
 about how the fields have `Maybe` values.
 -}
@@ -37,14 +37,14 @@ type alias FinishedForm =
   , minutes : Measure.Minutes
   }
 
-{-| Extract just the `dripRate` field's value (which can be used before
+{- Extract just the `dripRate` field's value (which can be used before
 the other fields are complete.
 -}
 dripRate : JustFields model -> Maybe Measure.DropsPerSecond
 dripRate model =
   model.desiredDripRate.value           
 
-{-| Convert fields with `Maybe` values into a single `Maybe
+{- Convert fields with `Maybe` values into a single `Maybe
 FinishedForm` value.
 
 Cross-field validations *are* performed. For example, the result will
@@ -79,7 +79,7 @@ crossFieldValidations model  =
     (Tagged 0) -> Nothing
     _ -> Just model
 
-{-| True if either per-field or cross-field validations fail. 
+{- True if either per-field or cross-field validations fail. 
 -}             
 isFormIncomplete : JustFields model -> Bool      
 isFormIncomplete model =

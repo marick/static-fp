@@ -4,7 +4,7 @@ module IVFinal.Apparatus.CommonFluid exposing
   , view
   )
 
-{-| The app contains three rectangles that shrink downward to nothingness. 
+{- The app contains three rectangles that shrink downward to nothingness. 
 This module supplies common code to be applied to particular rectangles.
 -}
 

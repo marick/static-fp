@@ -3,14 +3,14 @@ module IVFinal.App.Html exposing
   , textInput
   )
 
-{-| Some "reusable components"
+{- Some "reusable components"
 -}
 
 import IVFinal.Generic.ValidatedString exposing (ValidatedString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
-{-| A button that's expected to stand alone in its own `p`.
+{- A button that's expected to stand alone in its own `p`.
 
     H.soloButton "Restart"
       [ Event.onClick ResetSimulation ]
@@ -23,7 +23,7 @@ soloButton label attributes =
     ]
 
 
-{-| A small text input field that displays a `ValidatedString`
+{- A small text input field that displays a `ValidatedString`
 
     H.textInput desiredHours [ Event.onInput ChangeHours ]
 -}
