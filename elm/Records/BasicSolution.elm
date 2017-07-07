@@ -14,9 +14,6 @@ takerVariant : { whole | id : Int } -> Int
 takerVariant record =
   record.id
 
--- makerVariant is impossible.
-
-
 {-
    `makerVariant` is impossible. The executable code creates a
    record with a `name` field, but `taker` allows only records
@@ -44,7 +41,8 @@ type alias Lens3 whole part =
   { get : { whole | name : part } -> part
   , set : part -> { whole | name : part } -> { whole | name : part }
   }
-  
+
+lens3 : Lens3 whole part
 lens3 = { get = .name, set = setName }
 
 -- Problem 4

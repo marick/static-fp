@@ -36,79 +36,19 @@ shorthand record =
   record.name ++ " (" ++ (toString record.id) ++ ")"
 
 
-ex1maker : String -> { name : String, id : Int }
-ex1maker name =
-  { name = name, id = 3 }
-
-ex1taker : { id : Int } -> Int
-ex1taker record =
-  record.id
-        
-
-    
-
--- x : ContainsNameId { id : Float, name : Float }
--- x = { id = 3 , name = "foo"}    
-    
--- bossie =
---   { id = 13837
---   , name = "bossie"
---   , tags = ["heifer"]
---   }
+comparison : Animal -> String
+comparison ({name, id} as whole) = 
+  "Which representation looks nicer?   \n" ++
+  name ++ " (" ++ (toString id) ++ ")\n" ++
+  "\n...or:\n   " ++
+  toString whole
 
 
--- bossie : Animal
--- bossie =
---   { id = 13837
---   , name = "bossie"
---   , tags = []
---   }
 
--- jake : Animal
--- jake =
---   { id = 13838
---   , name = "jake"
---   , tags = ["stallion"]
---   }
+type Name = Name String String
 
--- bossie2 : Animal  
--- bossie2 = { bossie | name = "Bossy", tags = ["cow"] }
-
--- shorthand : Animal -> String
--- shorthand {name, id} =
---   name ++ " (" ++ (toString id) ++ ")"
-
--- comparison : Animal -> String
--- comparison ({name, id} as whole) = 
---   "Which is better?   \n" ++
---   name ++ " (" ++ (toString id) ++ ")\n" ++
---   "\n...or:\n   " ++
---   toString whole
-
--- restrictiveName : { id : Int
---                   , name : String
---                   , tags : List String
---                   } -> String
--- restrictiveName {name, id} =
---   name ++ " (" ++ (toString id) ++ ")"
-    
--- shorthanddIdThing_broke : { id : Int
---                              , name : String
---                              } -> String
--- shorthanddIdThing_broke {name, id} =
---   name ++ " (" ++ (toString id) ++ ")"
-
-
--- shorthanddIdThing : { whole | id : Int, name : String } -> String    
--- shorthanddIdThing {name, id} =
---   name ++ " (" ++ (toString id) ++ ")"
-    
--- -- AuditedName whole = { whole | id : Int, name : String }
-
-
--- setName : String -> Animal -> Animal
--- setName newName animal =
---   { animal | name = newName }
+formatName ((Name first last) as whole) =
+  toString whole ++ ": " ++ last ++ ", " ++ first
 
 
 
@@ -136,3 +76,25 @@ new =
     inner = outer.inner
   in
     { outer | inner = { inner | name = "X" } } 
+
+
+
+
+record = { a = { part = "a", unchanged = "a" }
+         , b = { part = "b", unchanged = "b" }
+         , c = { part = 1, unchanged = "c" }
+         }
+
+updated =
+  let 
+    a = record.a
+    b = record.b
+    c = record.c
+  in
+    { record
+      | a = { a | part = b.part }
+      , b = { b | part = c.part }
+      , c = { c | part = c.part + 1 }
+    }
+
+      
