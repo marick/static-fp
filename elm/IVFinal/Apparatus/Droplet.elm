@@ -1,26 +1,43 @@
 module IVFinal.Apparatus.Droplet exposing
   (view
 
-  , falls
-  , flows
+  , dripsOrStreams
+  , streams
   , entersTimeLapse
-  , transitionsToDripping
-  , flowVanishes
+  , exitsTimeLapseWithFluidLeft
+  , streamVanishesDuringTimeLapse
 
   , initStyles
   )
 
-import IVFinal.Types exposing (Continuation)
-import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
+{-| There are three animation scenarios:
+
+1. A droplet begins to form at the bottom of the bag, then falls into
+   the fluid at the bottom of the chamber.
+
+2. The drip rate is fast enough that a second droplet would have to start
+   forming (and perhaps start falling) before the previous droplet hits the
+   chamber fluid. Rather than have multiple droplets, the image just changes
+   to a steady "stream" where movement is suggested by cycling the color
+   of a solid rectangle.
+
+3. The simulation has started. The simulation is intended to look like
+   time-lapse photography: vastly sped up. The animation is the same as
+   a too-fast drip rate.
+-}
+
 import IVFinal.Apparatus.Constants as C
-import Svg as S exposing (Svg)
+import IVFinal.Types exposing (Continuation)
 
+import IVFinal.App.Animation as Animation exposing (FixedPart(..), animatable)
 import IVFinal.App.Svg exposing ((^^))
-import IVFinal.Generic.EuclideanRectangle as Rect
+import IVFinal.Generic.EuclideanRectangle as Rect exposing (Rectangle)
 import IVFinal.Generic.Measures as Measure
-import Svg.Attributes as SA
 
+import Svg.Attributes as SA
+import Svg as S exposing (Svg)
 import Tagged exposing (Tagged(Tagged))
+import Color exposing (Color)
 
 --- Customizing `Model` to this module
 
@@ -39,21 +56,25 @@ reanimate steps model =
 
 -- Animations
 
-falls : Measure.DropsPerSecond -> Transformer model
-falls rate =
-  case alwaysFlowing rate of
-    True -> flows rate
+dripsOrStreams : Measure.DropsPerSecond -> Transformer model
+dripsOrStreams rate =
+  case alwaysStreaming rate of
+    True -> streams rate
     False -> drips rate
 
-flows : Measure.DropsPerSecond -> Transformer model
-flows rate = 
+{-| an undifferentiated stream of fluid - no droplets seen 
+-}
+streams : Measure.DropsPerSecond -> Transformer model
+streams rate = 
   reanimate <|
     [ Animation.loop
-        [ Animation.toWith (flowing rate) flowedStyles_2
-        , Animation.toWith (flowing rate) flowedStyles_1
+        [ Animation.toWith (streaming rate) coloredStreamStyles_2
+        , Animation.toWith (streaming rate) coloredStreamStyles_1
         ]
     ]
 
+{-| Individual drips
+-}    
 drips : Measure.DropsPerSecond -> Transformer model
 drips rate = 
   reanimate <|
@@ -64,80 +85,119 @@ drips rate =
         ]
     ]
 
-  
+{- Used when moving between a dripping-or-streaming state into a
+streaming state. The former should show a transitional animation, but
+the latter should not (because the before and after images are the
+same). Internal utility.
+-}
+unlessStreaming : Measure.DropsPerSecond -> List Animation.Step -> List Animation.Step
+unlessStreaming rate steps =
+  case alwaysStreaming rate of
+    True -> []
+    False -> steps
+
+
+{- An easy way to tack a continuation onto the end of a series of steps.
+Internal utility.
+-}
+addContinuation : Continuation -> List Animation.Step -> List Animation.Step
+addContinuation continuation steps =
+  steps ++ [ Animation.request continuation ]
+
+
 entersTimeLapse : Measure.DropsPerSecond -> Continuation -> Transformer model
 entersTimeLapse rate continuation =
-  reanimate <|
-    withoutGlitches rate continuation 
+  let
+    transition = 
       [ Animation.set initStyles
-      , Animation.toWith enterTiming flowedStyles_1
+      , Animation.toWith enterTiming coloredStreamStyles_1
       ]
+  in
+    unlessStreaming rate transition
+    |> addContinuation continuation
+    |> reanimate
 
-transitionsToDripping : Measure.DropsPerSecond -> Continuation -> Transformer model
-transitionsToDripping rate continuation =
-  reanimate <|
-    withoutGlitches rate continuation
-      [ Animation.set flowedStyles_1
-      , Animation.toWith endingTiming flowVanishedStyles
-      ] 
+exitsTimeLapseWithFluidLeft : Measure.DropsPerSecond -> Continuation
+                            -> Transformer model
+exitsTimeLapseWithFluidLeft rate continuation =
+  let
+    transition =
+      [ Animation.set coloredStreamStyles_1
+      , Animation.toWith endingTiming streamVanishedStyles
+      ]
+  in
+    unlessStreaming rate transition
+      |> addContinuation continuation
+      |> reanimate
 
-flowVanishes : Continuation -> Transformer model
-flowVanishes continuation =
-  reanimate <|
-    [ Animation.set flowedStyles_1
-    , Animation.toWith endingTiming flowVanishedStyles
-    , Animation.set initStyles
-    , Animation.request continuation
-    ] 
+         
+streamVanishesDuringTimeLapse : Continuation -> Transformer model
+streamVanishesDuringTimeLapse continuation =
+  let
+    vanished =
+      [ Animation.set coloredStreamStyles_1
+      , Animation.toWith endingTiming streamVanishedStyles
+      , Animation.set initStyles
+      ]
+  in
+    vanished
+      |> addContinuation continuation
+      |> reanimate
 
 
 -- styles
 
 -- Because some of the `Styles` functions are called from different
 -- animation steps, it's safest to make all of them specify all the
--- attributes that `initStyles` does
+-- attributes that can ever change.
+
+shape : Rectangle -> Float -> List Animation.Styling
+shape ySource height =
+  shapePlusColor ySource height C.fluidColor
+
+shapePlusColor : Rectangle -> Float -> Color -> List Animation.Styling
+shapePlusColor ySource height color = 
+  [ Animation.yFrom ySource
+  , Animation.heightAttr height
+  , Animation.fill color
+  ]
+
     
 initStyles : List Animation.Styling
 initStyles =
-  [ Animation.yFrom C.startingDroplet
-  , Animation.fill C.fluidColor
-  , Animation.heightAttr 0
-  ]
+  shape C.startingDroplet 0
 
+-- ... leads to growth by increasing the height alone:
+    
 grownStyles : List Animation.Styling
 grownStyles =
-  [ Animation.yFrom C.startingDroplet
-  , Animation.fill C.fluidColor
-  , Animation.heightAttr C.dropletSideLength
-  ]
+  shape C.startingDroplet C.dropletSideLength
+
+-- ... leads to falling by moving y down into the chamber fluid
     
 fallenStyles : List Animation.Styling
 fallenStyles =
-  [ Animation.y (Rect.y C.endingDroplet)
-  , Animation.fill C.fluidColor
-  , Animation.heightAttr C.dropletSideLength
-  ]
+  shape C.endingDroplet C.dropletSideLength
 
-flowedStyles_1 : List Animation.Styling
-flowedStyles_1 =
-  [ Animation.yFrom C.startingDroplet
-  , Animation.fill C.fluidColor
-  , Animation.heightAttr C.fallingDistance
-  ]
+-- But droplets that go too fast alternate between this:    
+    
+coloredStreamStyles_1 : List Animation.Styling
+coloredStreamStyles_1 =
+  shape C.startingDroplet C.fallingDistance
 
-flowedStyles_2 : List Animation.Styling
-flowedStyles_2 =
-  [ Animation.yFrom C.startingDroplet
-  , Animation.fill C.fluidColor_alternate
-  , Animation.heightAttr C.fallingDistance
-  ]
+-- and the same thing with a color change makes it look a bit more
+-- like fluid is flowing:
+    
+coloredStreamStyles_2 : List Animation.Styling
+coloredStreamStyles_2 =
+  shapePlusColor C.startingDroplet C.fallingDistance C.fluidColor_alternate
 
-flowVanishedStyles : List Animation.Styling
-flowVanishedStyles =
-  [ Animation.y (Rect.y C.endingDroplet)
-  , Animation.fill C.fluidColor
-  , Animation.heightAttr 0
-  ]
+-- If the bag runs out (which will always happen during streaming),
+-- this shrinks the stream down into the chamber fluid:
+    
+streamVanishedStyles : List Animation.Styling
+streamVanishedStyles =
+  shape C.endingDroplet 0
 
 
 --- Timings
@@ -154,11 +214,37 @@ growing rate =
     |> Measure.reduceBy timeForDropToFall
     |> Animation.linear
 
-flowing : Measure.DropsPerSecond -> Animation.Timing
-flowing rate =
+streaming : Measure.DropsPerSecond -> Animation.Timing
+streaming rate =
   rate
     |> Measure.toSeconds
     |> Animation.linear
+
+enterTiming : Animation.Timing      
+enterTiming = 
+  Measure.seconds 0.3 |> Animation.accelerating 
+
+endingTiming : Animation.Timing      
+endingTiming  =
+  Measure.seconds 0.2 |> Animation.accelerating 
+
+---- About timing calculations
+    
+streamCutoff : Measure.DropsPerSecond
+streamCutoff = Measure.dripRate 6.0
+
+-- Following is slower than reality (in a vacuum), but looks better
+timeForDropToFall : Measure.Seconds
+timeForDropToFall = Measure.toSeconds streamCutoff
+
+alwaysStreaming : Measure.DropsPerSecond -> Bool
+alwaysStreaming (Tagged rate) =
+  let
+    (Tagged cutoff) = streamCutoff
+  in
+    rate - cutoff > 0
+
+
 
 --- View
                     
@@ -169,41 +255,4 @@ view =
     , SA.x ^^ (Rect.x C.startingDroplet)
     ]
 
----- About timing calculations
-    
-flowCutoff : Measure.DropsPerSecond
-flowCutoff = Measure.dripRate 6.0
-
--- Following is slower than reality (in a vacuum), but looks better
-timeForDropToFall : Measure.Seconds
-timeForDropToFall = Measure.toSeconds flowCutoff
-
-alwaysFlowing : Measure.DropsPerSecond -> Bool
-alwaysFlowing (Tagged rate) =
-  let
-    (Tagged cutoff) = flowCutoff
-  in
-    rate - cutoff > 0
-
-withoutGlitches : Measure.DropsPerSecond -> Continuation
-                -> List Animation.Step
-                -> List Animation.Step
-withoutGlitches rate continuation steps =
-  let
-    continuationRequest =
-      [ Animation.request continuation ]
-
-    chosenSteps =
-      case alwaysFlowing rate of
-        True -> []
-        False -> steps
-  in
-    chosenSteps ++ continuationRequest
-
-enterTiming : Animation.Timing      
-enterTiming = 
-  Measure.seconds 0.3 |> Animation.accelerating 
-
-endingTiming : Animation.Timing      
-endingTiming  =
-  Measure.seconds 0.2 |> Animation.accelerating 
+      

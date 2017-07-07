@@ -50,16 +50,16 @@ partlyDrain core =
         (Continuation lowerBagLevel)
           
     lowerBagLevel =
-      Droplet.flows core.dripRate
+      Droplet.streams core.dripRate
       >> BagFluid.lowers containerPercent core.minutes
          (Continuation endTimeLapse)
                   
     endTimeLapse = 
-      Droplet.transitionsToDripping core.dripRate
+      Droplet.exitsTimeLapseWithFluidLeft core.dripRate
         (Continuation finish)
 
     finish = 
-        Droplet.falls core.dripRate
+        Droplet.dripsOrStreams core.dripRate
         >> moveToFinishedStage (FluidLeft core.endingVolume) core
   in
     beginTimeLapse
@@ -79,12 +79,12 @@ overDrain core =
         (Continuation emptyBag)
 
     emptyBag =
-      Droplet.flows core.dripRate
+      Droplet.streams core.dripRate
       >> BagFluid.empties emptyTime
         (Continuation stopDripping)
 
     stopDripping = 
-      Droplet.flowVanishes
+      Droplet.streamVanishesDuringTimeLapse
         (Continuation emptyChamber)
 
     emptyChamber =

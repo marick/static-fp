@@ -86,7 +86,7 @@ update msg model =
     -- Running the simulation
 
     StartDripping rate ->
-      ( Droplet.falls rate model
+      ( Droplet.dripsOrStreams rate model
       , Cmd.none
       )
 
