@@ -7,12 +7,6 @@ module IVFinal.Types exposing
 
 {-| Mainly the `Model` and `Msg` types, collected in this one
 model to avoid circular dependencies.
-
-# The Big Two
-@docs Model, Msg
-
-# Others
-@docs ModelTransform, Continuation
 -}
 
 import IVFinal.Scenario exposing (Scenario)
