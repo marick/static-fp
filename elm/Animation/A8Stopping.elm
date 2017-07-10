@@ -10,7 +10,7 @@ import Animation
 import Animation.Messenger
 
 -- Two changes to `update`:
--- 1. A new `Stop` case has been added.
+-- 1. A new `StopDroplet` case has been added.
 -- 2. `Tick` needs to forward on `Msg`s from Animate.Messenger.update
 
 
@@ -39,7 +39,7 @@ update msg model =
         , Cmd.batch [dropletCmd, fluidCmd]
         )
 
-    Stop ->
+    StopDroplet ->
       ( { model
             | droplet = Droplet.stops model.droplet
         }
