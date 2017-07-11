@@ -6,7 +6,7 @@ import Animation.Messenger
 type Msg
   = Start
   | Tick Animation.Msg
-  | StopDroplet                     -- Added
+  | StopDripping                     -- Added
 
 type alias AnimationModel = Animation.Messenger.State Msg -- changed
 
