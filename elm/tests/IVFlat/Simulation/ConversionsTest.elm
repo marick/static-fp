@@ -1,10 +1,10 @@
-module IVFinal.Simulation.ConversionsTest exposing (..)
+module IVFlat.Simulation.ConversionsTest exposing (..)
 
 import Test exposing (..)
 import TestUtil exposing ((=>))
 import Expect exposing (Expectation)
-import IVFinal.Simulation.Conversions as C
-import IVFinal.Generic.Measures as M
+import IVFlat.Simulation.Conversions as C
+import IVFlat.Generic.Measures as M
 
 suite : Test
 suite =

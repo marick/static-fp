@@ -1,10 +1,10 @@
-module IVFinal.Generic.MeasuresTest exposing (..)
+module IVFlat.Generic.MeasuresTest exposing (..)
 
 import Test exposing (..)
 import Expect exposing (Expectation)
 import TestUtil exposing ((=>))
 import Fuzz
-import IVFinal.Generic.Measures as M
+import IVFlat.Generic.Measures as M
 import Random
 
 suite : Test

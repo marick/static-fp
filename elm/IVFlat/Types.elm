@@ -9,9 +9,9 @@ module IVFlat.Types exposing
 model to avoid circular dependencies.
 -}
 
+import IVFlat.Generic.ValidatedString exposing (ValidatedString)
 import IVFlat.Scenario exposing (Scenario)
 import IVFlat.Simulation.Types as Simulation
-import IVFlat.Form.InputFields as Field
 import IVFlat.Form.Types exposing (FinishedForm)
 import IVFlat.Generic.Measures as Measure
 import Animation.Messenger
@@ -28,14 +28,14 @@ type alias Model =
   { scenario : Scenario
   , stage : Simulation.Stage
 
-  , desiredDripRate : Field.DripRate
-  , desiredMinutes : Field.Minutes
-  , desiredHours : Field.Hours
+  , desiredDripRate : ValidatedString Measure.DropsPerSecond
+  , desiredMinutes :  ValidatedString Measure.Minutes
+  , desiredHours :    ValidatedString Measure.Hours
       
-  , droplet : AnimationModel
-  , bagFluid : AnimationModel
+  , droplet :      AnimationModel
+  , bagFluid :     AnimationModel
   , chamberFluid : AnimationModel
-  , hoseFluid : AnimationModel
+  , hoseFluid :    AnimationModel
   }
 
 {- Varous animation functions are most conveniently thought of as

@@ -9,11 +9,11 @@ module IVFlat.FormView exposing
 of `firstFocusId`.
 -}                                                              
 
-import IVFlat.Form.Types exposing (isFormIncomplete)
-import IVFlat.Form.InputFields as Field
+import IVFlat.Form.Types as Form exposing (isFormIncomplete)
 import IVFlat.Simulation.Types as Simulation exposing (Stage(..))
 import IVFlat.Scenario exposing (Scenario)
 
+import IVFlat.Generic.ValidatedString exposing (ValidatedString)
 import IVFlat.Generic.Measures as Measure
 import IVFlat.App.Html as H
 import IVFlat.Types exposing (Msg(..))
@@ -28,9 +28,9 @@ import Round
 -}
 type alias Obscured model =
   { model
-    | desiredDripRate : Field.DripRate
-    , desiredHours : Field.Hours
-    , desiredMinutes : Field.Minutes
+    | desiredDripRate : ValidatedString Measure.DropsPerSecond
+    , desiredHours :    ValidatedString Measure.Hours
+    , desiredMinutes :  ValidatedString Measure.Minutes
 
     , stage : Simulation.Stage
     , scenario : Scenario

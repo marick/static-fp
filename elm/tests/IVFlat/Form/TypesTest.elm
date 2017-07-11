@@ -1,17 +1,17 @@
-module IVFinal.Form.TypesTest exposing (..)
+module IVFlat.Form.TypesTest exposing (..)
 
 import Test exposing (..)
 import Expect exposing (Expectation)
 import TestUtil exposing ((=>))
-import IVFinal.Form.Types as Form exposing (JustFields, FinishedForm)
-import IVFinal.Form.InputFields as Field
-import IVFinal.Generic.Measures as M
+import IVFlat.Form.Types as Form exposing (JustFields, FinishedForm)
+import IVFlat.Form.Validators as Validated
+import IVFlat.Generic.Measures as M
 
 fields : String -> String -> String -> JustFields {}    
 fields dripRate hours minutes =
-  { desiredDripRate = Field.dripRate dripRate
-  , desiredHours = Field.hours hours
-  , desiredMinutes = Field.minutes minutes
+  { desiredDripRate = Validated.dripRate dripRate
+  , desiredHours = Validated.hours hours
+  , desiredMinutes = Validated.minutes minutes
   }
 
 finished : Float -> Int -> Int -> FinishedForm

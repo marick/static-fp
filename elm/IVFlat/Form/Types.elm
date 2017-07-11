@@ -1,6 +1,5 @@
 module IVFlat.Form.Types exposing
   ( FinishedForm
-    
   , dripRate
   , allValues
   , isFormIncomplete
@@ -12,19 +11,20 @@ module IVFlat.Form.Types exposing
 {- Types and simplish accessors related to the content of the form. 
 -}
 
-import IVFlat.Generic.Measures as Measure
-import IVFlat.Form.InputFields as Field
+import IVFlat.Generic.Measures as Measure 
+import IVFlat.Generic.ValidatedString exposing (ValidatedString)
 import Tagged exposing (Tagged(Tagged))
 import Maybe.Extra as Maybe
+
 
 {- Similar to the `Obscured` types elsewhere, this describes those
 `Model` fields code here can see. Private.
 -}
 type alias JustFields model =
   { model
-    | desiredDripRate : Field.DripRate
-    , desiredHours : Field.Hours
-    , desiredMinutes : Field.Minutes
+    | desiredDripRate : ValidatedString Measure.DropsPerSecond
+    , desiredHours :    ValidatedString Measure.Hours
+    , desiredMinutes :  ValidatedString Measure.Minutes
   }
 
 {- When all the `Field` values exist and are valid, they can
@@ -33,8 +33,8 @@ about how the fields have `Maybe` values.
 -}
 type alias FinishedForm = 
   { dripRate : Measure.DropsPerSecond
-  , hours : Measure.Hours
-  , minutes : Measure.Minutes
+  , hours :    Measure.Hours
+  , minutes :  Measure.Minutes
   }
 
 {- Extract just the `dripRate` field's value (which can be used before

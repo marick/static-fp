@@ -5,7 +5,7 @@ import Task
 
 import IVFlat.FormView as Form
 import IVFlat.Form.Types as Form
-import IVFlat.Form.InputFields as Field
+import IVFlat.Form.Validators as Validated
 
 import IVFlat.ApparatusView as Apparatus
 import IVFlat.Apparatus.Droplet as Droplet
@@ -34,9 +34,9 @@ startingModel scenario =
     { scenario = scenario
     , stage = FormFilling
 
-    , desiredDripRate = Field.dripRate ""
-    , desiredMinutes = Field.minutes "0"
-    , desiredHours = Field.hours "0"
+    , desiredDripRate = Validated.dripRate ""
+    , desiredMinutes = Validated.minutes "0"
+    , desiredHours = Validated.hours "0"
 
     , bagFluid = Animation.style <| BagFluid.initStyles bagStartingPercent
     , chamberFluid = Animation.style ChamberFluid.initStyles
@@ -57,21 +57,21 @@ update msg model =
 
     ChangeDripRate candidate ->
       ( { model |
-            desiredDripRate = Field.dripRate candidate
+            desiredDripRate = Validated.dripRate candidate
         }
       , Cmd.none
       )
 
     ChangeHours candidate ->
       ( { model |
-            desiredHours = Field.hours candidate
+            desiredHours = Validated.hours candidate
         }
       , Cmd.none
       )
 
     ChangeMinutes candidate ->
       ( { model |
-            desiredMinutes = Field.minutes candidate
+            desiredMinutes = Validated.minutes candidate
         }
       , Cmd.none
       )

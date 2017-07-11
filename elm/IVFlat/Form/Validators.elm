@@ -1,9 +1,5 @@
-module IVFlat.Form.InputFields exposing
-  ( DripRate
-  , Hours
-  , Minutes
-
-  , dripRate
+module IVFlat.Form.Validators exposing
+  ( dripRate
   , hours
   , minutes
   )
@@ -12,23 +8,18 @@ module IVFlat.Form.InputFields exposing
 but they're given their own type aliases for convenience.
 -}
 
+import IVFlat.Generic.Measures as Measure
 import IVFlat.Generic.ValidatedString as ValidatedString exposing (ValidatedString)
 import IVFlat.Generic.Measures as Measure
 import Maybe.Extra as Maybe
 import Random
-
--- Exported types
-
-type alias DripRate = ValidatedString Measure.DropsPerSecond
-type alias Hours = ValidatedString Measure.Hours
-type alias Minutes = ValidatedString Measure.Minutes
 
 -- Exported functions
 
 {- Create a DripRate from a string. The string must parse into a
 Float strictly greater than zero.
 -}
-dripRate : String -> DripRate
+dripRate : String -> ValidatedString Measure.DropsPerSecond
 dripRate =
   createVia
     String.toFloat
@@ -50,7 +41,7 @@ dripRate =
 {- Create a `Minutes` from a string. The string must parse into an
 int >= 0
 -}
-hours : String -> Hours
+hours : String -> ValidatedString Measure.Hours
 hours = 
   createVia
     String.toInt
@@ -60,7 +51,7 @@ hours =
 {- Create a `Minutes` from a string. The string must parse into an
 an integer in the range [0, 59].
 -}
-minutes : String -> Minutes
+minutes : String -> ValidatedString Measure.Minutes
 minutes =
   createVia
     String.toInt
