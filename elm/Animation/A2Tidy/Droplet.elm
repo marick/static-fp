@@ -1,4 +1,8 @@
-module Animation.A2Tidy.Droplet exposing (..)
+module Animation.A2Tidy.Droplet exposing
+  ( falls
+  , view
+  , initStyles
+  )
 
 import Animation.A2Tidy.Types exposing (AnimationModel)
 import Animation.A2Tidy.AppAnimation exposing (..)
