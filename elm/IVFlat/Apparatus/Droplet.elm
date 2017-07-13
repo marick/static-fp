@@ -251,8 +251,8 @@ alwaysStreaming (Tagged rate) =
 view : Animation.Model -> Svg msg
 view =
   animatable S.rect <| HasFixedPart
-    [ SA.width ^^ (Rect.width C.startingDroplet)
-    , SA.x ^^ (Rect.x C.startingDroplet)
+    [ SA.width ^^ Rect.width C.startingDroplet
+    , SA.x ^^ Rect.x C.startingDroplet
     ]
 
       

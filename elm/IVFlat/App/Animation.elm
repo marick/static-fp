@@ -32,8 +32,8 @@ type alias EasingFunction = Float -> Float
 {- A little DSL for defining an animatable shape
 
    animatable S.rect <| HasFixedPart
-     [ SA.width ^^ (Rect.width C.startingDroplet)
-     , SA.x ^^ (Rect.x C.startingDroplet)
+     [ SA.width ^^ Rect.width C.startingDroplet
+     , SA.x ^^ Rect.x C.startingDroplet
      ]
 -}
 animatable : Shape msg -> FixedPart msg -> Model

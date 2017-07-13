@@ -37,8 +37,8 @@ emptySteps rect seconds continuation =
 view : Rectangle -> Animation.Model -> Svg msg
 view rect =
   animatable Svg.rect <| HasFixedPart
-    [ width ^^ (Rect.width rect)
+    [ width ^^ Rect.width rect
     , fill C.fluidColorString
-    , x ^^ (Rect.x rect)
+    , x ^^ Rect.x rect
     ]
 

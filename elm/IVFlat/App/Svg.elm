@@ -22,6 +22,7 @@ This operator is used between an `Svg` function and its numeric argument:
 (^^) : (String -> Attribute msg) -> number -> Attribute msg
 (^^) f n =
   f <| toString n
+infixl 0 ^^
 
 {- Convert a Platonic (abstract, Euclidean) rectangle into an SVG rect.
 
