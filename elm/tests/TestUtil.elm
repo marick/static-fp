@@ -1,4 +1,7 @@
-module TestUtil exposing ((=>))
+module TestUtil exposing
+  ( (=>)
+  , (==>) 
+  )
 
 import Expect exposing (Expectation)
 
@@ -12,4 +15,9 @@ import Expect exposing (Expectation)
 (=>) actual expected =
   Expect.equal actual expected
 infixl 0 =>
+
+(==>) : a -> (a -> Bool) -> Expectation
+(==>) actual checker = 
+  Expect.true (toString actual ++ " mismatches") (checker actual)
+
 
