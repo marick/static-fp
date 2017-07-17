@@ -25,9 +25,9 @@ suite =
             let
               (hours, minutes) = (M.hours hourInt, M.minutes minuteInt)
             in
-              Expect.equal
-                (M.toMinutes hours minutes |> M.fromMinutes)
-                (hours, minutes)
+              M.toMinutes hours minutes
+                |> M.fromMinutes
+                |> Expect.equal (hours, minutes)
       ]
 
     , describe "friendlyMinutes"
