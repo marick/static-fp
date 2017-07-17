@@ -9,10 +9,8 @@ suite : Test
 suite =
   describe "String"
     [ describe "toInt"
-        [ test "valid" <| \_ -> 
-            String.toInt "123" => Ok 123
-        , test "invalid" <| \_ ->
-            String.toInt "a" ==> isErr
+        [ check "valid" (String.toInt "123") => Ok 123
+        , check "invalid" (String.toInt "a") ==> isErr
         ]
     ]
 
