@@ -25,7 +25,7 @@ asValidated literal value =
 
 dripRate : String -> ValidatedString Float
 dripRate candidate =
-  asValidated "" Nothing
+  { literal = "", value = Nothing}
 
 {-      
   Note: there's a bug in 0.18 Elm such that `String.toInt "-"`
@@ -41,10 +41,10 @@ dripRate candidate =
       
 hours : String -> ValidatedString Int
 hours candidate = 
-  asValidated "" Nothing
+  { literal = "", value = Nothing}
 
       
 minutes : String -> ValidatedString Int
 minutes candidate = 
-  asValidated "" Nothing
+  { literal = "", value = Nothing}
 
