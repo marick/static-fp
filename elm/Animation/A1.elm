@@ -38,7 +38,7 @@ update msg model =
     Tick subMsg ->
       ( { model |
             droplet =
-            Animation.update subMsg model.droplet
+              Animation.update subMsg model.droplet
         }
       , Cmd.none
       )
