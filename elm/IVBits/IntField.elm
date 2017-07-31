@@ -1,4 +1,4 @@
-module IV.TextField exposing (..)
+module IV.IntField exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
