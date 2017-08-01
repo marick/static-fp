@@ -1,4 +1,4 @@
-module IVBits.FuzzStringTest exposing (..)
+module Testing.FuzzStringTest exposing (..)
 
 import Test exposing (..)
 import Expect
