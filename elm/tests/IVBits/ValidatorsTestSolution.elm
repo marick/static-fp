@@ -10,9 +10,9 @@ type alias Comment = String
 type alias Input = String
 
 
-tryValid : (String -> ValidatedString a) -> Comment -> Input -> a
+expectValidFrom : (String -> ValidatedString a) -> Comment -> Input -> a
          -> Test
-tryValid validator comment input expected =
+expectValidFrom validator comment input expected =
   test comment <|
     \_ ->
       Expect.all
@@ -22,9 +22,9 @@ tryValid validator comment input expected =
         (validator input)
 
 
-tryInvalid : (String -> ValidatedString a) -> Comment -> Input
+expectInvalidFrom : (String -> ValidatedString a) -> Comment -> Input
            -> Test
-tryInvalid validator comment input =
+expectInvalidFrom validator comment input =
   test comment <|
     \_ ->
       Expect.all
@@ -38,7 +38,7 @@ validHours : Test
 validHours =
   describe "valid hours"
     (let
-      try = tryValid Validated.hours
+      try = expectValidFrom Validated.hours
      in
        [ try "positive number" "12" 12
        , try "zero is valid (but the form should require the minutes to be non-zero)"
@@ -50,7 +50,7 @@ invalidHours : Test
 invalidHours =
   describe "invalid hours"
     (let
-      try = tryInvalid Validated.hours
+      try = expectInvalidFrom Validated.hours
      in
        [ try "some random bogus value" "a"
        , try "specially bogus: a negative number" "-1"
@@ -61,7 +61,7 @@ validMinutes : Test
 validMinutes =
   describe "valid minutes"
     (let
-      try = tryValid Validated.minutes
+      try = expectValidFrom Validated.minutes
      in
        -- duplicating these to make book explanation easier
        [ try "positive number" "12" 12
@@ -76,7 +76,7 @@ invalidMinutes : Test
 invalidMinutes =
   describe "invalid minutes"
     (let
-      try = tryInvalid Validated.minutes
+      try = expectInvalidFrom Validated.minutes
      in
        -- as above, these are duplicates
        [ try "some random bogus value" "a"

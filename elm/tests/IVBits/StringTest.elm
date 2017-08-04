@@ -75,8 +75,8 @@ suite =
         , describe "invalid strings"
             [ test "format of error message" <|
                 \_ ->
-                  String.toInt ""
-                    |> Expect.equal (Err "could not convert string '' to an Int")
+                  String.toInt "not a string"
+                    |> Expect.equal (Err "could not convert string 'not a string' to an Int")
             
             , test "reject leading alpha characters" <| 
                 \_ ->
@@ -106,3 +106,5 @@ toInt =
               (String.toInt "a3" |> Expect.err)
         ]
     ]
+
+    
