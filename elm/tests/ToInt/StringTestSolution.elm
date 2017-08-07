@@ -1,4 +1,4 @@
-module IVBits.StringTestSolution exposing (..)
+module ToInt.StringTestSolution exposing (..)
 
 import Test exposing (..)
 import Expect exposing (Expectation)
