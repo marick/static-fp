@@ -3,7 +3,7 @@ module ToInt.FixedStringClassifierTest exposing (..)
 import Test exposing (..)
 import Expect exposing (Expectation)
 import ToInt.FixedStringClassifier as Classifier exposing (Classified)
-
+import ToInt.FixedString as Fixed 
 
 absurdValues : Test
 absurdValues =
@@ -57,10 +57,33 @@ boundary =
     [ tryExpecting Classifier.BoundaryPositive "positive" "2147483647"
     , tryExpecting Classifier.BoundaryNegative "negative" "-2147483648"
     ]
-      
+
+-- Utility    
 
 tryExpecting : (String -> Classified String) -> String -> String -> Test
 tryExpecting tag comment input =
   test comment <|
     \_ ->
       Classifier.classify input |> Expect.equal (tag input)
+
+-- Check that boundary is consistent with our idea of the maximum and minumum
+-- integer that `toInt` can handle. Might help discover cases where the boundary
+-- was increased without the code being looked at carefully.
+detectChanges : Test
+detectChanges =
+  let
+    length int =
+      String.length <| toString int
+  in
+    concat
+      [ test "the boundary matches what's advertised as most positive" <| \_ ->
+          Classifier.lengthBoundary
+            |> Expect.equal (length Fixed.toIntMaxInt)
+      , test "the boundary matches what's advertised as most negative" <| \_ ->
+          Classifier.lengthBoundary + 1 -- +1 for minus sign
+            |> Expect.equal (length Fixed.toIntMinInt)
+      ]
+
+
+
+        
