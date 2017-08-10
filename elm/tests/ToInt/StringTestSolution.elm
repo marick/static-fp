@@ -2,15 +2,15 @@ module ToInt.StringTestSolution exposing (..)
 
 import Test exposing (..)
 import Expect exposing (Expectation)
-import Random exposing (maxInt, minInt)
+import Random
 
 toInt_valid : Test
 toInt_valid =
   describe "toInt: valid strings"
     [ valid "positive number" "123" 123
     , valid "negative number" "-123" -123
-    , valid "max int" (toString maxInt) maxInt
-    , valid "min int" (toString minInt) minInt
+    , valid "max int" (toString Random.maxInt) Random.maxInt
+    , valid "min int" (toString Random.minInt) Random.minInt
       
     , validValue "alternate positive format" "+123" 123
     ]
@@ -30,7 +30,7 @@ toInt_oddBoundaries =
           [ valid "big" input expected
           , test "I have right value for maxint" <|
               \_ -> 
-                Expect.equal explicitMaxInt maxInt
+                Expect.equal explicitMaxInt Random.maxInt
           ]
         
     {- This one is interesting: it produces the wrong answer!
@@ -62,6 +62,7 @@ toInt_oddBoundaries =
         ╵
         Ok 2826378202081919000
     -}
+    -- not bothering with very negative values. I've learned enough.
     ]
 
 toInt_invalid : Test
@@ -117,8 +118,6 @@ err original =
   in
     Expect.equal (Err expectedMessage)
 
-        
-
 valid : String -> String -> Int -> Test
 valid comment input expected =
   test comment <|
@@ -134,12 +133,9 @@ validValue comment input expected =
   test comment <|
     \_ -> 
       String.toInt input |> ok expected
-
-
            
 bogus : String -> String -> Test
 bogus comment input =
-  
   test comment <|
     \_ -> 
       String.toInt input |> err input
