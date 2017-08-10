@@ -1,16 +1,16 @@
 module ToInt.FixedStringClassifier exposing
   ( Classified(..)
   , classify
-  , maxInt
-  , minInt
+  , lengthBoundary
   )
 
 import ToInt.ChainablyClassifiable exposing (..)
 
-maxInt =  2147483647
-minInt = -2147483648
+{- Below this boundary, use `toInt`. At the boundary, special
+   calculations are needed. Above it: error
+-}
 
-boundary = maxInt |> toString |> String.length
+lengthBoundary = 10
 
 type Classified a 
   = PreemptivelyBogus a
@@ -21,9 +21,9 @@ type Classified a
 
 classify : String -> Classified String
 classify string =
-  Unknown string string
+  unclassified string 
     |> mightBe preemptivelyBogus PreemptivelyBogus
-    |> rework separateSign
+    |> reworkMaybe separateSign PreemptivelyBogus
     |> mightBe nicelyShort SuitableForToInt
     |> mightBe definitelyTooLong TooLong
     |> mightBe .negative BoundaryNegative
@@ -39,22 +39,23 @@ preemptivelyBogus string =
   List.any (\bad -> string == bad) ["", "-", "+"]
   || List.any (\bad -> String.left 2 string == bad) ["--", "++", "-+", "+-"]
 
-separateSign : String -> SignedString
-separateSign string = 
+separateSign : String -> Maybe SignedString
+separateSign string =
   let
-    sign = String.left 1 string
-    remainder = String.dropLeft 1 string
+    classify (sign, remainder) = 
+      case sign of
+        '-' -> { negative = True,  string = remainder }
+        '+' -> { negative = False, string = remainder }
+        _   -> { negative = False, string = string }
   in
-    case sign of
-      "-" -> { negative = True,  string = remainder }
-      "+" -> { negative = False, string = remainder }
-      _   -> { negative = False, string = string }
+    String.uncons string
+      |> Maybe.map classify
 
 nicelyShort : SignedString -> Bool
 nicelyShort signed =
-  String.length signed.string < boundary
+  String.length signed.string < lengthBoundary
 
 definitelyTooLong : SignedString -> Bool
 definitelyTooLong signed =
-  String.length signed.string > boundary
+  String.length signed.string > lengthBoundary
 
