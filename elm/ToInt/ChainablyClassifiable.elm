@@ -1,5 +1,5 @@
 module ToInt.ChainablyClassifiable exposing
-  ( ChainablyClassifiable(..)
+  ( ChainablyClassifiable
   , unclassified
   , mightBe
   , elseMustBe
@@ -20,16 +20,16 @@ unclassified target =
 mightBe : (workingValue -> Bool) -> (target -> classification) 
         -> ChainablyClassifiable target classification workingValue 
         -> ChainablyClassifiable target classification workingValue
-mightBe predicate tag checkable =
-  case checkable of
+mightBe predicate tagger ccValue =
+  case ccValue of
     Known _ ->
-      checkable
+      ccValue
     Unknown target workingValue ->
       case predicate workingValue of
         True ->
-          Known (tag target)
+          Known (tagger target)
         False ->
-          checkable
+          ccValue
 
 rework : (workingValueIn -> workingValueOut)
        -> ChainablyClassifiable a b workingValueIn
@@ -45,14 +45,14 @@ reworkMaybe : (workingValueIn -> Maybe workingValueOut)
             -> (target -> classification)
             -> ChainablyClassifiable target classification workingValueIn
             -> ChainablyClassifiable target classification workingValueOut
-reworkMaybe f nothingTag incoming = 
+reworkMaybe f failureTagger incoming = 
   case incoming of
     Known classified ->
       Known classified
     Unknown target workingValue ->
       case f workingValue of
         Nothing ->
-          Known (nothingTag target)
+          Known (failureTagger target)
         Just newWorkingValue ->
           Unknown target newWorkingValue
                
@@ -60,22 +60,22 @@ reworkResult : (workingValueIn -> Result err workingValueOut)
             -> (target -> classification)
             -> ChainablyClassifiable target classification workingValueIn
             -> ChainablyClassifiable target classification workingValueOut
-reworkResult f nothingTag incoming = 
+reworkResult f failureTagger incoming = 
   case incoming of
     Known classified ->
       Known classified
     Unknown target workingValue ->
       case f workingValue of
         Err _ ->
-          Known (nothingTag target)
+          Known (failureTagger target)
         Ok newWorkingValue ->
           Unknown target newWorkingValue
                
 elseMustBe : (target -> classification)
            -> ChainablyClassifiable target classification workingValue
            -> classification
-elseMustBe tag checkable =
-  case checkable of
+elseMustBe tagger ccValue =
+  case ccValue of
     Known classified -> classified
-    Unknown target _ -> tag target
+    Unknown target _ -> tagger target
 
