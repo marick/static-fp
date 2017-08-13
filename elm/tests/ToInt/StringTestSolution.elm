@@ -8,53 +8,51 @@ toInt_valid : Test
 toInt_valid =
   describe "toInt: valid strings"
     [ valid "positive number" "123" 123
-    , valid "negative number" "-123" -123
-    , valid "max int" (toString Random.maxInt) Random.maxInt
-    , valid "min int" (toString Random.minInt) Random.minInt
+    , valid "negative number" "-123" -123      
+    , valid "zero" "0" 0 -- for giggles
       
     , validValue "alternate positive format" "+123" 123
+    , validValue "alternate positive format used on zero" "+0" 0
+
+    , valid "max int" (toString Random.maxInt) Random.maxInt
+    , valid "min int" (toString Random.minInt) Random.minInt      
     ]
 
 
 toInt_oddBoundaries : Test
 toInt_oddBoundaries =
-  describe "boundary values are odd"
-    [ concat <|
-        -- It turns out Random.maxInt isn't the biggest int.
-        -- The following works, though it's bigger than maxint
-        let
-          explicitMaxInt =  2147483647        -- for visual comparison
-          input =          "2147483647999999"
-          expected =        2147483647999999
-        in
-          [ valid "big" input expected
-          , test "I have right value for maxint" <|
-              \_ -> 
-                Expect.equal explicitMaxInt Random.maxInt
-          ]
+  describe "boundary values are odd" <|
+    -- Because Javascript strings can hold integers larger
+    -- than maxInt (2^32), the following works:
+    let
+      explicitMaxInt =  2147483647        -- for visual comparison
+      input =          "2147483647999999"
+      expected =        2147483647999999
+    in
+      [ valid "big" input expected
+      , test "I have right value for maxint" <|
+        \_ -> 
+          Expect.equal explicitMaxInt Random.maxInt
+      ]
+
+    -- However, it will also accept too big to represent
+    -- precisely. 
         
     {- This one is interesting: it produces the wrong answer!
     
     , valid "wrong!" "21474836479999999999" 21474836479999999999
         
-        Ok 21474836480000000000
-        ╷
+        Ok 21474836480000000000  -- rounded value
+        ╷  
         │ Expect.equal
         ╵
-        Ok 3028092406290448400
-        
-      Notice that the `toInt` result (the first number)
-      is the input value + 1. Which makes me think the value
-      was promoted to a float.
-      
-      Note also that the expected value shown in the error
-      isn't what I typed in the test. Instead, it's a number
-      with fewer digits. Unchecked integer overflow?
-          
-      To provide more evidence that big integers are converted to
-      floats, consider this:
+        Ok 3028092406290448400  -- don't know why expected value is misprinted.
+                                -- (or misread)
+
+      -- The printing of an approximate number is a weird quirk of Javascript,
+      -- required by the spec. Past 21 decimal digits, you get this:
   
-    , valid "float?" "21474836479999999999999" 21474836479999999999999
+    , valid "scientific, maaan" "21474836479999999999999" 21474836479999999999999
   
         Ok 2.147483648e+22
         ╷
@@ -63,7 +61,6 @@ toInt_oddBoundaries =
         Ok 2826378202081919000
     -}
     -- not bothering with very negative values. I've learned enough.
-    ]
 
 toInt_invalid : Test
 toInt_invalid =
@@ -87,8 +84,7 @@ toInt_invalid =
          ╵
          Err _
   
-     It produces a NaN (which is a Float value), wrapped in Ok!
-
+     It produces a "not a number" rather than an `Err`.
      The same is true of a "+".
      -}       
   
