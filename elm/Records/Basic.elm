@@ -1,13 +1,15 @@
 module Records.Basic exposing (..)
 
--- friendlyName : { record | name : String, id : Int } -> String
--- friendlyName animal =
---   animal.name ++ " (" ++ (toString animal.id) ++ ")"
+bossie =
+  { id = 13837   
+  , name = "bossie" 
+  , tags = ["heifer"]
+  }
 
+setName newName record =
+  { record | name = newName }
 
--- shorthand : Animal -> String
--- shorthand animal =
---   animal.name ++ " (" ++ (toString animal.id) ++ ")"
+bossiePlus = { id = 0, name = "", tags = "", bool = True }
 
 hi : { record | name : String } -> String
 hi record =
@@ -20,19 +22,23 @@ type alias Animal =
   }
 
 
-bossie : Animal  
-bossie =
+bossie_second : Animal  
+bossie_second =
   { id = 13837
   , name = "bossie"
   , tags = ["heifer"]
   }
   
+shorthand : Animal -> String
+shorthand animal =
+  animal.name ++ " (" ++ (toString animal.id) ++ ")"
+
 
 type alias ContainsNameId record =
   { record | id : Int, name : String }
 
-shorthand : ContainsNameId record -> String
-shorthand record =
+shorthand_second : ContainsNameId record -> String
+shorthand_second record =
   record.name ++ " (" ++ (toString record.id) ++ ")"
 
 
