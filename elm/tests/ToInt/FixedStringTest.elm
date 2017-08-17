@@ -66,6 +66,8 @@ toInt_invalid =
     , bogus "leading whitespace" " 3"
     , bogus "trailing whitespace" "3 "
     , bogus "float" "3." -- toFloat would accept this.
+
+    , bogus "32-bit Unicode" "9999🍎"
     ]
 
 -- Tests for supporting code

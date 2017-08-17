@@ -35,10 +35,10 @@ toInt_oddBoundaries =
           Expect.equal explicitMaxInt Random.maxInt
       ]
 
-    -- However, it will also accept too big to represent
-    -- precisely. 
+    {- However, it will also accept values too big to represent
+       precisely. 
         
-    {- This one is interesting: it produces the wrong answer!
+       This one is interesting: it produces the wrong answer!
     
     , valid "wrong!" "21474836479999999999" 21474836479999999999
         
@@ -72,7 +72,8 @@ toInt_invalid =
       
     , bogus "extra -" "--3"
     , bogus "extra +" "++3"
-  
+
+    , bogus "32-bit Unicode" "9999🍎"
   
     {- Another interesting case: 
     
