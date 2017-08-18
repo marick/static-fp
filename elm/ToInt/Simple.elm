@@ -113,8 +113,6 @@ subtractFold acc strings =
       Maybe.andThen (helper string) maybeAcc
   in
     List.foldl step (Just acc) strings
-
-
            
 subtractInPasses startingAcc strings =
   strings
@@ -122,25 +120,23 @@ subtractInPasses startingAcc strings =
     |> Maybe.combine
     |> Maybe.map (List.foldl (flip (-)) startingAcc)
     
--- Note: the argument is assumed to be correct.
-charToDigit : Char -> Int 
-charToDigit char =
-  Char.toCode char - Char.toCode '0'
 
 
 
-
--- Don't call this!
-forever : (a -> a) -> a -> List a
-forever f seed =
-  seed :: forever f (f seed)
-
+-- A function that doesn't have laziness available
 withIndices : List a -> List (Int, a)
 withIndices list =
   let
     counts = List.range 0 (List.length list)
   in
     List.map2 (,) counts list
+
+       
+
+-- Don't call this!
+forever : (a -> a) -> a -> List a
+forever f seed =
+  seed :: forever f (f seed)
 
 
 -- We're pretending this is a lazy infinite list.
@@ -153,3 +149,15 @@ withIndicesLazily list =
 subtractAllLazy : number -> List number -> number
 subtractAllLazy startingValue subtrahends =
   List.foldl (flip (-)) startingValue subtrahends
+
+
+
+-- Helper functions not mentioned in the text    
+
+-- Note: the argument is assumed to be correct.
+charToDigit : Char -> Int 
+charToDigit char =
+  Char.toCode char - Char.toCode '0'
+
+
+    
