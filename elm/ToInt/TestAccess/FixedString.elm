@@ -1,4 +1,4 @@
-module ToInt.FixedStringSupport exposing (..)
+module ToInt.TestAccess.FixedString exposing (..)
 
 import Char
 import Maybe.Extra as Maybe

@@ -3,7 +3,7 @@ module ToInt.FixedStringTest exposing (..)
 import Test exposing (..)
 import Expect exposing (Expectation)
 import ToInt.FixedString as Fixed 
-import ToInt.FixedStringSupport as Fixed exposing (Sign(..))
+import ToInt.TestAccess.FixedString as Fixed exposing (Sign(..))
 
 toInt_valid : Test
 toInt_valid =
