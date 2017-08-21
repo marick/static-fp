@@ -17,13 +17,9 @@ charToDigit char =
     True -> Just <| Char.toCode char - Char.toCode '0'
     False -> Nothing
 
-tupleAndThenSecond : (second -> Maybe newSecond)
-                   -> (first, second)
-                   -> Maybe (first, newSecond)
-tupleAndThenSecond f (first, second) =
-  case f second of
-    Nothing -> Nothing
-    Just newSecond -> Just (first, newSecond)
+combineSecond : (first, Maybe second) -> Maybe (first, second)
+combineSecond (unchanged, maybe) =
+  Maybe.map ((,) unchanged) maybe
 
 type alias Length = Int
   
@@ -46,8 +42,10 @@ componentize maxLength candidate =
       Tuple.mapSecond String.toList
 
     digitize : (Sign, List Char) -> Maybe (Sign, List Int)
-    digitize =
-      tupleAndThenSecond (Maybe.traverse charToDigit)
+    digitize tuple =
+      tuple 
+        |> Tuple.mapSecond (Maybe.traverse charToDigit)
+        |> combineSecond
 
     toFinalForm : (Sign, List Int) ->  Maybe (Sign, List Int, Maybe Int)
     toFinalForm (sign, digits) = 
@@ -60,7 +58,6 @@ componentize maxLength candidate =
           [] -> Just ( sign, safePart, Nothing )
           [d] -> Just ( sign, safePart, Just d )
           _ -> Nothing
-        
 
     shortEnough : (Sign, String) -> Bool
     shortEnough (_, s) = 
@@ -73,30 +70,29 @@ componentize maxLength candidate =
       |> Maybe.andThen digitize
       |> Maybe.andThen toFinalForm
 
+
+         
     
 calculate : ( Sign , List Int, Maybe Int ) -> Maybe Int
-calculate (sign, safePart, dangerDigit) =
+calculate (sign, safeDigits, tenthDigit) =
   let
-    multiply soFar digits =
-      case digits of
-        first :: rest -> multiply (soFar * 10 + first) rest
-        [] -> soFar
-
-    safeResult =
-      multiply 0 safePart
-
-    fullyMultiplied =
-      case (compare safeResult maxPrefix, sign, dangerDigit) of
-        (GT, _       , _) -> Nothing
-        (EQ, Positive, Just 9) -> Nothing
-        (EQ, Positive, Just 8) -> Nothing
-        (EQ, Negative, Just 9) -> Nothing
-        (EQ, _       , Just digit) -> Just (10 * safeResult + digit)
-        (_ , _       , Just digit) -> Just (10 * safeResult * digit)
-        (_ , _       , Nothing)    -> Just safeResult
+    step digit acc =
+      acc * 10 + digit 
   in
-    fullyMultiplied
+    safeDigits -- caller ensures overflow is impossible
+      |> List.foldl step 0 
+      |> multiplyFully sign tenthDigit
       |> Maybe.map (applySign sign)
+
+multiplyFully : Sign -> Maybe Int -> Int -> Maybe Int
+multiplyFully sign tenthDigit partialResult =
+  case (compare partialResult maxPrefix, sign, tenthDigit) of
+    (_ , _       , Nothing)    -> Just partialResult
+    (GT, _       , Just digit) -> Nothing
+    (EQ, _       , Just 9)     -> Nothing
+    (EQ, Positive, Just 8)     -> Nothing
+    (_ , _       , Just digit) -> Just (10 * partialResult + digit)
+
          
 toIntMaxInt : Int
 toIntMaxInt =    2147483647

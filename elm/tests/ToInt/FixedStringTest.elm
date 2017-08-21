@@ -104,8 +104,8 @@ componentize =
   in
     describe "split input into convenient pieces, or Nothing"
       [ describe "discovering the Sign"
-          [ check "1" <| Just (Positive, [1], Nothing)
-          , check "12" <| Just (Positive, [1], Just 2)
+          [ check   "1" <| Just (Positive, [1], Nothing)
+          , check  "12" <| Just (Positive, [1], Just 2)
           , check "-23" <| Just (Negative, [2], Just 3)
           , check "+34" <| Just (Positive, [3], Just 4)
 
@@ -119,6 +119,46 @@ componentize =
           , check  "123" Nothing
           ]
       ]
+
+-- The algorithm has different boundaries than does the domain.      
+fullyMultiply : Test
+fullyMultiply =
+  let
+    check sign safeValue lastDigit =
+      run3 Fixed.multiplyFully sign lastDigit safeValue
+
+    -- With this as first 9 digits, some 10th digits are wrong, some right
+    boundary = 214748364
+  in
+    describe "possible multiplication of final digit"
+      [
+         -- if there are not 10 digits, all is fine.
+         check Positive (boundary+1) Nothing   <| Just (boundary+1)
+       , check Negative (boundary+1) Nothing   <| Just (boundary+1)
+       , check Positive (boundary) Nothing   <| Just boundary
+       , check Negative (boundary) Nothing   <| Just boundary
+       , check Positive (boundary-1) Nothing   <| Just (boundary-1)
+       , check Negative (boundary-1) Nothing   <| Just (boundary-1)
+
+         -- first nine digits are bigger than boundary value
+       , check Positive (boundary+1) (Just 0)  <| Nothing
+       , check Negative (boundary+1) (Just 0)  <| Nothing
+
+         -- at boundary
+       , check Positive (boundary) (Just 7)  <| Just (boundary * 10 + 7)
+       , check Negative (boundary) (Just 7)  <| Just (boundary * 10 + 7)
+
+       , check Positive (boundary) (Just 8)  <| Nothing
+       , check Negative (boundary) (Just 8)  <| Just (boundary * 10 + 8)
+
+       , check Positive (boundary) (Just 9)  <| Nothing
+       , check Negative (boundary) (Just 9)  <| Nothing
+
+       -- below boundary
+       , check Positive (boundary-1) (Just 8)  <| Just (boundary * 10 - 10 + 8)
+       , check Negative (boundary-1) (Just 9)  <| Just (boundary * 10 - 10 + 9)
+      ]
+
 
 -- Because these tests depend on explicit knowledge that
 -- the boundaries are around 32-bit numbers, arrange for
@@ -153,8 +193,6 @@ err original =
   in
     Expect.equal (Err expectedMessage)
 
-        
-
 valid : String -> String -> Int -> Test
 valid comment input expected =
   test comment <|
@@ -170,8 +208,6 @@ validValue comment input expected =
   test comment <|
     \_ -> 
       Fixed.toInt input |> ok expected
-
-
            
 bogus : String -> String -> Test
 bogus comment input =
@@ -179,10 +215,12 @@ bogus comment input =
     \_ -> 
       Fixed.toInt input |> err input
 
-
 run : (a -> b) -> a -> b -> Test
 run f input expected =
   test (toString input) <| \_ ->
     f input |> Expect.equal expected
 
-
+run3 : (a -> b -> c -> d) -> a -> b -> c -> d -> Test
+run3 f in1 in2 in3 expected =
+  test (toString (in1, in2, in3)) <| \_ ->
+    f in1 in2 in3 |> Expect.equal expected
