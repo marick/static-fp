@@ -1,28 +1,25 @@
-module ToInt.TestAccess.FixedString exposing (..)
+module ToInt.TestAccess.FixedString exposing
+  ( componentize
+  , calculate
+  , err
+  , maxLength
+
+  -- available to tests
+  , Sign(..)
+  , toIntMinInt
+  , toIntMaxInt
+  , charToDigit
+  , multiplyFully
+  )
 
 import Char
 import Maybe.Extra as Maybe
 
 type Sign = Positive | Negative
-
-applySign : Sign -> Int -> Int
-applySign sign i =
-  case sign of
-    Positive -> i
-    Negative -> negate i
-
-charToDigit : Char -> Maybe Int 
-charToDigit char =
-  case Char.isDigit char of
-    True -> Just <| Char.toCode char - Char.toCode '0'
-    False -> Nothing
-
-combineSecond : (first, Maybe second) -> Maybe (first, second)
-combineSecond (unchanged, maybe) =
-  Maybe.map ((,) unchanged) maybe
-
 type alias Length = Int
-  
+
+-- main functions  
+
 componentize : Length -> String
              -> Maybe ( Sign , List Int, Maybe Int )
 componentize maxLength candidate =
@@ -59,20 +56,17 @@ componentize maxLength candidate =
           [d] -> Just ( sign, safePart, Just d )
           _ -> Nothing
 
-    shortEnough : (Sign, String) -> Bool
-    shortEnough (_, s) = 
+    isShortEnough : (Sign, String) -> Bool
+    isShortEnough (_, s) = 
       String.length s <= maxLength
   in
     candidate
       |> toSignPair
-      |> Maybe.filter shortEnough -- actually an optimization
+      |> Maybe.filter isShortEnough -- actually an optimization
       |> Maybe.map provideChars
       |> Maybe.andThen digitize
       |> Maybe.andThen toFinalForm
 
-
-         
-    
 calculate : ( Sign , List Int, Maybe Int ) -> Maybe Int
 calculate (sign, safeDigits, tenthDigit) =
   let
@@ -93,6 +87,29 @@ multiplyFully sign tenthDigit partialResult =
     (EQ, Positive, Just 8)     -> Nothing
     (_ , _       , Just digit) -> Just (10 * partialResult + digit)
 
+err : String -> Result String Int
+err original =
+  Err ("could not convert string '" ++ original ++ "' to an Int")
+
+-- others
+
+         
+applySign : Sign -> Int -> Int
+applySign sign i =
+  case sign of
+    Positive -> i
+    Negative -> negate i
+
+charToDigit : Char -> Maybe Int 
+charToDigit char =
+  case Char.isDigit char of
+    True -> Just <| Char.toCode char - Char.toCode '0'
+    False -> Nothing
+
+combineSecond : (first, Maybe second) -> Maybe (first, second)
+combineSecond (unchanged, maybe) =
+  Maybe.map ((,) unchanged) maybe
+
          
 toIntMaxInt : Int
 toIntMaxInt =    2147483647
@@ -106,7 +123,3 @@ maxPrefix   =    214748364
 maxLength : Int                 
 maxLength = 10
             
-err : String -> Result String Int
-err original =
-  Err ("could not convert string '" ++ original ++ "' to an Int")
- 
