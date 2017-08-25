@@ -27,12 +27,12 @@ componentize maxLength candidate =
     toSignPair : String -> Maybe (Sign, String)
     toSignPair original=
       case String.uncons original of
-        Nothing ->        Nothing
-        Just ('-', "") -> Nothing
-        Just ('+',  "") -> Nothing
-        Just ('-', rest) ->  Just (Negative, rest)
-        Just ('+', rest) ->  Just (Positive, rest)
-        Just (_ , rest) -> Just (Positive, candidate)
+        Nothing ->          Nothing
+        Just ('-', "") ->   Nothing
+        Just ('+',  "") ->  Nothing
+        Just ('-', rest) -> Just (Negative, rest)
+        Just ('+', rest) -> Just (Positive, rest)
+        Just (_ , rest) ->  Just (Positive, candidate)
 
     provideChars : (Sign, String) -> (Sign, List Char)
     provideChars = 
