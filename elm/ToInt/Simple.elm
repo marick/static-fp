@@ -1,7 +1,6 @@
 module ToInt.Simple exposing (..)
 
 import Char
-import Maybe.Extra as Maybe
 
 -- First tail-recursive version.
 toIntLike: Int -> String -> Int
@@ -50,19 +49,22 @@ listGeneral f acc rest =
       listGeneral f (f current acc) newRest
 
 
--- Two types of recursion        
+-- Two types of recursion
+factorial : Int -> Int
 factorial n =
   if n <= 1 then
     1
   else
     (*) n (factorial (n - 1))
 
+tailFactorial : Int -> Int -> Int
 tailFactorial acc n =
   if n <= 1 then
     acc
   else
     tailFactorial (n * acc) (n - 1)
 
+factorialWithHelper : Int -> Int
 factorialWithHelper originalN =
   let 
     helper acc n = 
@@ -72,84 +74,6 @@ factorialWithHelper originalN =
         helper (n * acc) (n - 1)
   in
     helper 1 originalN
-
-
-
--- subtractAll with strings
-
-subtractAll : Int -> List String -> Maybe Int      
-subtractAll acc strings =
-  case strings of
-    [] ->
-      Just acc
-    first :: rest -> 
-      case String.toInt first of
-        Err _ ->
-          Nothing
-        Ok int ->
-          subtractAll (acc - int) rest
-
-subtractAll2 : Int -> List String -> Maybe Int      
-subtractAll2 acc strings =
-  case strings of
-    [] ->
-      Just acc
-    first :: rest ->
-      first
-        |> String.toInt 
-        |> Result.map (\i -> subtractAll2 (acc-i) rest)
-        |> Result.withDefault Nothing
-
-subtractFold : Int -> List String -> Maybe Int      
-subtractFold acc strings =
-  let
-    helper string acc =
-      string
-        |> String.toInt
-        |> Result.toMaybe
-        |> Maybe.map (\int -> acc - int)
-
-    step string maybeAcc =
-      Maybe.andThen (helper string) maybeAcc
-  in
-    List.foldl step (Just acc) strings
-           
-subtractInPasses startingAcc strings =
-  strings
-    |> List.map (String.toInt >> Result.toMaybe)
-    |> Maybe.combine
-    |> Maybe.map (List.foldl (flip (-)) startingAcc)
-    
-
-
-
--- A function that doesn't have laziness available
-withIndices : List a -> List (Int, a)
-withIndices list =
-  let
-    counts = List.range 0 (List.length list)
-  in
-    List.map2 (,) counts list
-
-       
-
--- Don't call this!
-forever : (a -> a) -> a -> List a
-forever f seed =
-  seed :: forever f (f seed)
-
-
--- We're pretending this is a lazy infinite list.
-integers = [0, 1, 2, 3, 4, 5]      
-
-withIndicesLazily : List a -> List (Int, a)
-withIndicesLazily list =
-  List.map2 (,) integers list
-      
-subtractAllLazy : number -> List number -> number
-subtractAllLazy startingValue subtrahends =
-  List.foldl (flip (-)) startingValue subtrahends
-
 
 
 -- Helper functions not mentioned in the text    
