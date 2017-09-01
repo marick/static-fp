@@ -55,7 +55,7 @@ minutes : String -> ValidatedString Measure.Minutes
 minutes =
   createVia
     String.toInt
-    (\ i -> i >= 0 && i < 60)
+    (\i -> i >= 0 && i < 60)
     Measure.minutes
 
 
