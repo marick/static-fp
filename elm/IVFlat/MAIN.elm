@@ -78,10 +78,10 @@ update msg model =
 
     -- If the form is valid, forward to simulation cases
     DrippingRequested ->
-      forwardOrForget (Form.dripRate model) StartDripping model
+      forwardOrForget StartDripping Form.dripRate model
 
     SimulationRequested ->
-      forwardOrForget (Form.allValues model) StartSimulation model
+      forwardOrForget StartSimulation Form.allValues model
 
     -- Running the simulation
 
@@ -180,10 +180,10 @@ that to be `Nothing`. If the impossible happens, nothing is done.
 
 Otherwise, the given function is used to make a `Cmd` that delivers a `Msg`. 
 -}
-forwardOrForget : Maybe value -> (value -> msg) -> model
+forwardOrForget : (value -> msg) -> (model -> Maybe value) -> model
                 -> (model, Cmd msg)        
-forwardOrForget maybe msgMaker model =
-  case maybe of
+forwardOrForget msgMaker modelCondenser model =
+  case modelCondenser model of
     Nothing ->
       (model, Cmd.none)
     Just value ->
