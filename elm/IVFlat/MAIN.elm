@@ -168,8 +168,8 @@ main =
 could just be another function. Done this way to show how a program can
 create its own special-purpose commands.
 -} 
-send : msg -> Cmd msg
-send msg =
+sendMsg : msg -> Cmd msg
+sendMsg msg =
   Task.perform identity (Task.succeed msg)
 
 {- Return an unchanged `Model` and a `Cmd` that sends a `Msg` to a
@@ -182,9 +182,9 @@ Otherwise, the given function is used to make a `Cmd` that delivers a `Msg`.
 -}
 forwardOrForget : (value -> msg) -> (model -> Maybe value) -> model
                 -> (model, Cmd msg)        
-forwardOrForget msgMaker modelCondenser model =
-  case modelCondenser model of
+forwardOrForget wrap condense model =
+  case condense model of
     Nothing ->
       (model, Cmd.none)
     Just value ->
-      (model, send (msgMaker value))
+      (model, sendMsg (wrap value))
