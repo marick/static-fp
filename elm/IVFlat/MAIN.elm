@@ -78,10 +78,10 @@ update msg model =
 
     -- If the form is valid, forward to simulation cases
     DrippingRequested ->
-      normallyForward (Form.dripRate model) StartDripping model
+      forwardOrForget (Form.dripRate model) StartDripping model
 
     SimulationRequested ->
-      normallyForward (Form.allValues model) StartSimulation model
+      forwardOrForget (Form.allValues model) StartSimulation model
 
     -- Running the simulation
 
@@ -162,16 +162,14 @@ main =
     }
 
 
-
-
 -- Util
 
 {- Cause a message to be delivered. A roundabout way of calling what
 could just be another function. Done this way to show how a program can
 create its own special-purpose commands.
 -} 
-forward : msg -> Cmd msg
-forward msg =
+send : msg -> Cmd msg
+send msg =
   Task.perform identity (Task.succeed msg)
 
 {- Return an unchanged `Model` and a `Cmd` that sends a `Msg` to a
@@ -182,11 +180,11 @@ that to be `Nothing`. If the impossible happens, nothing is done.
 
 Otherwise, the given function is used to make a `Cmd` that delivers a `Msg`. 
 -}
-normallyForward : Maybe value -> (value -> msg) -> model
+forwardOrForget : Maybe value -> (value -> msg) -> model
                 -> (model, Cmd msg)        
-normallyForward maybe msgMaker model =
+forwardOrForget maybe msgMaker model =
   case maybe of
     Nothing ->
       (model, Cmd.none)
     Just value ->
-      (model, forward (msgMaker value))
+      (model, send (msgMaker value))
