@@ -76,15 +76,18 @@ update msg model =
       , Cmd.none
       )
 
-    -- If the form is valid, forward to simulation cases
+    -- If the form is valid, forward to animation cases
     DrippingRequested ->
-      forwardOrForget StartDripping Form.dripRate model
+      ( model
+      , sendWhenValid StartDripping (Form.dripRate model)
+      )
 
     SimulationRequested ->
-      forwardOrForget StartSimulation Form.allValues model
+      ( model
+      , sendWhenValid StartSimulation (Form.allValues model)
+      )
 
-    -- Running the simulation
-
+    -- Running animations
     StartDripping rate ->
       ( Droplet.dripsOrStreams rate model
       , Cmd.none
@@ -164,27 +167,10 @@ main =
 
 -- Util
 
-{- Cause a message to be delivered. A roundabout way of calling what
-could just be another function. Done this way to show how a program can
-create its own special-purpose commands.
--} 
-sendMsg : msg -> Cmd msg
-sendMsg msg =
-  Task.perform identity (Task.succeed msg)
-
-{- Return an unchanged `Model` and a `Cmd` that sends a `Msg` to a
-later invocation of `update`.
-
-Takes a value wrapped in a `Maybe`. It should be "impossible" for
-that to be `Nothing`. If the impossible happens, nothing is done.
-
-Otherwise, the given function is used to make a `Cmd` that delivers a `Msg`. 
--}
-forwardOrForget : (value -> msg) -> (model -> Maybe value) -> model
-                -> (model, Cmd msg)        
-forwardOrForget wrap condense model =
-  case condense model of
+sendWhenValid : (value -> msg) -> Maybe value -> Cmd msg
+sendWhenValid toMsg maybe =
+  case maybe of
     Nothing ->
-      (model, Cmd.none)
-    Just value ->
-      (model, sendMsg (wrap value))
+      Cmd.none
+    Just value -> 
+      Task.perform toMsg (Task.succeed value)
