@@ -45,3 +45,8 @@ isValueInt3 : PropertyValue -> Bool
 isValueInt3 value = 
   isJust (valueInt value)
 
+-- Exercise 5
+
+isValueInt4 : PropertyValue -> Bool
+isValueInt4 =
+  valueInt >> isJust
