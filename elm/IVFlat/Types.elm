@@ -3,6 +3,7 @@ module IVFlat.Types exposing
   , Msg(..)
   , Continuation(..)
   , ModelTransform
+  , AnimationModel
   )
 
 {- Mainly the `Model` and `Msg` types, collected in this one

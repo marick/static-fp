@@ -10,13 +10,14 @@ import IVFlat.Generic.Measures as Measure
 import IVFlat.Types as App
 
 import Animation
+import IVFlat.Generic.Animation as MoreAnimation
 import Animation.Messenger
 import Ease
 import Time
 import Svg exposing (Svg)
 import Color exposing (Color)
 import Tagged exposing (Tagged(Tagged))
-
+import IVFlat.Generic.Lens as Lens exposing (Lens)
 
 -- Aliasing
 
@@ -109,7 +110,7 @@ heightAttr val = Animation.attr "height" val "px"
 
 
 -- Re-exports
-                 
+
 fill : Color -> Styling          
 fill = Animation.fill
 
@@ -140,3 +141,14 @@ update = Animation.Messenger.update
 subscription : (Animation.Msg -> App.Msg) -> List Model -> Sub App.Msg
 subscription = Animation.subscription
                
+updateAnimations : Msg -> App.Model
+                 -> List (Lens App.Model Model)
+                 -> (App.Model, Cmd App.Msg)
+updateAnimations = MoreAnimation.updateAnimations
+
+-- an alternate implementation
+updateAnimations2 : Msg -> App.Model
+                  -> List (Lens App.Model Model)
+                  -> (App.Model, Cmd App.Msg)
+updateAnimations2 = MoreAnimation.updateAnimations
+                 

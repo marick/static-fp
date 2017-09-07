@@ -21,6 +21,8 @@ import IVFlat.Types exposing (..)
 import IVFlat.App.Animation as Animation
 import IVFlat.App.Layout as Layout
 import IVFlat.Generic.Measures as Measure
+import IVFlat.Generic.Cmd as Cmd
+import IVFlat.Generic.Lens as Lens exposing (Lens, lens)
 
 import Dom
 
@@ -79,12 +81,12 @@ update msg model =
     -- If the form is valid, forward to animation cases
     DrippingRequested ->
       ( model
-      , sendWhenValid StartDripping (Form.dripRate model)
+      , whenValid StartDripping (Form.dripRate model)
       )
 
     SimulationRequested ->
       ( model
-      , sendWhenValid StartSimulation (Form.allValues model)
+      , whenValid StartSimulation (Form.allValues model)
       )
 
     -- Running animations
@@ -102,7 +104,7 @@ update msg model =
       (f model, Cmd.none)
       
     Tick subMsg ->
-      updateSimulations subMsg model
+      updateSimulations2 subMsg model
 
         
     -- After the simulation
@@ -138,6 +140,17 @@ updateSimulations subMsg model =
     , Cmd.batch [dropletCmd, bagFluidCmd, chamberFluidCmd, hoseFluidCmd]
     )
 
+-- An alternate version of `updateSimulations`
+updateSimulations2 : Animation.Msg -> Model -> (Model, Cmd Msg)
+updateSimulations2 subMsg model =
+  Animation.updateAnimations subMsg model 
+    [ lens .droplet       (\new model -> { model | droplet = new})
+    , lens .bagFluid      (\new model -> { model | bagFluid = new})
+    , lens .chamberFluid  (\new model -> { model | chamberFluid = new})
+    , lens .hoseFluid     (\new model -> { model | hoseFluid = new})
+    ]
+
+      
 view : Model -> Html Msg
 view model =
   Layout.wrapper 
@@ -167,10 +180,10 @@ main =
 
 -- Util
 
-sendWhenValid : (value -> msg) -> Maybe value -> Cmd msg
-sendWhenValid toMsg maybe =
+whenValid : (value -> msg) -> Maybe value -> Cmd msg
+whenValid toMsg maybe =
   case maybe of
     Nothing ->
       Cmd.none
-    Just value -> 
-      Task.perform toMsg (Task.succeed value)
+    Just value ->
+      Cmd.wrap toMsg value
