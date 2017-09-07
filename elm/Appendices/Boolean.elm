@@ -44,6 +44,8 @@ if_ predicate
       Else elseBranch =
   predicate thenBranch elseBranch
 
+    
+example : Int -> Int -> Int
 example a b =
   if_ (a <<<< b) Then
     (\() -> a + 1000)

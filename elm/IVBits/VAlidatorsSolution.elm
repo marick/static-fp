@@ -33,7 +33,7 @@ originalHours candidate =
       |> validated candidate
 
 
--- createVia : (parsed -> Bool) -> String -> ValidatedString parsed
+createVia : (Int -> Bool) -> String -> ValidatedString Int
 createVia filter candidate =
   candidate
     |> String.trim

@@ -3,7 +3,6 @@ module IVBits.Validators exposing
   , hours
   , minutes
   )
-import Maybe.Extra as Maybe
 
 type alias ValidatedString a =
   { literal : String
