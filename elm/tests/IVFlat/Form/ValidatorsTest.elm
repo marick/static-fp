@@ -5,18 +5,15 @@ import IVFlat.Form.Validators as Validated
 import IVFlat.Generic.Measures as M
 
 import Test exposing (..)
-import Expect
-import TestUtil exposing (..)
-import Random exposing (maxInt)
-import Maybe.Extra as Maybe
+import TestBuilders as Build
 
 
 validatorsRetainStrings : Test
 validatorsRetainStrings =
   let
-    minutes = TestUtil.equal (Validated.minutes >> .literal)
-    hours = TestUtil.equalsd (Validated.hours >> .literal)
-    dripRate = TestUtil.equalsd (Validated.dripRate >> .literal)
+    minutes = Build.f_1_expected_comment (Validated.minutes >> .literal)
+    hours = Build.f_1_expected (Validated.hours >> .literal)
+    dripRate = Build.f_1_expected (Validated.dripRate >> .literal)
   in
     describe "validators retain strings"
       [ -- Overkill to test all three cases
@@ -33,8 +30,8 @@ hours : Test
 hours =
   let
     run = (Validated.hours >> .value)
-    when = equal run
-    rejects = constant run Nothing
+    when = Build.f_1_expected_comment run
+    rejects = Build.f_expected_1_comment run Nothing
     expect n = Just (M.hours n)
   in
     describe "hours"
@@ -55,8 +52,8 @@ minutes : Test
 minutes =
   let
     run = (Validated.minutes >> .value)
-    when = equal run
-    rejects = constant run Nothing
+    when = Build.f_1_expected_comment run
+    rejects = Build.f_expected_1_comment run Nothing
     expect n = Just (M.minutes n)
   in
     describe "minutes"
@@ -77,8 +74,8 @@ dripRate : Test
 dripRate =
   let
     run = (Validated.dripRate >> .value)
-    when = equal run
-    rejects = constant run Nothing
+    when = Build.f_1_expected_comment run
+    rejects = Build.f_expected_1_comment run Nothing
     expect n = Just (M.dripRate n)
   in
     describe "drip rate"

@@ -1,24 +1,18 @@
 module IVFlat.Generic.LensTest exposing (..)
 
 import Test exposing (..)
-import Expect exposing (Expectation)
-import TestUtil exposing (..)
+import TestBuilders exposing (equal)
 import IVFlat.Generic.Lens as Lens exposing (Lens)
-
-type alias Record = { i : Int }
 
 suite : Test
 suite =
   let
-    r = {i = 3}
-    l = Lens.lens .i (\part whole -> { whole | i = part })
-    check actual expected comment =
-      test comment <| \_ ->
-        actual |> Expect.equal expected
+    record = {i = 3}
+    lens = Lens.lens .i (\part whole -> { whole | i = part })
   in
     describe "lenses" 
-      [ check (Lens.get    l        r)        3     "get"
-      , check (Lens.set    l 5      r) { i =  5 }   "set"
-      , check (Lens.update l negate r) { i = -3 }   "update"
+      [ equal (Lens.get    lens        record)        3     "get"
+      , equal (Lens.set    lens 5      record) { i =  5 }   "set"
+      , equal (Lens.update lens negate record) { i = -3 }   "update"
       ]
        

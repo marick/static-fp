@@ -1,8 +1,7 @@
 module IVFlat.Form.TypesTest exposing (..)
 
 import Test exposing (..)
-import Expect exposing (Expectation)
-import TestUtil 
+import TestBuilders as Build
 import IVFlat.Form.Types as Form exposing (JustFields, FinishedForm)
 import IVFlat.Form.Validators as Validated
 import IVFlat.Generic.Measures as M
@@ -30,8 +29,8 @@ allValues : Test
 allValues =
   let
     run = runner Form.allValues
-    when = TestUtil.equal3 run
-    bogus = TestUtil.constant3 run Nothing
+    when = Build.f_3_expected_comment run
+    bogus = Build.f_expected_3_comment run Nothing
   in
     describe "allValues is all or nothing"
       [ when ("1",   "2", "3") (just 1 2 3)   "every field is valid"
@@ -49,8 +48,8 @@ isFormIncomplete : Test
 isFormIncomplete = 
   let
     run = runner Form.isFormIncomplete
-    incomplete = TestUtil.constant3 run True
-    complete = TestUtil.constant3 run False
+    incomplete = Build.f_expected_3_comment run True
+    complete = Build.f_expected_3_comment run False
   in
     describe "isFormIncomplete"
       [ -- no need to sample all the reasons the form is incomplete
