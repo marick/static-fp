@@ -2,7 +2,7 @@ module IVFlat.Form.TypesTest exposing (..)
 
 import Test exposing (..)
 import Expect exposing (Expectation)
-import TestUtil exposing (..)
+import TestUtil 
 import IVFlat.Form.Types as Form exposing (JustFields, FinishedForm)
 import IVFlat.Form.Validators as Validated
 import IVFlat.Generic.Measures as M
@@ -14,56 +14,49 @@ fields dripRate hours minutes =
   , desiredMinutes = Validated.minutes minutes
   }
 
-finished : Float -> Int -> Int -> FinishedForm
-finished dripRate hours minutes = 
-  { dripRate = M.dripRate dripRate
-  , hours = M.hours hours
-  , minutes = M.minutes minutes
-  }
+just : Float -> Int -> Int -> Maybe FinishedForm
+just dripRate hours minutes = 
+  Just { dripRate = M.dripRate dripRate
+       , hours = M.hours hours
+       , minutes = M.minutes minutes
+       }
 
 runner : (JustFields {} -> a) -> String -> String -> String -> a
 runner functionUnderTest rate hours minutes =
   fields rate hours minutes |> functionUnderTest
 
+    
+allValues : Test
+allValues =
+  let
+    run = runner Form.allValues
+    when = TestUtil.equal3 run
+    bogus = TestUtil.constant3 run Nothing
+  in
+    describe "allValues is all or nothing"
+      [ when ("1",   "2", "3") (just 1 2 3)   "every field is valid"
+      , when ("1.5", "0", "3") (just 1.5 0 3) "hours can be 0 if minutes are not"
+      , when ("1",   "2", "0") (just 1 2 0)   "minutes can also be 0"
+        
+      , bogus ("OOPS", "2", "3")    "bad drip rate"
+      , bogus ("1", "OOPS", "3")    "bad hours"
+      , bogus ("1", "2", "OOPS")    "bad minutes"
+        
+      , bogus ("1", "0", "0")       "both hours and minutes are zero"
+      ]
 
-suite : Test
-suite =
-  describe "Forms"
-    [ describe "AllValues is all or Nothing"
-        (let
-          run = runner Form.allValues
-        in
-          [ check "every field has a valid value"
-              (run "1" "2" "3")    => Just (finished 1 2 3)
-          , check "it's OK for hours to be 0"
-              (run "1.5" "0" "3")  => Just (finished 1.5 0 3)
-          , check "it's OK for minutes to be 0"
-              (run "1" "2" "0")    => Just (finished 1 2 0)
-              
-          , check "bad drip rate"
-              (run "OOPS" "2" "3") => Nothing
-          , check "bad hours"
-              (run "1" "OOPS" "3") => Nothing
-          , check "bad minutes"
-              (run "1" "2" "OOPS") => Nothing
-          , check "both hours and minutes are zero"
-              (run "1" "0" "0")    => Nothing
-          ])
+isFormIncomplete : Test
+isFormIncomplete = 
+  let
+    run = runner Form.isFormIncomplete
+    incomplete = TestUtil.constant3 run True
+    complete = TestUtil.constant3 run False
+  in
+    describe "isFormIncomplete"
+      [ -- no need to sample all the reasons the form is incomplete
+        incomplete ("OOPS", "2", "3")   "bad drip rate, for example"
 
-    -- This is where Midje-style mocks shine.
-    , describe "isFormIncomplete"
-        (let
-           run = runner Form.isFormIncomplete
-        in
-          [ -- no need to sample all the negative values
-            check "bad drip rate, for example"
-              (run "OOPS" "2" "3") => True
-            -- be a little pickier for the valid values
-          , check "every field has a valid value"
-              (run "1" "2" "3")    => False
-          , check "it's OK for hours to be 0"
-              (run "1.5" "0" "3")  => False
-          , check "it's OK for minutes to be 0"
-              (run "1" "2" "0")    => False
-          ])
-    ]
+      , complete ("1", "2", "3")        "every field has a valid value"
+      , complete ("1.5", "0", "3")      "it's OK for hours to be 0"
+      , complete ("1", "2", "0")        "it's OK for minutes to be 0"
+      ]

@@ -13,6 +13,8 @@ import IVFlat.Generic.ValidatedString as ValidatedString exposing (ValidatedStri
 import IVFlat.Generic.Measures as Measure
 import Maybe.Extra as Maybe
 import Random
+import ToInt.FixedString as FixedString
+              -- Note that `toFloat` probably has bugs too.
 
 -- Exported functions
 
@@ -23,7 +25,7 @@ dripRate : String -> ValidatedString Measure.DropsPerSecond
 dripRate =
   createVia
     String.toFloat
-    (\ float -> not (isInfinite float) && float > 0)
+    (\ float -> float > 0 && float <= 100.0)
     Measure.dripRate
 
 {-      
@@ -44,8 +46,8 @@ int >= 0
 hours : String -> ValidatedString Measure.Hours
 hours = 
   createVia
-    String.toInt
-    (\ i -> i >= 0 && i <= Random.maxInt)
+    FixedString.toInt
+    (\ i -> i >= 0 && i <= 24) -- over a day is just being silly.
     Measure.hours
       
 {- Create a `Minutes` from a string. The string must parse into an
@@ -54,7 +56,7 @@ an integer in the range [0, 59].
 minutes : String -> ValidatedString Measure.Minutes
 minutes =
   createVia
-    String.toInt
+    FixedString.toInt
     (\i -> i >= 0 && i < 60)
     Measure.minutes
 
