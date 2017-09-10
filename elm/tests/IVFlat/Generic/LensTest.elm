@@ -8,11 +8,11 @@ suite : Test
 suite =
   let
     record = {i = 3}
-    lens = Lens.lens .i (\part whole -> { whole | i = part })
+    aLens = Lens.lens .i (\part whole -> { whole | i = part })
   in
     describe "lenses" 
-      [ equal (Lens.get    lens        record)        3     "get"
-      , equal (Lens.set    lens 5      record) { i =  5 }   "set"
-      , equal (Lens.update lens negate record) { i = -3 }   "update"
+      [ equal (Lens.get    aLens        record)        3     "get"
+      , equal (Lens.set    aLens 5      record) { i =  5 }   "set"
+      , equal (Lens.update aLens negate record) { i = -3 }   "update"
       ]
        

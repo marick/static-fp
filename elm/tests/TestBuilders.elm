@@ -229,3 +229,7 @@ actual_expected_comment actual expected comment =
 
 equal = actual_expected_comment
 
+actual_expected actual expected =
+  actual_expected_comment actual expected (toString actual)
+
+eql = actual_expected  -- The less informative version of equal
