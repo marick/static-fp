@@ -25,7 +25,7 @@ componentize : Length -> String
 componentize maxLength candidate =
   let
     toSignPair : String -> Maybe (Sign, String)
-    toSignPair original=
+    toSignPair original =
       case String.uncons original of
         Nothing ->          Nothing
         Just ('-', "") ->   Nothing
