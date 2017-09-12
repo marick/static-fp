@@ -8,6 +8,7 @@
     ],
     "exposed-modules": [],
     "dependencies": {
+        "GlobalWebIndex/cmd-extra": "1.0.0 <= v < 2.0.0",
         "arturopala/elm-monocle": "1.4.0 <= v < 2.0.0",
         "elm-community/easing-functions": "1.0.2 <= v < 2.0.0",
         "elm-community/list-extra": "6.0.0 <= v < 7.0.0",
