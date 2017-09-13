@@ -1,12 +1,14 @@
-module Continuation exposing (..)
+module ContinuationExample exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import Html.Events as Event
 import Cmd.Extra as Cmd
 
-type alias NextStep = Int -> Msg
 
+-- multi-step calculation
+
+type alias NextStep = Int -> Msg
+  
 plusC : Int -> Int -> NextStep -> Msg
 plusC x y next = 
   RunContinuation next (x + y)
@@ -30,25 +32,8 @@ startStepping a b c d =
     step1                 
 
 
--- Model
-
-type alias Model =
-  { value : Maybe Int
-  }
-
--- Msg  
-
-type Msg
-  = StartCalculation Int Int Int Int
-  | RunContinuation (Int -> Msg) Int
-  | FinalResult Int
 
 -- Update
-    
-init : (Model, Cmd Msg)
-init = ( {value = Nothing}
-       , Cmd.none
-       )
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -68,6 +53,25 @@ update msg model =
       , Cmd.none
       )
 
+
+-- Model
+
+type alias Model =
+  { value : Maybe Int
+  }
+
+init : (Model, Cmd Msg)
+init = ( {value = Nothing}
+       , Cmd.none
+       )
+
+-- Msg  
+
+type Msg
+  = StartCalculation Int Int Int Int
+  | RunContinuation (Int -> Msg) Int
+  | FinalResult Int
+
 -- View
       
 view : Model -> Html Msg
@@ -81,6 +85,7 @@ view {value} =
 
 -- Main
       
+main : Program Never Model Msg
 main =
   Html.program
     { init = init
