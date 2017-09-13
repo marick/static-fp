@@ -4,6 +4,9 @@ import Html exposing (..)
 import Html.Events as Event
 import Cmd.Extra as Cmd
 
+{- Demonstrate delayed calculation inspired by continuation-passing style.
+See chapter 22.
+-}
 
 -- multi-step calculation
 
