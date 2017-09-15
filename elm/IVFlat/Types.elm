@@ -1,7 +1,7 @@
 module IVFlat.Types exposing
   ( Model
   , Msg(..)
-  , Continuation(..)
+  , Continuation(Next)
   , ModelTransform
   , AnimationModel
   )
@@ -39,12 +39,6 @@ type alias Model =
   , hoseFluid :    AnimationModel
   }
 
-{- Varous animation functions are most conveniently thought of as
-transformers for models, and are defined in point-free style. This
-alias labels them for easy recognition.
--}
-type alias ModelTransform = Model -> Model
-
 {- Single-level `Msg` type. 
 -}
 
@@ -68,11 +62,17 @@ type Msg
   | SideEffectTaskFinished
 
 
+{- Various functions are most conveniently thought of as
+transformers for models, and are defined in point-free style. This
+alias labels them for easy recognition.
+-}
+type alias ModelTransform = Model -> Model
+    
 {- Parts of the app use continuation-passing style. The continuations
 are tagged with this type to make their purpose more clear.
 
 This has to be defined here to avoid circular model dependencies.
 -}
-type Continuation = Continuation (Model -> Model)
+type Continuation = Next ModelTransform
 
 

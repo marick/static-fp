@@ -100,8 +100,8 @@ update msg model =
       , Cmd.none
       )
 
-    RunContinuation (Continuation f) ->
-      (f model, Cmd.none)
+    RunContinuation (Next next) ->
+      (next model, Cmd.none)
       
     Tick subMsg ->
       updateSimulations2 subMsg model

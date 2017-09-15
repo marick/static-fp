@@ -1,3 +1,4 @@
+
 module IVFlat.Simulation exposing
   ( run
   )
@@ -11,7 +12,7 @@ import IVFlat.Apparatus.ChamberFluid as ChamberFluid
 import IVFlat.Apparatus.HoseFluid as HoseFluid
 import IVFlat.Form.Types exposing (FinishedForm)
 import IVFlat.Scenario exposing (Scenario)
-import IVFlat.Types exposing (..)
+import IVFlat.Types exposing (Model, Continuation(Next), ModelTransform)
 
 import IVFlat.Generic.Measures as Measure
 
@@ -23,6 +24,7 @@ type alias CoreInfo =
   , startingVolume : Measure.Liters
   , endingVolume : Measure.Liters
   }
+
 
 run : Scenario -> FinishedForm -> ModelTransform
 run scenario form =
@@ -45,22 +47,22 @@ partlyDrain core =
           
     -- animation
     beginTimeLapse =
-      moveToWatchingStage core
-      >> Droplet.entersTimeLapse core.dripRate
-        (Continuation lowerBagLevel)
+      turnFormOff core >>
+      Droplet.entersTimeLapse core.dripRate
+      (Next lowerBagLevel)
           
     lowerBagLevel =
-      Droplet.streams core.dripRate
-      >> BagFluid.lowers containerPercent core.minutes
-         (Continuation endTimeLapse)
+      Droplet.streams core.dripRate >>
+      BagFluid.lowers containerPercent core.minutes
+      (Next endTimeLapse)
                   
     endTimeLapse = 
       Droplet.exitsTimeLapseWithFluidLeft core.dripRate
-        (Continuation finish)
+      (Next finish)
 
     finish = 
-        Droplet.dripsOrStreams core.dripRate
-        >> moveToFinishedStage (FluidLeft core.endingVolume) core
+      Droplet.dripsOrStreams core.dripRate >>
+      displayFinishedForm (FluidLeft core.endingVolume) core
   in
     beginTimeLapse
 
@@ -74,40 +76,40 @@ overDrain core =
 
     -- animation
     beginTimeLapse =
-      moveToWatchingStage core
-      >> Droplet.entersTimeLapse core.dripRate
-        (Continuation emptyBag)
+      turnFormOff core >>
+      Droplet.entersTimeLapse core.dripRate
+      (Next emptyBag)
 
     emptyBag =
-      Droplet.streams core.dripRate
-      >> BagFluid.empties emptyTime
-        (Continuation stopDripping)
+      Droplet.streams core.dripRate >>
+      BagFluid.empties emptyTime
+      (Next stopDripping)
 
     stopDripping = 
       Droplet.streamVanishesDuringTimeLapse
-        (Continuation emptyChamber)
+      (Next emptyChamber)
 
     emptyChamber =
       ChamberFluid.empties
-        (Continuation emptyHose)
+      (Next emptyHose)
 
     emptyHose =
       HoseFluid.empties
-        (Continuation finish)
+      (Next finish)
 
     finish =
-      moveToFinishedStage (RanOutAfter emptyTime) core
+      displayFinishedForm (RanOutAfter emptyTime) core
   in
     beginTimeLapse
 
 
 
-moveToWatchingStage : CoreInfo -> ModelTransform
-moveToWatchingStage core model = 
+turnFormOff : CoreInfo -> ModelTransform
+turnFormOff core model = 
   { model | stage = WatchingAnimation core.flowRate }
 
-moveToFinishedStage : HowFinished -> CoreInfo -> ModelTransform
-moveToFinishedStage howFinished core model =
+displayFinishedForm : HowFinished -> CoreInfo -> ModelTransform
+displayFinishedForm howFinished core model =
   { model | stage = Finished core.flowRate howFinished }
 
 extractCoreInfo : Scenario -> FinishedForm -> CoreInfo
