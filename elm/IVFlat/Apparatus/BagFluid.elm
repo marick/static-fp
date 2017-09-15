@@ -18,7 +18,7 @@ import IVFlat.App.Animation as Animation exposing (FixedPart(..), animatable)
 import IVFlat.Apparatus.Constants as C
 import Svg as S exposing (Svg)
 
-import IVFlat.Types exposing (..)
+import IVFlat.Types exposing (Continuation)
 import IVFlat.Generic.EuclideanRectangle as Rect exposing (Rectangle)
 import IVFlat.Generic.Measures as Measure
 
