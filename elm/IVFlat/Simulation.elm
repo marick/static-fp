@@ -10,7 +10,7 @@ import IVFlat.Apparatus.Droplet as Droplet
 import IVFlat.Apparatus.BagFluid as BagFluid
 import IVFlat.Apparatus.ChamberFluid as ChamberFluid
 import IVFlat.Apparatus.HoseFluid as HoseFluid
-import IVFlat.Form.Types exposing (FinishedForm)
+import IVFlat.Form.Types as Form
 import IVFlat.Scenario exposing (Scenario)
 import IVFlat.Types exposing (Model, Continuation(Next), ModelTransform)
 
@@ -26,7 +26,7 @@ type alias CoreInfo =
   }
 
 
-run : Scenario -> FinishedForm -> ModelTransform
+run : Scenario -> Form.Finished -> ModelTransform
 run scenario form =
   let
     core =
@@ -112,7 +112,7 @@ displayFinishedForm : HowFinished -> CoreInfo -> ModelTransform
 displayFinishedForm howFinished core model =
   { model | stage = Finished core.flowRate howFinished }
 
-extractCoreInfo : Scenario -> FinishedForm -> CoreInfo
+extractCoreInfo : Scenario -> Form.Finished -> CoreInfo
 extractCoreInfo scenario form =
   let 
     minutes = Measure.toMinutes form.hours form.minutes

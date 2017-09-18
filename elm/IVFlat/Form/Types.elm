@@ -1,11 +1,11 @@
 module IVFlat.Form.Types exposing
-  ( FinishedForm
+  ( Finished
   , dripRate
   , allValues
   , isFormIncomplete
 
   -- exposed only for testing
-  , JustFields
+  , Fields
   )
 
 {- Types and simplish accessors related to the content of the form. 
@@ -20,7 +20,7 @@ import Maybe.Extra as Maybe
 {- Similar to the `Obscured` types elsewhere, this describes those
 `Model` fields code here can see. Private.
 -}
-type alias JustFields model =
+type alias Fields model =
   { model
     | desiredDripRate : ValidatedString Measure.DropsPerSecond
     , desiredHours :    ValidatedString Measure.Hours
@@ -31,7 +31,7 @@ type alias JustFields model =
 be extracted to this structure. Client code therefore needn't worry
 about how the fields have `Maybe` values.
 -}
-type alias FinishedForm = 
+type alias Finished = 
   { dripRate : Measure.DropsPerSecond
   , hours :    Measure.Hours
   , minutes :  Measure.Minutes
@@ -40,17 +40,17 @@ type alias FinishedForm =
 {- Extract just the `dripRate` field's value (which can be used before
 the other fields are complete.
 -}
-dripRate : JustFields model -> Maybe Measure.DropsPerSecond
+dripRate : Fields model -> Maybe Measure.DropsPerSecond
 dripRate model =
   model.desiredDripRate.value           
 
 {- Convert fields with `Maybe` values into a single `Maybe
-FinishedForm` value.
+Finished` value.
 
 Cross-field validations *are* performed. For example, the result will
 be `Nothing` if both the `hours` and `minutes` fields are zero.
 
-Note I'm relying on an the fact that every type alias (like `FinishedForm`) 
+Note I'm relying on an the fact that every type alias (like `Finished`) 
 for a record also creates a value constructor whose arguments
 are in the same order as the fields are listed in the record. That's
 iffy in general, since rearranging a record can break uses of the
@@ -58,11 +58,11 @@ constructor. However, it's safe in this case because each field has a
 different type.
 -}
 
-allValues : JustFields model -> Maybe FinishedForm
+allValues : Fields model -> Maybe Finished
 allValues model =
   let
     extraction =
-      Maybe.map3 FinishedForm
+      Maybe.map3 Finished
         model.desiredDripRate.value
         model.desiredHours.value
         model.desiredMinutes.value
@@ -73,7 +73,7 @@ allValues model =
 {- Reject an (ostensibly) `FinishedForm` if both the hours and minutes
 are zero
 -}
-crossFieldValidations : FinishedForm -> Maybe FinishedForm
+crossFieldValidations : Finished -> Maybe Finished
 crossFieldValidations model  = 
   case Measure.toMinutes model.hours model.minutes of
     (Tagged 0) -> Nothing
@@ -81,6 +81,6 @@ crossFieldValidations model  =
 
 {- True if either per-field or cross-field validations fail. 
 -}             
-isFormIncomplete : JustFields model -> Bool      
+isFormIncomplete : Fields model -> Bool      
 isFormIncomplete model =
   allValues model |> Maybe.isNothing

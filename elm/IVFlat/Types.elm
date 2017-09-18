@@ -13,7 +13,7 @@ model to avoid circular dependencies.
 import IVFlat.Generic.ValidatedString exposing (ValidatedString)
 import IVFlat.Scenario exposing (Scenario)
 import IVFlat.Simulation.Types as Simulation
-import IVFlat.Form.Types exposing (FinishedForm)
+import IVFlat.Form.Types as Form
 import IVFlat.Generic.Measures as Measure
 import Animation.Messenger
 import Animation
@@ -52,7 +52,7 @@ type Msg
   | StartDripping Measure.DropsPerSecond
 
   | SimulationRequested
-  | StartSimulation FinishedForm
+  | StartSimulation Form.Finished
 
   | Tick Animation.Msg
   | RunContinuation Continuation

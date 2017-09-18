@@ -2,25 +2,25 @@ module IVFlat.Form.TypesTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders as Build
-import IVFlat.Form.Types as Form exposing (JustFields, FinishedForm)
+import IVFlat.Form.Types as Form
 import IVFlat.Form.Validators as Validated
 import IVFlat.Generic.Measures as M
 
-fields : String -> String -> String -> JustFields {}
+fields : String -> String -> String -> Form.Fields {}
 fields dripRate hours minutes =
   { desiredDripRate = Validated.dripRate dripRate
   , desiredHours = Validated.hours hours
   , desiredMinutes = Validated.minutes minutes
   }
 
-just : Float -> Int -> Int -> Maybe FinishedForm
+just : Float -> Int -> Int -> Maybe Form.Finished
 just dripRate hours minutes = 
   Just { dripRate = M.dripRate dripRate
        , hours = M.hours hours
        , minutes = M.minutes minutes
        }
 
-runner : (JustFields {} -> a) -> String -> String -> String -> a
+runner : (Form.Fields {} -> a) -> String -> String -> String -> a
 runner functionUnderTest rate hours minutes =
   fields rate hours minutes |> functionUnderTest
 
