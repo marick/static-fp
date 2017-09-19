@@ -1,6 +1,7 @@
 module ContinuationExample exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (style)
 import Html.Events as Event
 import Cmd.Extra as Cmd
 
@@ -20,8 +21,8 @@ timesC : Int -> Int -> NextStep -> Msg
 timesC x y next = 
   RunContinuation next (x * y)
 
-startStepping : Int -> Int -> Int -> Int -> Msg
-startStepping a b c d =
+steps : Int -> Int -> Int -> Int -> Msg
+steps a b c d =
  let                                             
     step1 =                                            
       plusC a b step2
@@ -41,9 +42,9 @@ startStepping a b c d =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    StartCalculation a b c d ->
+    Start a b c d ->
       ( model
-      , startStepping a b c d |> Cmd.perform
+      , steps a b c d |> Cmd.perform
       )
 
     RunContinuation continuation previousResult ->
@@ -71,7 +72,7 @@ init = ( {value = Nothing}
 -- Msg  
 
 type Msg
-  = StartCalculation Int Int Int Int
+  = Start Int Int Int Int
   | RunContinuation (Int -> Msg) Int
   | FinalResult Int
 
@@ -79,10 +80,10 @@ type Msg
       
 view : Model -> Html Msg
 view {value} =
-  div []
+  div [style [("margin", "4em")]]
     [ p []
         [ text <| toString value ]
-    , button [Event.onClick (StartCalculation 3 4 5 100)]
+    , button [Event.onClick (Start 3 4 5 100)]
              [text "Start"]
     ]
 
