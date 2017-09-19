@@ -150,5 +150,5 @@ updateAnimations = MoreAnimation.updateAnimations
 updateAnimations2 : Msg -> App.Model
                   -> List (Lens App.Model Model)
                   -> (App.Model, Cmd App.Msg)
-updateAnimations2 = MoreAnimation.updateAnimations
+updateAnimations2 = MoreAnimation.updateAnimations2
                  
