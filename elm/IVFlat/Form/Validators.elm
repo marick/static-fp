@@ -12,7 +12,6 @@ import IVFlat.Generic.Measures as Measure
 import IVFlat.Generic.ValidatedString as ValidatedString exposing (ValidatedString)
 import IVFlat.Generic.Measures as Measure
 import Maybe.Extra as Maybe
-import Random
 import ToInt.FixedString as FixedString
               -- Note that `toFloat` probably has bugs too.
 
