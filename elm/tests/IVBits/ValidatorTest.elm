@@ -2,9 +2,7 @@ module IVBits.ValidatorTest exposing (..)
 
 -- I'm using `Validated` because it reads nicely: `Validated.hours`
 import IVBits.Validator as Validated
-
 import Test exposing (..)
-
 -- This allows me to construct tabular tests.
 import TestBuilders as Build
 
