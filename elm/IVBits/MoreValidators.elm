@@ -30,13 +30,12 @@ minutes =
 -- Util      
 
 createVia : (String -> Result err a)  -- string parser
-         -> (a -> Bool)               -- parses, but is it valid?
-         -> String                    -- single argument to created function.
-         -> ValidatedString a
-createVia parser validator string =
+         -> (a -> Bool)               -- parses, but is it in bounds?
+         -> (String -> ValidatedString a)
+createVia parser boundsChecker string =
   string
     |> String.trim
     |> parser
     |> Result.toMaybe
-    |> Maybe.filter validator
+    |> Maybe.filter boundsChecker
     |> ValidatedString.make string
