@@ -4,6 +4,10 @@ import Test exposing (..)
 import Expect
 
 {- 
+Examples:
+    IVBits/MoreValidatorsTest.elm
+    IVFlat/Form/TypesTest.elm
+    IVFlat/Generic/LensTest.elm
 
 A set of functions used to build tests. The emphasis is on building
 tests that look tabular. I think the elm-test `test` format is a good
@@ -36,21 +40,18 @@ Here's an alternate notation:
       [ rejects "1a"           "the usual non-numeric values are rejected"
       , rejects "1.0"          "rejects floats"
 
-      , when "24" (expect 24)  "upper boundary"
+      , when "24" (Just 24)    "upper boundary"
       , rejects "25"           "too big"
         
-      , when "0" (expect 0)    "0 is allowed"
+      , when "0" (Just 0)      "0 is allowed"
       , rejects "-1"           "negative numbers are disallowed"
 
-      , when " 3 " (expect 3)  "spaces are allowed"
+      , when " 3 " (Just 3)  "spaces are allowed"
       ]      
 
 Notice that the comments come last. That makes them easily scannable
 (important!)  when you want to look at words, and ignorable when you
 want to look at code.
-
-(The `expect` isn't from this librry. The test module uses it as
-shorthand for a value like `(Just (Hours 3))`.)
 
 Here's how those helper functions are created:
 
@@ -60,21 +61,20 @@ Here's how those helper functions are created:
        run = (Validated.hours >> .value)
 ---    when = Build.f_1_expected_comment run
 ---    rejects = Build.f_expected_1_comment run Nothing
-       expect n = Just (M.hours n)
    in
      describe "hours"
 
 
-The important lines are those marked. It shows that the (many!)
+The important lines are those marked. They show that the (many!)
 builder functions follow a consistent format. Consider this example:
 
-   when = f_1_expected_comment run`
+   when = f_1_expected_comment run
 
 * `f_1`: The constructed test will apply a function to an argument to
   construct a value to check. In this particular case, the function
   (`run`) is supplied, so the individual tests don't have to.
 
-* _expected_: The result of the function is to be compared to an
+* `_expected_`: The result of the function is to be compared to an
   expected value (rather than to be passed to a checker predicate). 
   That is, we know the constructed test uses `Expect.equal`. 
 
@@ -106,11 +106,11 @@ In this case, `rejects` is for any test case where the expected value
 is `Nothing`.
 
 You may notice that we don't really need two builder functions. We
-could use only `f_expected_1_comment`. Tests that have specific (non
+could use only `f_1_expected_comment`. Tests that have specific (non
 "default", non `Nothing`) expected values could just partially apply
 the first argument, so would be written with the expected value first:
 
-      when (wrapped 59) "59"    "upper boundary"
+      run (wrapped 59) "59"    "upper boundary"
 
 No. Elm encourages programmers to treat execution order
 left-to-right. That is, it follows the convention embedded in many
@@ -143,7 +143,7 @@ described by builder functions like this:
 
 I thought it useful to group the arguments together in a tuple, like this:
 
-   when ("1.5", "0", "3") (just 1.5 0 3) "hours can be 0 if minutes are not"
+   when ("1.5", "0", "3") <| Just (1.5, 0, 3) "hours can be 0 if minutes are not"
 
 In testing, I like some mechanism to separate the expected result from
 the actual result. In my Clojure testing tool, I used arrows for that:
@@ -182,7 +182,12 @@ It would be dumb to make everyone define shorthand for
 `actual_expected_comment`, so `equal` is defined as a synonym in this
 module.
 
--}    
+-}
+
+
+-- Note: I've been creating these functions as I need them, so there
+-- aren't versions for all the combinations yet.
+-- TODO: Tests that take a checker function rather than an expected value.
 
 f_1_expected_comment f arg1 expected comment =
   test comment <|

@@ -25,6 +25,13 @@ validatorsRetainStrings =
       , dripRate "wrong" "wrong"
       ]
 
+{- Note: these tests deliberately avoid tickling the bug
+   in `toInt`'s handling of "+" and "-" alone. They also
+   don't even cover the use of '+' at all.
+-}
+
+
+      
 hours : Test
 hours =
   let

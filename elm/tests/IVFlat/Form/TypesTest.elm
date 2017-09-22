@@ -6,25 +6,6 @@ import IVFlat.Form.Types as Form
 import IVFlat.Form.Validators as Validated
 import IVFlat.Generic.Measures as M
 
-fields : String -> String -> String -> Form.Fields {}
-fields dripRate hours minutes =
-  { desiredDripRate = Validated.dripRate dripRate
-  , desiredHours = Validated.hours hours
-  , desiredMinutes = Validated.minutes minutes
-  }
-
-just : Float -> Int -> Int -> Maybe Form.Finished
-just dripRate hours minutes = 
-  Just { dripRate = M.dripRate dripRate
-       , hours = M.hours hours
-       , minutes = M.minutes minutes
-       }
-
-runner : (Form.Fields {} -> a) -> String -> String -> String -> a
-runner functionUnderTest rate hours minutes =
-  fields rate hours minutes |> functionUnderTest
-
-    
 allValues : Test
 allValues =
   let
@@ -59,3 +40,26 @@ isFormIncomplete =
       , complete ("1.5", "0", "3")      "it's OK for hours to be 0"
       , complete ("1", "2", "0")        "it's OK for minutes to be 0"
       ]
+
+
+----
+
+fields : String -> String -> String -> Form.Fields {}
+fields dripRate hours minutes =
+  { desiredDripRate = Validated.dripRate dripRate
+  , desiredHours = Validated.hours hours
+  , desiredMinutes = Validated.minutes minutes
+  }
+
+just : Float -> Int -> Int -> Maybe Form.Finished
+just dripRate hours minutes = 
+  Just { dripRate = M.dripRate dripRate
+       , hours = M.hours hours
+       , minutes = M.minutes minutes
+       }
+
+runner : (Form.Fields {} -> a) -> String -> String -> String -> a
+runner functionUnderTest rate hours minutes =
+  fields rate hours minutes |> functionUnderTest
+
+    
