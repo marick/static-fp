@@ -25,6 +25,13 @@ validatorsRetainStrings =
       , dripRate "wrong" "wrong"
       ]
 
+{- Note: these tests deliberately avoid tickling the bug
+   in `toInt`'s handling of "+" and "-" alone. They also
+   don't even cover the use of '+' at all.
+-}
+
+
+      
 hours : Test
 hours =
   let
@@ -40,6 +47,9 @@ hours =
       , rejects "-1"           "negative numbers are disallowed"
 
       , when " 3 " (Just 3)    "spaces are allowed"
+
+      , when "24" (Just 24)    "a 24 hour drip is barely conceivable"
+      , rejects "25"           "but anything larger is ridiculous"
       ]      
 
 
