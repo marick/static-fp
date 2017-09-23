@@ -104,7 +104,7 @@ update msg model =
       (next model, Cmd.none)
       
     Tick subMsg ->
-      updateSimulations2 subMsg model
+      updateMyAnimations2 subMsg model
 
         
     -- After the simulation
@@ -119,8 +119,8 @@ update msg model =
     SideEffectTaskFinished ->
       ( model, Cmd.none ) 
 
-updateSimulations : Animation.Msg -> Model -> (Model, Cmd Msg)
-updateSimulations subMsg model =
+updateMyAnimations : Animation.Msg -> Model -> (Model, Cmd Msg)
+updateMyAnimations subMsg model =
   let
     (newDroplet, dropletCmd) =
       Animation.update subMsg model.droplet
@@ -140,9 +140,9 @@ updateSimulations subMsg model =
     , Cmd.batch [dropletCmd, bagFluidCmd, chamberFluidCmd, hoseFluidCmd]
     )
 
--- An alternate version of `updateSimulations`
-updateSimulations2 : Animation.Msg -> Model -> (Model, Cmd Msg)
-updateSimulations2 subMsg model =
+-- An alternate version of `updateAnimations`
+updateMyAnimations2 : Animation.Msg -> Model -> (Model, Cmd Msg)
+updateMyAnimations2 subMsg model =
   Animation.updateAnimations subMsg model 
     [ lens .droplet       (\new model -> { model | droplet = new})
     , lens .bagFluid      (\new model -> { model | bagFluid = new})
