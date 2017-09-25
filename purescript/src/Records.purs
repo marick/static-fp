@@ -8,22 +8,24 @@ newtype Animal = Animal
   , tags :: Array String
   }
 
-bossie :: Animal
-bossie = { id: 13837, name: "bossie", tags: [] }
+f = 33
 
-jake :: Animal
-jake =
-  { id: 13838
-  , name: "jake"
-  , tags: ["stallion"]
-  }
+-- bossie :: Animal
+-- bossie = { id: 13837, name: "bossie", tags: [] }
 
-bossie2 :: Animal  
-bossie2 = bossie { name = "Bossy", tags = ["cow"] }
+-- jake :: Animal
+-- jake =
+--   { id :: 13838
+--   , name :: "jake"
+--   , tags :: ["stallion"]
+--   }
 
-friendlyName :: Animal -> String
-friendlyName {name, id} =
-  name <> " (" <> (show id) <> ")"
+-- bossie2 :: Animal  
+-- bossie2 = bossie { name = "Bossy", tags = ["cow"] }
+
+-- friendlyName :: Animal -> String
+-- friendlyName {name, id} =
+--   name <> " (" <> (show id) <> ")"
 
 
 
