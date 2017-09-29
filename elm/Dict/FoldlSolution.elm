@@ -1,10 +1,6 @@
 module Dict.FoldlSolution exposing (..)
 
 import Dict exposing (Dict)
-import Date exposing (Date)
-import Date.Extra as Date
-import Dict.PropertyValue as Value exposing (PropertyValue)
-
 
 -- Exercise 1
 
@@ -39,42 +35,19 @@ toList dict =
       |> Dict.foldl step []
       |> List.foldl (::) [] -- or `List.reverse`
 
+
 -- Exercise 4
 
-properties : Dict String PropertyValue
-properties =
-  Dict.fromList [
-      ("int1", Value.Int 1)
-    , ("int2", Value.Int 2)
-    , ("date", Value.Date <| Date.fromCalendarDate 2017 Date.May 26)
-    , ("false", Value.Bool False)
-    , ("true", Value.Bool True)
-    ]
-
-toInts : Dict String PropertyValue -> Dict String Int
-toInts properties =
-  let
-    step k v acc =
-      case v of
-        (Value.Int i) ->
-          Dict.insert k i acc
-        _ ->
-          acc
-  in
-    Dict.foldl step Dict.empty properties
-
--- Exercise 5
-
 uncurry : (a1 -> a2 -> r) -> (a1, a2) -> r
-uncurry twoArgF (arg1, arg2) =
-  twoArgF arg1 arg2
+uncurry takes2Args (arg1, arg2) =
+  takes2Args arg1 arg2
 
 curry : ( (a1, a2) -> r) -> a1 -> a2 -> r
-curry tupleF arg1 arg2 =
-  tupleF (arg1, arg2)
+curry takesTuple arg1 arg2 =
+  takesTuple (arg1, arg2)
 
 
--- Exercise 6
+-- Exercise 5
 
 map : (comparable -> a -> b) -> Dict comparable a -> Dict comparable b
 map f dict =
@@ -85,4 +58,11 @@ map f dict =
     dict
       |> Dict.toList
       |> List.foldl step Dict.empty
+  
+
+-- Exercise 6
+
+withValue : (value -> result) -> (key -> value -> result)
+withValue f key value =
+  f value 
   
