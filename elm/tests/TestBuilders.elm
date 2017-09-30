@@ -238,3 +238,14 @@ actual_expected actual expected =
   actual_expected_comment actual expected (toString actual)
 
 eql = actual_expected  -- The less informative version of equal
+equal_ = eql           -- Maybe adopt this convention?
+
+
+nothing actual comment =
+  equal actual Nothing comment
+
+just actual expected comment =
+  equal actual (Just expected) comment
+
+
+      
