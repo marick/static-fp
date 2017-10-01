@@ -1,4 +1,4 @@
-module Optics.ExampleWithout exposing (..)
+module Choose.ExampleWithout exposing (..)
 
 import Dict
 

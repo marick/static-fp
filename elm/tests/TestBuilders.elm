@@ -241,11 +241,14 @@ eql = actual_expected  -- The less informative version of equal
 equal_ = eql           -- Maybe adopt this convention?
 
 
+-- A nothing variant without a comment is not useful because there's
+-- no good value to provide as the name of the test.
 nothing actual comment =
   equal actual Nothing comment
 
 just actual expected comment =
   equal actual (Just expected) comment
-
-
+just_ actual expected =
+  just actual expected (toString expected)
+justo = just_
       
