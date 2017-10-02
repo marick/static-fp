@@ -8,6 +8,9 @@ import Result
 
 import Dict exposing (Dict)
 
+
+---------- Basics
+
 type Identifier
   = Id Int
   | Name String
@@ -18,7 +21,6 @@ id = Case.make
         case whole of
           Id id -> Just id
           _ -> Nothing)
-       
      Id
        
 name = Case.make
@@ -26,7 +28,6 @@ name = Case.make
           case whole of
             Name name -> Just name
             _ -> Nothing)
-
        Name
 
 getting =
@@ -59,7 +60,34 @@ update =
       ]
 
 
--- Composition
+---------- Laws
+
+type Both
+  = Skip
+  | Both String Int
+
+both = Case.make
+       (\ whole ->
+          case whole of
+            Both s i -> Just (s, i)
+            _ -> Nothing)
+       (uncurry Both)
+
+twoArgLaws =
+  let 
+    value = Both "old" 0
+    get = Case.get both
+    set = Case.set both
+  in
+    describe "laws for tuple extractor"
+      [ equal (get (set ("new",3)))  (Just ("new", 3)) "you get back what you put in"
+        -- the following two put together check the second law:
+        -- IF get value == Just tuple THEN set tuple == value
+      , equal (get (Both "new" 3))   (Just ("new",3))    "here's the tuple returned"
+      , equal (set      ("new",3))   (Both "new" 3)      "setter fully constructs"
+      ]
+
+---------- Composition
 
       
 type Outer

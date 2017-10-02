@@ -1,4 +1,4 @@
-omodule Choose.Case exposing (..)
+module Choose.Case exposing (..)
 
 type alias Getter big small = big -> Maybe small
 type alias Setter big small = small -> big

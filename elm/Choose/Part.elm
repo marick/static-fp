@@ -29,12 +29,10 @@ update chooser f big =
 -- Add the first chooser to the second. Intended to be pipelined       
 next : Part middle small -> Part big middle -> Part big small
 next new previous =
-  { get = previous.get >> new.get
-  , set =
-      \newSmall big ->
-        let
-          newMiddle = new.set newSmall (previous.get big)
-        in
-          previous.set newMiddle big
-  }
-
+  make
+    (previous.get >> new.get)
+    (\newSmall big ->
+       let
+         newMiddle = new.set newSmall (previous.get big)
+       in
+         previous.set newMiddle big)
