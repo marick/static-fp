@@ -3,11 +3,8 @@ module Choose.MaybePartTest exposing (..)
 import Test exposing (..)
 import TestBuilders exposing (eql, equal)
 import Choose.MaybePart as Opt
+import Choose.Definitions exposing (..)
 import Dict
-
-dict1 = Dict.singleton
-dict1_1 outer inner val =
-  dict1 outer (dict1 inner val)
 
 operations : Test
 operations =

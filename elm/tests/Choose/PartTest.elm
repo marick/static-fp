@@ -5,6 +5,8 @@ import TestBuilders exposing (eql, equal)
 import Choose.Part as Part
 import Choose.Combine.Part as Part
 import Choose.Common.Tuple2 exposing (second)
+import Choose.Definitions exposing (..)
+
 
 --- More commonly called Lenses
 
@@ -12,7 +14,7 @@ operations : Test
 operations =
   let
     record = {part = 3}
-    part = Part.make .part (\part whole -> { whole | part = part })
+    part = oneLevelLens
   in
     describe "operations" 
       [ eql (Part.get    part        record)           3

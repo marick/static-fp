@@ -5,30 +5,12 @@ import TestBuilders exposing (nothing, just, justo, eql, equal)
 import Choose.Case as Case
 import Maybe.Extra as Maybe
 import Result
+import Choose.Definitions exposing (..)
 
 import Dict exposing (Dict)
 
 
 ---------- Basics
-
-type Identifier
-  = Id Int
-  | Name String
-
-
-id = Case.make
-     (\ whole ->
-        case whole of
-          Id id -> Just id
-          _ -> Nothing)
-     Id
-       
-name = Case.make
-       (\ whole ->
-          case whole of
-            Name name -> Just name
-            _ -> Nothing)
-       Name
 
 getting =
   let
@@ -62,17 +44,6 @@ update =
 
 ---------- Laws
 
-type Both
-  = Skip
-  | Both String Int
-
-both = Case.make
-       (\ whole ->
-          case whole of
-            Both s i -> Just (s, i)
-            _ -> Nothing)
-       (uncurry Both)
-
 twoArgLaws =
   let 
     value = Both "old" 0
@@ -90,23 +61,6 @@ twoArgLaws =
 ---------- Composition
 
       
-type Outer
-  = One (Result String Int)
-  | Two (Result String Float)
-
-two = Case.make
-      (\ big -> 
-         case big of
-           Two little -> Just little
-           _ -> Nothing)
-      Two
-
-
-ok = Case.make Result.toMaybe Ok
-
-
-innerFloat = two |> Case.next ok
-
 composition =
   let
     get = Case.get innerFloat
