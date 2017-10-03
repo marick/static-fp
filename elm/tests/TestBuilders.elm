@@ -252,3 +252,9 @@ just_ actual expected =
   just actual expected (toString expected)
 justo = just_
       
+unchanged_ f original =
+  actual_expected (f original) original
+
+unchanged f original comment =
+  equal (f original) original comment
+    

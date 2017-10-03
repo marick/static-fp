@@ -2,73 +2,62 @@ module Choose.PartTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (eql, equal)
-import Choose.Part as Part
-import Choose.Combine.Part as Part
-import Choose.Common.Tuple2 exposing (second)
-import Choose.Definitions exposing (..)
+import Choose.Part as Lens exposing (Lens)
+import Choose.Combine.Part as Lens
+import Choose.Common.Tuple2 as Tuple2
+import Choose.Definitions as D 
 
+
+accessors partChooser =
+  ( Lens.get partChooser
+  , Lens.set partChooser
+  , Lens.update partChooser
+  )
 
 --- More commonly called Lenses
 
 operations : Test
 operations =
   let
-    record = {part = 3}
-    part = oneLevelLens
+    whole = {part = 3}
+    (get, set, update) = accessors D.oneLevelLens
   in
     describe "operations" 
-      [ eql (Part.get    part        record)           3
-      , eql (Part.set    part 5      record) { part =  5 }
-      , eql (Part.update part negate record) { part = -3 }
+      [ eql (get           whole)           3
+      , eql (set    5      whole) { part =  5 }
+      , eql (update negate whole) { part = -3 }
       ]
 
 
 --- Some examples of Lens laws
-recordsFollowLaws =
-  let 
-    record = {part = "old"}
-    part = Part.make .part (\part whole -> { whole | part = part })
-
-    get = Part.get part
-    set = Part.set part
-  in
-    describe "laws for typical record"
-      [ equal (get (set "new" record)) "new"
-                        "you get back what you put in"
-      , equal (set (get record) record) record
-                        "putting back what you get changes nothing"
-      , equal (record |> set "ignore" |> set "new")
-              (record |>                 set "new")
-                        "later `set`s overwrite earlier"
-      ]
 
 
-tuplesFollowLaws =
-  let 
-    tuple = (0, "old")
-    get = Part.get second
-    set = Part.set second
-  in
-    describe "laws for typical tuple"
-      [ equal (get (set "new" tuple)) "new"
-                        "you get back what you put in"
-      , equal (set (get tuple) tuple) tuple
-                        "putting back what you get changes nothing"
-      , equal (tuple |> set "overwritten" |> set "new")
-              (tuple |>                      set "new")
-                        "later `set`s overwrite earlier"
-      ]
-
--- Combinations
-
-withLens : Test
-withLens =
+lawTests lens whole wholeTag =
   let
-    record = { part = (1, {part = 2}) }
-    part = Part.make .part (\part whole -> { whole | part = part })
-    chain = part |> Part.next second |> Part.next part
+    (get, set, _) = accessors lens
   in
-    describe "composition" 
-      [ eql (Part.get chain record)                           2
-      , eql (Part.update chain negate record) { part = (1, {part = -2}) }
+    describe wholeTag
+      [ -- 1. You get back what you put in"
+        eql (get (set "NEW" whole)) "NEW"
+
+        -- 2. Setting what you get changes results in original value
+      , eql (set (get whole) whole) whole
+
+        -- 3. A later `set` overwrites an earlier one.
+      , eql (whole |> set "overwritten" |> set "new")
+            (whole |>                      set "new")
       ]
+
+laws =
+  describe "laws for lenses" 
+    [ lawTests D.oneLevelLens   {part = "focus"}     "records"
+    , lawTests Tuple2.second    (0,     "focus")     "2-elt tuples"
+    ]
+
+
+combinationsFollowLaws =
+  describe "laws for combinations"
+    [ lawTests (D.oneLevelLens |> Lens.next Tuple2.second)
+               { part = (1, "focus") }
+               "combinations of parts"
+    ]

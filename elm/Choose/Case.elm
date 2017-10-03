@@ -1,4 +1,5 @@
-module Choose.Case exposing (..)
+module Choose.Case exposing
+  (..)
 
 type alias Getter big small = big -> Maybe small
 type alias Setter big small = small -> big
@@ -7,6 +8,7 @@ type alias Case big small =
   { get : Getter big small
   , set : Setter big small
   }
+type alias Prism big small = Case big small
 
 make : Getter big small -> Setter big small -> Case big small
 make getter setter =

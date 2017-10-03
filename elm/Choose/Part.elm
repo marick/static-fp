@@ -1,4 +1,9 @@
-module Choose.Part exposing (..)
+module Choose.Part exposing
+  ( Part, Lens
+  , make
+  , get, set, update
+  , next
+  )
 
 type alias Getter big small = big -> small
 type alias Setter big small = small -> big -> big
@@ -7,6 +12,7 @@ type alias Part big small =
   { get : Getter big small
   , set : Setter big small
   }
+type alias Lens big small = Part big small  
 
 make : Getter big small -> Setter big small -> Part big small
 make getter setter =

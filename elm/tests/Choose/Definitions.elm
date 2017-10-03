@@ -1,7 +1,8 @@
 module Choose.Definitions exposing (..)
 
-import Choose.Case as Case
-import Choose.Part as Part
+import Choose.Case as Case exposing (Case)
+import Choose.Part as Part exposing (Part)
+import Choose.MaybePart as Opt exposing (MaybePart)
 import Dict exposing (Dict)
 
 type SumType
@@ -35,27 +36,29 @@ both = Case.make
 
 type TwoLevelSumType
   = One (Result String Int)
-  | Two (Result String Float)
+  | Two (Result String String)
 
-topLevelChoice = Case.make
+chooseOne : Case TwoLevelSumType (Result String Int)   -- Focus on `One/Ok`
+chooseOne = Case.make
+      (\ big -> 
+         case big of
+           One little -> Just little
+           _ -> Nothing)
+      One
+
+chooseTwo : Case TwoLevelSumType (Result String String)   -- Focus on `Two/Ok`
+chooseTwo = Case.make
       (\ big -> 
          case big of
            Two little -> Just little
            _ -> Nothing)
       Two
 
-bottomLevelChoice = Case.make Result.toMaybe Ok
-
-
-innerFloat = topLevelChoice |> Case.next bottomLevelChoice
-
-
-
-
----
+chooseOk = Case.make Result.toMaybe Ok
 
 -- Dictionary work
-             
+dictOpt = Opt.make (Dict.get "key") (Dict.insert "key")
+
 dict1 = Dict.singleton
 dict1_1 outer inner val =
   dict1 outer (dict1 inner val)

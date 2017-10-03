@@ -1,4 +1,8 @@
-module Choose.MaybePart exposing (..)
+module Choose.MaybePart exposing
+  ( MaybePart, Optional
+  , make
+  , get, set, update, next
+  )
 
 import Maybe.Extra as Maybe
 
@@ -9,6 +13,8 @@ type alias MaybePart big small =
   { get : Getter big small
   , set : Setter big small
   }
+type alias Optional big small = MaybePart big small
+  
 
 make : Getter big small -> Setter big small -> MaybePart big small
 make getter setter =
@@ -29,6 +35,9 @@ update chooser f big =
     Just small ->
       chooser.set (f small) big
 
+
+
+
 -- Add the first chooser to the second. Intended to be pipelined       
 next : MaybePart middle small -> MaybePart big middle -> MaybePart big small
 next new previous =
@@ -43,3 +52,18 @@ next new previous =
             previous.set (new.set newSmall medium) big
   }
 
+
+
+next : MaybePart middle small -> MaybePart big middle -> MaybePart big small
+next new previous =
+  { get =
+      \big -> previous.get big |> Maybe.unwrap Nothing new.get
+  , set =
+      \newSmall big -> 
+        case previous.get big of
+          Nothing ->
+            previous.set
+          Just medium ->
+            previous.set (new.set newSmall medium) big
+  }
+  
