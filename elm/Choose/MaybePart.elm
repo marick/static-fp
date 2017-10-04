@@ -52,18 +52,3 @@ next new previous =
             previous.set (new.set newSmall medium) big
   }
 
-
-
-next : MaybePart middle small -> MaybePart big middle -> MaybePart big small
-next new previous =
-  { get =
-      \big -> previous.get big |> Maybe.unwrap Nothing new.get
-  , set =
-      \newSmall big -> 
-        case previous.get big of
-          Nothing ->
-            previous.set
-          Just medium ->
-            previous.set (new.set newSmall medium) big
-  }
-  

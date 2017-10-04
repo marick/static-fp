@@ -3,7 +3,39 @@ module TestBuilders exposing (..)
 import Test exposing (..)
 import Expect
 
-{- 
+{-  Part 1: Shorthand
+
+  The rule is the comments come last. Variants with a trailing `_`, like
+  `equal_` take no comment.
+
+  Forms that don't follow that form are deprecated.
+-}
+
+
+equal = actual_expected_comment
+equal_ = actual_expected  -- The less informative version of equal
+
+nothing actual comment =
+  equal actual Nothing comment
+
+just actual expected comment =
+  equal actual (Just expected) comment
+just_ actual expected =
+  just actual expected (toString expected)
+      
+unchanged f original comment =
+  equal (f original) original comment
+unchanged_ f original =
+  actual_expected (f original) original
+
+    
+--- Deprecated
+
+eql = equal_
+justo = just_
+
+{- Part 2: Raw builder functions
+
 Examples:
     IVBits/MoreValidatorsTest.elm
     IVFlat/Form/TypesTest.elm
@@ -232,29 +264,6 @@ actual_expected_comment actual expected comment =
     \_ ->
       actual |> Expect.equal expected
 
-equal = actual_expected_comment
-
 actual_expected actual expected =
   actual_expected_comment actual expected (toString actual)
 
-eql = actual_expected  -- The less informative version of equal
-equal_ = eql           -- Maybe adopt this convention?
-
-
--- A nothing variant without a comment is not useful because there's
--- no good value to provide as the name of the test.
-nothing actual comment =
-  equal actual Nothing comment
-
-just actual expected comment =
-  equal actual (Just expected) comment
-just_ actual expected =
-  just actual expected (toString expected)
-justo = just_
-      
-unchanged_ f original =
-  actual_expected (f original) original
-
-unchanged f original comment =
-  equal (f original) original comment
-    
