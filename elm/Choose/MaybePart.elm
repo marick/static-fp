@@ -1,7 +1,5 @@
 module Choose.MaybePart exposing
-  ( MaybePart, Optional
-  , make
-  , get, set, update, next
+  ( ..
   )
 
 import Maybe.Extra as Maybe

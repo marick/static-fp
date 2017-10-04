@@ -1,4 +1,4 @@
-module Choose.Combine.Part exposing (..)
+module Choose.Combine.Case exposing (..)
 
 import Choose.Part as Part exposing (Part)
 import Choose.MaybePart as MaybePart exposing (MaybePart)

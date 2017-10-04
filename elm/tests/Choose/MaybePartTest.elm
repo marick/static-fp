@@ -3,7 +3,10 @@ module Choose.MaybePartTest exposing (..)
 import Test exposing (..)
 import TestBuilders exposing (..)
 import Choose.MaybePart as Opt
+import Choose.Combine.MaybePart as Opt
 import Choose.Common as Opt
+import Choose.Combine.Part as Part
+import Choose.Common.Tuple2 as Tuple2
 import Choose.Definitions as D
 import Dict
 
@@ -44,15 +47,26 @@ lawTests opt whole wholeTag =
 
 
 laws =
-  describe "laws for optionals (MaybePart)"
+  describe                                   "laws for optionals (MaybePart)"
     [ lawTests D.dictOpt
                (D.dict1 "key" "focus")                       "Dict"
-        
-    , lawTests (Opt.dict "one" |> Opt.next (Opt.dict "two"))
-               (D.dict1_1 "one" "two" "focus")               "Composition of Dict"
-          
+    ]
+    
+conversionsFollowLaws =
+  describe                                   "laws For conversions"
+    [ lawTests (Opt.fromCase D.name) (D.Name "focus")      "from Case (prism)"
+    , lawTests (Opt.fromPart Tuple2.second)  (1, "focus")  "from Part (lens)"
     ]
 
+combinationsFollowLaws =
+  describe                                   "laws for combinations"
+    [ lawTests (Opt.dict "one" |> Opt.next (Opt.dict "two"))
+               (D.dict1_1 "one" "two" "focus")               "with own type"
+    , lawTests (Opt.dict "one" |> Opt.nextPart Tuple2.second)
+               (D.dict1 "one" (1, "focus"))                  "with part"
+    , lawTests (Opt.dict "one" |> Opt.nextCase D.name)
+               (D.dict1 "one" (D.Name "focus"))           "with case"
+    ]
 
 compositionHasQuirksInSet =
   let
