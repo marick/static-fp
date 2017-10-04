@@ -10,25 +10,33 @@ import Choose.Common.Tuple2 as Tuple2
 import Choose.Definitions as D
 import Dict
 
-accessors partChooser =
-  ( Opt.get partChooser
-  , Opt.set partChooser
-  , Opt.update partChooser
-  )
+-------- Key to the conceptual map:
 
+-- Since `Dict` is the natural type to use with `MaybePart`, here
+-- are some constructors that make tests more readable. 
+-- Key thing is that the topmost key is the function name.
+one = D.dict1_1 "one"      -- make {"one": {key: val}} with given key/val
+other = D.dict1_1 "other"  -- ditto, but {"other": {key: val}}
+oneIsEmpty = D.dict1 "one" Dict.empty  -- {"one" : Dict.empty}
+
+oneValue = Opt.make (Dict.get "one") (Dict.insert "one")
+
+
+--- Tests
+           
 operations : Test
 operations =
   let
-    (get, set, update) = accessors D.dictOpt
+    (get, set, update) = accessors oneValue
   in
     describe "operations" 
-      [ equal_ (get           <| D.dict1 "key" 58)    (Just 58)
+      [ equal_ (get           <| D.dict1 "one" 58)    (Just 58)
       , equal_ (get           <| Dict.empty)           Nothing
 
-      , equal_ (set 0         <| D.dict1 "key" 3)     (D.dict1 "key" 0)
-      , equal_ (set 9         <| Dict.empty)          (D.dict1 "key" 9)
+      , equal_ (set 0         <| D.dict1 "one" 3)     (D.dict1 "one" 0)
+      , equal_ (set 9         <| Dict.empty)          (D.dict1 "one" 9)
 
-      , equal_ (update negate <| D.dict1 "key" 58)    (D.dict1 "key" -58)
+      , equal_ (update negate <| D.dict1 "one" 58)    (D.dict1 "one" -58)
       , equal_ (update negate <| Dict.empty)           Dict.empty
       ]
 
@@ -61,7 +69,7 @@ conversionsFollowLaws =
 combinationsFollowLaws =
   describe                                   "laws for combinations"
     [ lawTests (Opt.dict "one" |> Opt.next (Opt.dict "two"))
-               (D.dict1_1 "one" "two" "focus")               "with own type"
+               (one "two" "focus")               "with own type"
     , lawTests (Opt.dict "one" |> Opt.nextPart Tuple2.second)
                (D.dict1 "one" (1, "focus"))                  "with part"
     , lawTests (Opt.dict "one" |> Opt.nextCase D.name)
@@ -71,11 +79,6 @@ combinationsFollowLaws =
 compositionHasQuirksInSet =
   let
     composed = Opt.dict "one" |> Opt.next (Opt.dict "two")
-    -- Shorthand so the structure of test dicts is easier to skim
-    -- Topmost key is the function name.
-    one = D.dict1_1 "one"      -- make {"one": {key: val}} with given key/val
-    other = D.dict1_1 "other"  -- ditto, but {"other": {key: val}}
-    oneIsEmpty = D.dict1 "one" Dict.empty  -- {"one" : Dict.empty}
     (get, set, update) = accessors composed
   in
     describe "composition"
@@ -105,3 +108,13 @@ compositionHasQuirksInSet =
           , unchanged  (update negate)  Dict.empty        "ditto, but not even top level"
           ]
       ]
+
+
+-- Util
+
+accessors partChooser =
+  ( Opt.get partChooser
+  , Opt.set partChooser
+  , Opt.update partChooser
+  )
+

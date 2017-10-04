@@ -8,12 +8,6 @@ import Choose.Common.Tuple2 as Tuple2
 import Choose.Definitions as D 
 
 
-accessors partChooser =
-  ( Lens.get partChooser
-  , Lens.set partChooser
-  , Lens.update partChooser
-  )
-
 --- More commonly called Lenses
 
 operations : Test
@@ -61,3 +55,13 @@ combinationsFollowLaws =
                { part = (1, "focus") }
                "combinations of parts"
     ]
+
+
+-- Util
+
+accessors partChooser =
+  ( Lens.get partChooser
+  , Lens.set partChooser
+  , Lens.update partChooser
+  )
+

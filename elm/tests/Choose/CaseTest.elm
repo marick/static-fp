@@ -1,7 +1,7 @@
 module Choose.CaseTest exposing (..)
 
 import Test exposing (..)
-import TestBuilders exposing (nothing, just, justo, eql, equal, unchanged_)
+import TestBuilders exposing (..)
 import Choose.Case as Prism
 import Maybe.Extra as Maybe
 import Result
@@ -12,26 +12,19 @@ import Dict exposing (Dict)
 
 ---------- Basics
 
-accessors chooser =
-  ( Prism.get chooser
-  , Prism.set chooser
-  , Prism.update chooser
-  )
-
-
 operations : Test
 operations =
   let
     (get, set, update) = accessors D.id -- id is Prism for (Id Int)
   in
     describe "operations"
-      [ eql (get <| D.Id 3)          (Just 3)
-      , eql (get <| D.Name "fred")   Nothing
+      [ equal_    (get <| D.Id 3)          (Just 3)
+      , equal_    (get <| D.Name "fred")   Nothing
 
-      , equal (set 0)      (D.Id 0)   "always succeeds"
+      , equal     (set 0)      (D.Id 0)                              "always succeeds"
 
-      , eql   (update negate (D.Id 8))             (D.Id -8)
-      , equal (update negate (D.Name "fred"))   (D.Name "fred")  "no change"
+      , equal_    (update negate (D.Id 8))             (D.Id -8)
+      , equal     (update negate (D.Name "fred"))   (D.Name "fred")  "no change"
       ]
 
 
@@ -46,7 +39,7 @@ lawTests prism original tag =
   in
     describe tag
       [ -- Law 1: You get back what you create
-        eql (get (set "new"))  (Just "new")
+        equal_ (get (set "new"))  (Just "new")
 
         -- Law 2: If you set what you got out, you have the original value.
         -- IF get value == Just tuple THEN set tuple == value
@@ -61,15 +54,6 @@ laws =
                (D.Two <| Ok "focus")                    "composition"
     ]
       
-
-    -- describe "laws: simple"
-    --   [ equal (get (set ("new",3)))  (Just ("new", 3)) "you get back what you put in"
-    --     -- the following two put together check the second law:
-    --     -- IF get value == Just tuple THEN set tuple == value
-    --   , equal (get (Both "new" 3))   (Just ("new",3))    "here's the tuple returned"
-    --   , equal (set      ("new",3))   (Both "new" 3)      "setter fully constructs"
-    --   ]
-
 ---------- Composition
 -- It's worth spelling out the consequences of composition.
       
@@ -90,6 +74,17 @@ composition =
         [ unchanged_ (update negate) (D.Two <| Err "f")
         , unchanged_ (update negate) (D.Two <| Ok "f")
         , unchanged_ (update negate) (D.One <| Err "f")
-        , eql        (update negate (D.One <| Ok 3))     (D.One <| Ok -3)
+        , eql        (update negate  (D.One <| Ok 3))     (D.One <| Ok -3)
         ]
       ]
+
+
+-- Util
+
+accessors chooser =
+  ( Prism.get chooser
+  , Prism.set chooser
+  , Prism.update chooser
+  )
+
+
