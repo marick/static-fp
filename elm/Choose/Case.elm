@@ -30,15 +30,15 @@ update chooser f big =
       chooser.set (f small)
 
 
-next : Case middle small -> Case big middle -> Case big small
-next new previous =
+append : Case a b -> Case b c -> Case a c
+append a2b b2c =
   { get =
-      \ big -> 
-        case previous.get big of
-          Nothing -> Nothing
-          Just val -> new.get val
+      a2b.get >> Maybe.andThen b2c.get
 
   , set =
-      \newSmall ->
-        previous.set (new.set newSmall)
+      b2c.set >> a2b.set
   }
+
+-- Add the first chooser to the second. Intended to be pipelined       
+next : Case b c -> Case a b -> Case a c
+next = flip append

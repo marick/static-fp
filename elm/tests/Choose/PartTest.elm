@@ -1,7 +1,7 @@
 module Choose.PartTest exposing (..)
 
 import Test exposing (..)
-import TestBuilders exposing (eql, equal)
+import TestBuilders exposing (..)
 import Choose.Part as Lens exposing (Lens)
 import Choose.Combine.Part as Lens
 import Choose.Common.Tuple2 as Tuple2
@@ -38,10 +38,10 @@ lawTests lens whole wholeTag =
   in
     describe wholeTag
       [ -- 1. You get back what you put in"
-        eql (get (set "NEW" whole)) "NEW"
+        equal_ (get (set "NEW" whole)) "NEW"
 
         -- 2. Setting what you get changes results in original value
-      , eql (set (get whole) whole) whole
+      , equal_ (set (get whole) whole) whole
 
         -- 3. A later `set` overwrites an earlier one.
       , eql (whole |> set "overwritten" |> set "new")

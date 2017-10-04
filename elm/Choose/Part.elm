@@ -5,7 +5,7 @@ module Choose.Part exposing
   , next
   )
 
-type alias Getter big small = big -> small
+type alias Getter big small =          big -> small
 type alias Setter big small = small -> big -> big
 
 type alias Part big small =
@@ -31,14 +31,24 @@ update chooser f big =
     |> chooser.get
     |> f
     |> flip chooser.set big
+          
+
+append : Part a b -> Part b c -> Part a c
+append a2b b2c =
+  let 
+    get =
+      a2b.get >> b2c.get
+        
+    set c =
+      update a2b (b2c.set c)
+      -- let
+      --   b = a2b.get a
+      -- in
+      --   a |> a2b.set (b2c.set c b)
+
+  in
+    make get set
 
 -- Add the first chooser to the second. Intended to be pipelined       
-next : Part middle small -> Part big middle -> Part big small
-next new previous =
-  make
-    (previous.get >> new.get)
-    (\newSmall big ->
-       let
-         newMiddle = new.set newSmall (previous.get big)
-       in
-         previous.set newMiddle big)
+next : Part b c -> Part a b -> Part a c
+next = flip append

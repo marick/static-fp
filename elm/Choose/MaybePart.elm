@@ -6,7 +6,7 @@ module Choose.MaybePart exposing
 
 import Maybe.Extra as Maybe
 
-type alias Getter big small = big -> Maybe small
+type alias Getter big small =          big -> Maybe small
 type alias Setter big small = small -> big -> big
 
 type alias MaybePart big small =
@@ -38,17 +38,26 @@ update chooser f big =
 
 
 
--- Add the first chooser to the second. Intended to be pipelined       
-next : MaybePart middle small -> MaybePart big middle -> MaybePart big small
-next new previous =
-  { get =
-      \big -> previous.get big |> Maybe.unwrap Nothing new.get
-  , set =
-      \newSmall big -> 
-        case previous.get big of
-          Nothing ->
-            big
-          Just medium ->
-            previous.set (new.set newSmall medium) big
-  }
+append : MaybePart a b -> MaybePart b c -> MaybePart a c
+append a2b b2c =
+  let 
+    get =
+      a2b.get >> Maybe.andThen b2c.get
 
+    set c a =
+      case a2b.get a of
+          Nothing ->
+            a
+          Just b ->
+            a |> a2b.set (b2c.set c b)
+
+    {- Here's the excessively clever version               
+    set c =
+      update a2b (b2c.set c)
+    -}
+  in
+    make get set
+
+-- to be pipelined
+next : MaybePart b c -> MaybePart a b -> MaybePart a c
+next = flip append  

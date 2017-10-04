@@ -79,7 +79,6 @@ compositionHasQuirksInSet =
           -- , equal_ (set 9.3 <| other "two" 0000)   (Dict.union (other "two" 0000)
           --                                                  (one "two" 9.3))
           --, equal_ (set 9.3 Dict.empty)            (one "two" 9.3)
-          --, equal_ (set 9.3 Dict.empty)            (one "two" 9.3)
           --
           -- But they actually make no change because two levels of key
           -- would have to be added.
