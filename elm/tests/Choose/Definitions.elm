@@ -57,8 +57,6 @@ chooseTwo = Case.make
 chooseOk = Case.make Result.toMaybe Ok
 
 -- Dictionary work
-dictOpt = Opt.make (Dict.get "key") (Dict.insert "key")
-
 dict1 = Dict.singleton
 dict1_1 outer inner val =
   dict1 outer (dict1 inner val)

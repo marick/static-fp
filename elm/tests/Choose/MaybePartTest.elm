@@ -5,10 +5,12 @@ import TestBuilders exposing (..)
 import Choose.MaybePart as Opt
 import Choose.Combine.MaybePart as Opt
 import Choose.Common.Dict as Dict
+import Choose.Common.Array as Array
 import Choose.Combine.Part as Part
 import Choose.Common.Tuple2 as Tuple2
 import Choose.Definitions as D
 import Dict
+import Array
 
 -------- Key to the conceptual map:
 
@@ -56,8 +58,10 @@ lawTests opt whole wholeTag =
 
 laws =
   describe                                   "laws for optionals (MaybePart)"
-    [ lawTests D.dictOpt
+    [ lawTests (Dict.valueAt "key")
                (D.dict1 "key" "focus")                       "Dict"
+    , lawTests (Array.valueAt 1)
+               (Array.fromList ["", "focus", ""])            "Array"
     ]
     
 conversionsFollowLaws =
