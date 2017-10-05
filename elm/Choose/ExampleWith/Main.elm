@@ -1,46 +1,38 @@
-module Choose.ExampleWith exposing (..)
+module Choose.ExampleWith.Main exposing (..)
 
 import Dict
+import Array
 import Choose.Part as Part
+import Choose.ExampleWith.Model as Model exposing (Model)
+import Choose.ExampleWith.Animal as Animal exposing (Animal)
+import Choose.MaybePart as MaybePart
 
+type Msg =
+  AddTag Animal.Id String
+
+startingId : Animal.Id    
+startingId = 3838
+
+startingAnimal : Animal
+startingAnimal =
+  { tags = Array.fromList ["mare"]
+  , id = startingId
+  }
   
-animal = { tags = ["mare"]
-         , id = 3838
-         }
-
-
-id = 3838        
-
-d = Dict.empty |> Dict.insert id animal
+init : Model
+init =
+  { animals = 
+      Dict.singleton startingId startingAnimal
+  }
                      
-model = { animals = d }
+update : Msg -> Model -> Model
+update msg model = 
+  case msg of
+    AddTag animalId tag ->
+      addTagToEnd animalId tag model
 
 
-addTagToEnd id newTag model =
-  
-
-        
-addTagToEnd id newTag model = 
-  let
-    updateTag animal =
-      { animal | tags = animal.tags ++ [newTag]}
-  in
-    { model |
-        animals = Dict.update id (Maybe.map updateTag) model.animals
-    }
-
-
-addTagToEnd2 id newTag model = 
-  let
-    updateTag animal =
-      { animal | tags = animal.tags ++ [newTag]}
-  in
-    case Dict.get id model.animals of
-      Nothing ->
-        model
-      (Just animal) ->
-        { model |
-            animals = Dict.insert id (updateTag animal) model.animals
-        }
-    
+addTagToEnd : Animal.Id -> String -> Model -> Model        
+addTagToEnd id tag = 
+  MaybePart.update (Model.animalTags id) (Array.push tag)
 
