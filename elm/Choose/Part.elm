@@ -2,7 +2,7 @@ module Choose.Part exposing
   ( Part, Lens
   , make
   , get, set, update
-  , next
+  , append, next
   )
 
 type alias Getter big small =          big -> small

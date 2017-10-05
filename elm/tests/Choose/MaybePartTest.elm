@@ -4,6 +4,7 @@ import Test exposing (..)
 import TestBuilders exposing (..)
 import Choose.MaybePart as Opt
 import Choose.Combine.MaybePart as Opt
+import Choose.Operators exposing (..)
 import Choose.Common.Dict as Dict
 import Choose.Common.Array as Array
 import Choose.Combine.Part as Part
@@ -72,11 +73,11 @@ conversionsFollowLaws =
 
 combinationsFollowLaws =
   describe                                   "laws for combinations"
-    [ lawTests (Dict.valueAt "one" |> Opt.next (Dict.valueAt "two"))
+    [ lawTests (Dict.valueAt "one" ~..~ Dict.valueAt "two")
                (one "two" "focus")               "with own type"
-    , lawTests (Dict.valueAt "one" |> Opt.nextPart Tuple2.second)
+    , lawTests (Dict.valueAt "one" ~... Tuple2.second)
                (D.dict1 "one" (1, "focus"))                  "with part"
-    , lawTests (Dict.valueAt "one" |> Opt.nextCase D.name)
+    , lawTests (Dict.valueAt "one" ~..> D.name)
                (D.dict1 "one" (D.Name "focus"))           "with case"
     ]
 

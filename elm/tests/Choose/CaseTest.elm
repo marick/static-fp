@@ -3,6 +3,7 @@ module Choose.CaseTest exposing (..)
 import Test exposing (..)
 import TestBuilders exposing (..)
 import Choose.Case as Prism
+import Choose.Operators exposing (..)
 import Maybe.Extra as Maybe
 import Result
 import Choose.Definitions as D
@@ -50,7 +51,7 @@ lawTests prism original tag =
 laws =
   describe "laws for prisms (Case)"
     [ lawTests D.name (D.Name "focus")                  "Simple sum types"
-    , lawTests (D.chooseTwo |> Prism.next D.chooseOk)
+    , lawTests (D.chooseTwo >..> D.chooseOk)
                (D.Two <| Ok "focus")                    "composition"
     ]
       
@@ -59,7 +60,7 @@ laws =
       
 composition =
   let
-    (get, set, update) = accessors (D.chooseOne |> Prism.next D.chooseOk)
+    (get, set, update) = accessors (D.chooseOne >..> D.chooseOk)
   in
     describe "composition"
       [ describe "get"

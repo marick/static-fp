@@ -3,6 +3,7 @@ module Choose.PartTest exposing (..)
 import Test exposing (..)
 import TestBuilders exposing (..)
 import Choose.Part as Lens exposing (Lens)
+import Choose.Operators exposing (..)
 import Choose.Combine.Part as Lens
 import Choose.Common.Tuple2 as Tuple2
 import Choose.Definitions as D 
@@ -51,7 +52,7 @@ laws =
 
 combinationsFollowLaws =
   describe "laws for combinations"
-    [ lawTests (D.oneLevelLens |> Lens.next Tuple2.second)
+    [ lawTests (D.oneLevelLens .... Tuple2.second)
                { part = (1, "focus") }
                "combinations of parts"
     ]
