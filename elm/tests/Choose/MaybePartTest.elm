@@ -4,7 +4,7 @@ import Test exposing (..)
 import TestBuilders exposing (..)
 import Choose.MaybePart as Opt
 import Choose.Combine.MaybePart as Opt
-import Choose.Common as Opt
+import Choose.Common.Dict as Dict
 import Choose.Combine.Part as Part
 import Choose.Common.Tuple2 as Tuple2
 import Choose.Definitions as D
@@ -68,17 +68,17 @@ conversionsFollowLaws =
 
 combinationsFollowLaws =
   describe                                   "laws for combinations"
-    [ lawTests (Opt.dict "one" |> Opt.next (Opt.dict "two"))
+    [ lawTests (Dict.valueAt "one" |> Opt.next (Dict.valueAt "two"))
                (one "two" "focus")               "with own type"
-    , lawTests (Opt.dict "one" |> Opt.nextPart Tuple2.second)
+    , lawTests (Dict.valueAt "one" |> Opt.nextPart Tuple2.second)
                (D.dict1 "one" (1, "focus"))                  "with part"
-    , lawTests (Opt.dict "one" |> Opt.nextCase D.name)
+    , lawTests (Dict.valueAt "one" |> Opt.nextCase D.name)
                (D.dict1 "one" (D.Name "focus"))           "with case"
     ]
 
 compositionHasQuirksInSet =
   let
-    composed = Opt.dict "one" |> Opt.next (Opt.dict "two")
+    composed = Dict.valueAt "one" |> Opt.next (Dict.valueAt "two")
     (get, set, update) = accessors composed
   in
     describe "composition"
