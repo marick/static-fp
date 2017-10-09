@@ -1,6 +1,6 @@
 module Choose.ExampleWith.Animal exposing (..)
 
-import Choose.Part as Part exposing (Part)
+import Choose.Lens as Lens exposing (Lens)
 import Array exposing (Array)
 
 type alias Id = Int
@@ -11,8 +11,8 @@ type alias Animal =
   , id : Id
   }
 
-tags : Part Animal Tags
-tags = Part.make .tags (\tags animal -> { animal | tags = tags })
+tags : Lens Animal Tags
+tags = Lens.make .tags (\tags animal -> { animal | tags = tags })
 
 addTag : String -> Tags -> Tags
 addTag = Array.push

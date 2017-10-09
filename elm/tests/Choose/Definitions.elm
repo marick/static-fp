@@ -1,8 +1,8 @@
 module Choose.Definitions exposing (..)
 
 import Choose.Case as Case exposing (Case)
-import Choose.Part as Part exposing (Part)
-import Choose.MaybePart as Opt exposing (MaybePart)
+import Choose.Lens as Lens exposing (Lens)
+import Choose.MaybeLens as Opt exposing (MaybeLens)
 import Dict exposing (Dict)
 
 type SumType
@@ -64,5 +64,5 @@ dict1_1 outer inner val =
 
 -- Record work
 
-oneLevelLens = Part.make .part (\part whole -> { whole | part = part })
+oneLevelLens = Lens.make .part (\part whole -> { whole | part = part })
 

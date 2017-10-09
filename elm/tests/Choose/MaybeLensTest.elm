@@ -1,13 +1,14 @@
-module Choose.MaybePartTest exposing (..)
+module Choose.MaybeLensTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Choose.MaybePart as Opt
-import Choose.Combine.MaybePart as Opt
+import Choose.MaybeLens as Chooser exposing (MaybeLens)
+import Choose.Combine.MaybeLens as Chooser
 import Choose.Operators exposing (..)
 import Choose.Common.Dict as Dict
 import Choose.Common.Array as Array
-import Choose.Combine.Part as Part
+import Choose.Common.List as List
+import Choose.Combine.Lens as Lens
 import Choose.Common.Tuple2 as Tuple2
 import Choose.Definitions as D
 import Dict
@@ -15,14 +16,14 @@ import Array
 
 -------- Key to the conceptual map:
 
--- Since `Dict` is the natural type to use with `MaybePart`, here
+-- Since `Dict` is the natural type to use with `MaybeLens`, here
 -- are some constructors that make tests more readable. 
 -- Key thing is that the topmost key is the function name.
 one = D.dict1_1 "one"      -- make {"one": {key: val}} with given key/val
 other = D.dict1_1 "other"  -- ditto, but {"other": {key: val}}
 oneIsEmpty = D.dict1 "one" Dict.empty  -- {"one" : Dict.empty}
 
-oneValue = Opt.make (Dict.get "one") (Dict.insert "one")
+oneValue = Chooser.make (Dict.get "one") (Dict.insert "one")
 
 
 --- Tests
@@ -43,32 +44,39 @@ operations =
       , equal_ (update negate <| Dict.empty)           Dict.empty
       ]
 
-lawTests opt whole wholeTag =
+-- Conventions:
+--   Value to be set starts out as "focus"
+--   It's set to "new"
+
+lawTests : MaybeLens whole String -> whole -> String
+         -> Test
+lawTests chooser whole comment =
   let
-    (get, set, _) = accessors opt
+    (get, set, _) = accessors chooser
   in
-    describe wholeTag
+    describe comment
       [ -- 1. if you `set` the part that `get` provides, whole is unchanged
         equal (get whole)           (Just "focus")   "here's what the get returns"
       , equal (set "focus" whole)   whole            "setting it to original"
 
       -- 2. What you `set` is what you `get`
-      , equal_ (get (set "new" whole))  (Just "new")
+      , equal_ (set "new" whole |> get)  (Just "new")
       ]
 
 
 laws =
-  describe                                   "laws for optionals (MaybePart)"
+  describe                                   "laws for MaybeLens"
     [ lawTests (Dict.valueAt "key")
                (D.dict1 "key" "focus")                       "Dict"
     , lawTests (Array.valueAt 1)
                (Array.fromList ["", "focus", ""])            "Array"
+    , lawTests List.first ["focus"]                          "List"
     ]
     
 conversionsFollowLaws =
   describe                                   "laws For conversions"
-    [ lawTests (Opt.fromCase D.name) (D.Name "focus")      "from Case (prism)"
-    , lawTests (Opt.fromPart Tuple2.second)  (1, "focus")  "from Part (lens)"
+    [ lawTests (Chooser.fromCase D.name) (D.Name "focus")      "from Case (prism)"
+    , lawTests (Chooser.fromLens Tuple2.second)  (1, "focus")  "from Lens (lens)"
     ]
 
 combinationsFollowLaws =
@@ -83,7 +91,7 @@ combinationsFollowLaws =
 
 compositionHasQuirksInSet =
   let
-    composed = Dict.valueAt "one" |> Opt.next (Dict.valueAt "two")
+    composed = Dict.valueAt "one" |> Chooser.next (Dict.valueAt "two")
     (get, set, update) = accessors composed
   in
     describe "composition"
@@ -118,8 +126,8 @@ compositionHasQuirksInSet =
 -- Util
 
 accessors partChooser =
-  ( Opt.get partChooser
-  , Opt.set partChooser
-  , Opt.update partChooser
+  ( Chooser.get partChooser
+  , Chooser.set partChooser
+  , Chooser.update partChooser
   )
 

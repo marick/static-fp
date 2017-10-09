@@ -4,22 +4,22 @@ module Choose.Common.Tuple3 exposing
   , third
   )
 
-import Choose.Part as Part exposing (Part)
+import Choose.Lens as Lens exposing (Lens)
 
-first : Part (focus, a, b) focus
+first : Lens (focus, a, b) focus
 first =
-  Part.make
+  Lens.make
     (\ (first, _, _) -> first)
     (\ first (_, second, third) -> (first, second, third))
       
-second : Part (a, focus, b) focus
+second : Lens (a, focus, b) focus
 second =
-  Part.make
+  Lens.make
     (\ (_, second, _) -> second)
     (\ second (first, _, third) -> (first, second, third))
 
-third : Part (a, b, focus) focus
+third : Lens (a, b, focus) focus
 third =
-  Part.make
+  Lens.make
     (\ (_, _, third) -> third)
     (\ third (first, second, _) -> (first, second, third))

@@ -1,5 +1,5 @@
-module Choose.Part exposing
-  ( Part, Lens
+module Choose.Lens exposing
+  ( Lens
   , make
   , get, set, update
   , append, next
@@ -8,24 +8,23 @@ module Choose.Part exposing
 type alias Getter big small =          big -> small
 type alias Setter big small = small -> big -> big
 
-type alias Part big small =
+type alias Lens big small =
   { get : Getter big small
   , set : Setter big small
   }
-type alias Lens big small = Part big small  
 
-make : Getter big small -> Setter big small -> Part big small
+make : Getter big small -> Setter big small -> Lens big small
 make getter setter =
   { get = getter, set = setter}
   
 
-get : Part big small -> Getter big small
+get : Lens big small -> Getter big small
 get chooser = chooser.get
 
-set : Part big small -> Setter big small
+set : Lens big small -> Setter big small
 set chooser = chooser.set
 
-update : Part big small -> (small -> small) -> big -> big
+update : Lens big small -> (small -> small) -> big -> big
 update chooser f big =
   big
     |> chooser.get
@@ -33,7 +32,7 @@ update chooser f big =
     |> flip chooser.set big
           
 
-append : Part a b -> Part b c -> Part a c
+append : Lens a b -> Lens b c -> Lens a c
 append a2b b2c =
   let 
     get =
@@ -50,5 +49,5 @@ append a2b b2c =
     make get set
 
 -- Add the first chooser to the second. Intended to be pipelined       
-next : Part b c -> Part a b -> Part a c
+next : Lens b c -> Lens a b -> Lens a c
 next = flip append

@@ -1,10 +1,10 @@
-module Choose.PartTest exposing (..)
+module Choose.LensTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Choose.Part as Lens exposing (Lens)
+import Choose.Lens as Lens exposing (Lens)
 import Choose.Operators exposing (..)
-import Choose.Combine.Part as Lens
+import Choose.Combine.Lens as Lens
 import Choose.Common.Tuple2 as Tuple2
 import Choose.Definitions as D 
 

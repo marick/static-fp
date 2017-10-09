@@ -4,7 +4,7 @@ import Dict
 import Array
 import Choose.ExampleWith.Model as Model exposing (Model)
 import Choose.ExampleWith.Animal as Animal exposing (Animal)
-import Choose.MaybePart as MaybePart
+import Choose.MaybeLens as MaybeLens
 
 type Msg =
   AddTag Animal.Id String
@@ -32,7 +32,7 @@ update msg model =
 
 addTag : Animal.Id -> String -> Model -> Model        
 addTag id tag  = 
-  MaybePart.update
+  MaybeLens.update
     (Model.animalTags id)
     (Animal.addTag tag)
 

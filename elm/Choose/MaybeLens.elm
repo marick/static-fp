@@ -1,4 +1,4 @@
-module Choose.MaybePart exposing
+module Choose.MaybeLens exposing
   ( ..
   )
 
@@ -7,25 +7,25 @@ import Maybe.Extra as Maybe
 type alias Getter big small =          big -> Maybe small
 type alias Setter big small = small -> big -> big
 
-type alias MaybePart big small =
+type alias MaybeLens big small =
   { get : Getter big small
   , set : Setter big small
   }
-type alias Optional big small = MaybePart big small
+type alias Optional big small = MaybeLens big small
   
 
-make : Getter big small -> Setter big small -> MaybePart big small
+make : Getter big small -> Setter big small -> MaybeLens big small
 make getter setter =
   { get = getter, set = setter}
   
 
-get : MaybePart big small -> Getter big small
+get : MaybeLens big small -> Getter big small
 get chooser = chooser.get
 
-set : MaybePart big small -> Setter big small
+set : MaybeLens big small -> Setter big small
 set chooser = chooser.set
 
-update : MaybePart big small -> (small -> small) -> big -> big
+update : MaybeLens big small -> (small -> small) -> big -> big
 update chooser f big =
   case chooser.get big of
     Nothing ->
@@ -36,7 +36,7 @@ update chooser f big =
 
 
 
-append : MaybePart a b -> MaybePart b c -> MaybePart a c
+append : MaybeLens a b -> MaybeLens b c -> MaybeLens a c
 append a2b b2c =
   let 
     get =
@@ -57,5 +57,5 @@ append a2b b2c =
     make get set
 
 -- to be pipelined
-next : MaybePart b c -> MaybePart a b -> MaybePart a c
+next : MaybeLens b c -> MaybeLens a b -> MaybeLens a c
 next = flip append  

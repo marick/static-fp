@@ -31,3 +31,16 @@ the changed functions to stay available without qualification by the
 module name, you have to repeat the whole line, including `exposing (..)`. 
 
 -}
+
+type LinkedList a 
+  = Node a (LinkedList a)
+  | End
+
+
+circle =
+  let
+    start = Node 1 (Node 2 end)
+    end = Node 3 start
+  in
+    start
+    
