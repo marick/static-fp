@@ -35,7 +35,7 @@ lawTests lens whole wholeTag =
       [ -- 1. You get back what you put in"
         equal_ (get (set "NEW" whole)) "NEW"
 
-        -- 2. Setting what you get changes results in original value
+        -- 2. Setting what you get changes produces the original value again
       , equal_ (set (get whole) whole) whole
 
         -- 3. A later `set` overwrites an earlier one.
