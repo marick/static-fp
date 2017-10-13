@@ -5,29 +5,28 @@ module Lens.Tuple4 exposing
   , fourth
   )
 
-import Lens.Lens as Lens exposing (Lens)
+import Lens.Lens as Lens exposing (Lens, lens)
 
 first : Lens (focus, a, b, c) focus
 first =
-  Lens.make
+  lens
     (\ (first, _, _, _) -> first)
     (\ first (_, second, third, fourth) -> (first, second, third, fourth))
       
 second : Lens (a, focus, b, c) focus
 second =
-  Lens.make
+  lens
     (\ (_, second, _, _) -> second)
     (\ second (first, _, third, fourth) -> (first, second, third, fourth))
 
 third : Lens (a, b, focus, c) focus
 third =
-  Lens.make
+  lens
     (\ (_, _, third, _) -> third)
     (\ third (first, second, _, fourth) -> (first, second, third, fourth))
 
 fourth : Lens (a, b, c, focus) focus
 fourth =
-  Lens.make
+  lens
     (\ (_, _, _, fourth) -> fourth)
     (\ fourth (first, second, third, _) -> (first, second, third, fourth))
-         

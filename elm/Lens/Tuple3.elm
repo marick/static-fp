@@ -4,22 +4,22 @@ module Lens.Tuple3 exposing
   , third
   )
 
-import Lens.Lens as Lens exposing (Lens)
+import Lens.Lens as Lens exposing (Lens, lens)
 
 first : Lens (focus, a, b) focus
 first =
-  Lens.make
+  lens
     (\ (first, _, _) -> first)
     (\ first (_, second, third) -> (first, second, third))
       
 second : Lens (a, focus, b) focus
 second =
-  Lens.make
+  lens
     (\ (_, second, _) -> second)
     (\ second (first, _, third) -> (first, second, third))
 
 third : Lens (a, b, focus) focus
 third =
-  Lens.make
+  lens
     (\ (_, _, third) -> third)
     (\ third (first, second, _) -> (first, second, third))
