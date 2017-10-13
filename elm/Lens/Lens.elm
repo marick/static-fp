@@ -5,10 +5,10 @@ module Lens.Lens exposing
 
   , dict
 
-  , and
+  , plus, upsertPlusUpsert
   )
 
-import Lens.All as A
+import Lens.All as All
 import Dict exposing (Dict)
 
 type alias Lens big small =
@@ -17,21 +17,24 @@ type alias Lens big small =
   }
 
 make : (big -> small) -> (small -> big -> big) -> Lens big small
-make = A.lensMake
+make = All.lensMake
 
 get : Lens big small -> big -> small
-get = A.lensGet
+get = All.lensGet
 
 set : Lens big small -> small -> big -> big
-set = A.lensSet
+set = All.lensSet
 
 update : Lens big small -> (small -> small) -> big -> big
-update = A.lensUpdate
+update = All.lensUpdate
 
 
 dict : comparable -> Lens (Dict comparable val) (Maybe val)
-dict = A.dict         
+dict = All.lensDict
 
 {- Intended to be used in a pipeline -}
-and : Lens b c -> Lens a b -> Lens a c
-and = flip A.lensAndLens
+plus : Lens b c -> Lens a b -> Lens a c
+plus = flip All.lensPlusLens
+
+upsertPlusUpsert : Lens b (Maybe c) -> Lens a (Maybe b) -> Lens a (Maybe c)
+upsertPlusUpsert = flip All.upsertPlusUpsert

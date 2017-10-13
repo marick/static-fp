@@ -7,6 +7,7 @@ import Lens.Tuple2 as Tuple2
 import Lens.Tuple3 as Tuple3
 import Lens.Tuple4 as Tuple4
 import Dict exposing (Dict)
+import Lens.OldVersions as OldVersions
 
 
 set_part_can_be_gotten lens whole part =
@@ -97,49 +98,66 @@ dict =
       ]
 
 
+dict_version1 =
+  let
+    whole = Dict.singleton "key"  "OLD"
+    lens = OldVersions.dictLens_1 "key"
+  in
+    concat
+      [ lens_laws "DictV1/Just" lens whole (Just "NEW") (Just "overwritten")
+      , lens_laws "DictV1/Nothing" lens whole Nothing (Just "overwritten")
+      ]
+
+
+dict_version2 =
+  let
+    whole = Dict.singleton "key"  "OLD"
+    lens = OldVersions.dictLens_2 "key"
+  in
+    concat
+      [ lens_laws "DictV2/Just" lens whole (Just "NEW") (Just "overwritten")
+      , lens_laws "DictV2/Nothing" lens whole Nothing (Just "overwritten")
+      ]
+
+
 
 -------- Combining
 
 lensPlusLens =
   let
+    a2b = Lens.make .b (\newB a -> {a | b = newB })
+    b2c = Lens.make .c (\newC b -> {b | c = newC })
+    a2c = a2b |> Lens.plus b2c 
+
     a = { b = { c = "OLD" } }
-    a2b = Lens.make .b (\newB a -> {a | b = newB })
-    b2c = Lens.make .c (\newC b -> {b | c = newC })
-
-    lens = a2b |> Lens.and b2c 
   in
-    lens_laws "lens + lens" lens a "NEW" "overwritten"
+    lens_laws "compose 2 lenses" a2c a "NEW" "overwritten"
 
-lensPlusDict =
-  let
-    a = { b = Dict.singleton "c" "OLD" } 
-    a2b = Lens.make .b (\newB a -> {a | b = newB })
-    b2c = Lens.dict "c"
+-- dictPlusDict =
+--   let
+--     a = Dict.singleton "b" (Dict.singleton "c" "OLD")
+--     a2b = Lens.dict "b"
+--     b2c = Tuple2.second
 
-    lens = a2b |> Lens.and b2c 
-  in
-    concat
-      [ lens_laws "lens + dict / Just" lens a (Just "NEW") (Just "overwritten")
-      , lens_laws "lens + dict / Nothing" lens a Nothing (Just "overwritten")
-      ] 
+--     lens = a2b |> Lens.plus b2c
+--   in
+--     concat
+--       [ lens_laws "dict+dict / Just" lens a (Just "NEW") (Just "overwritten")
+--       , lens_laws "dict+dict / Nothing" lens a Nothing (Just "overwritten")
+--       , lens_laws "dict+ / Just" lens Dict.empty (Just "NEW") (Just "overwritten")
+--       , lens_laws "dict+ / Nothing" lens Dict.empty Nothing (Just "overwritten")
+--       ] 
 
-tripleLens =       
-  let
-    a = { b = { c = (1, "OLD") } }
-    a2b = Lens.make .b (\newB a -> {a | b = newB })
-    b2c = Lens.make .c (\newC b -> {b | c = newC })
-    lens = a2b |> Lens.and b2c |> Lens.and Tuple2.second
-  in
-    lens_laws "triple lens" lens a "NEW" "overwritten"
 
-dictplusLens =
-  let
-    a = Dict.singleton "b" (1, "OLD") 
-    a2b = Lens.dict "b"
+-- dictPlusLens =
+--   let
+--     a2b = Lens.dict "b"
+--     a2c = a2b |> Lens.plus Tuple2.second
 
-    lens = a2b |> Lens.and Tuple2.second
-  in
-    concat
-      [ lens_laws "3 / Just" lens a (Just "NEW") (Just "overwritten")
-      , lens_laws "3 / Nothing" lens a Nothing (Just "overwritten")
-      ] 
+--     a = Dict.singleton "b" (1, "OLD") 
+--   in
+--     describe "dict + lens" 
+--       [ lens_laws "Just"    a2c a (Just "NEW")  (Just "overwritten")
+--       , lens_laws "Nothing" a2c a  Nothing      (Just "overwritten")
+--       ] 
+      

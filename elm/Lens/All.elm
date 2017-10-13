@@ -39,80 +39,12 @@ lensUpdate chooser f big =
     |> f
     |> flip chooser.set big
           
-lensAndLens : Lens a b -> Lens b c -> Lens a c
-lensAndLens a2b b2c =
+lensPlusLens : Lens a b -> Lens b c -> Lens a c
+lensPlusLens a2b b2c =
   let 
     get =
       a2b.get >> b2c.get
         
-    set c =
-      lensUpdate a2b (b2c.set c)
-      -- let
-      --   b = a2b.get a
-      -- in
-      --   a |> a2b.set (b2c.set c b)
-
-  in
-    lensMake get set
-
-
-
-
-         
-upsertLens : (big -> Maybe small)
-           -> (small -> big -> big)
-           -> (big -> big)
-           -> Lens big (Maybe small)
-upsertLens get upsert remove =
-  let
-    set maybe = 
-      case maybe of
-        Nothing ->
-          remove
-        Just val -> 
-          upsert val
-  in
-    lensMake get set
-
-dict : comparable -> Lens (Dict comparable val) (Maybe val)
-dict key =
-  upsertLens (Dict.get key) (Dict.insert key) (Dict.remove key)
-         
-
-
-
-
-
-
-
-
-
-
-
-    
-      
-lanimal = dict 55
-
-animals = Dict.singleton 55 { tags = []}
-
-
-          
-lanimals = lensMake .animals (\part whole -> {whole | animals = part })
-ltags = lensMake .tags (\part whole -> {whole | tags = part })
-lanimal55 = dict 55
-
----- lmodel = lensAndLens lanimals (lensAndLens lanimal55 ltags)
-
-
-
-model = { animals = Dict.singleton 55 { tags = []}}
-      
-          
-lensAddUpsert : Lens a b -> Lens b (Maybe c) -> Lens a (Maybe c)
-lensAddUpsert a2b b2c =
-  let
-    get = a2b.get >> b2c.get 
-
     set c a =
       let
         b = a2b.get a
@@ -123,10 +55,44 @@ lensAddUpsert a2b b2c =
     lensMake get set
 
 
-lmodel = lensAddUpsert lanimals lanimal55
 
-      
--- l2dict = lensAndLens (dict 33) (dict 44)
 
--- dict2 = Dict.singleton 33 (Dict.singleton 44 "foo")         
-  
+         
+upsertLensMake : (big -> Maybe small)
+               -> (small -> big -> big)
+               -> (big -> big)
+               -> Lens big (Maybe small)
+upsertLensMake get upsert remove =
+  let
+    set maybe = 
+      case maybe of
+        Nothing ->
+          remove
+        Just val -> 
+          upsert val
+  in
+    lensMake get set
+
+lensDict : comparable -> Lens (Dict comparable val) (Maybe val)
+lensDict key =
+  upsertLensMake (Dict.get key) (Dict.insert key) (Dict.remove key)
+
+
+upsertPlusUpsert : Lens a (Maybe b) -> Lens b (Maybe c) -> Lens a (Maybe c)
+upsertPlusUpsert a2b b2c =
+  let
+    get a =
+      case a2b.get a of
+        Nothing -> Nothing
+        Just b -> b2c.get b
+                  
+    set c a =
+      case a2b.get a of
+        Nothing ->
+          a
+        Just b ->
+          a2b.set (Just (b2c.set c b)) a
+  in
+    lensMake get set
+
+
