@@ -5,7 +5,7 @@ module Lens.Tuple4 exposing
   , fourth
   )
 
-import Choose.Lens as Lens exposing (Lens)
+import Lens.Lens as Lens exposing (Lens)
 
 first : Lens (focus, a, b, c) focus
 first =

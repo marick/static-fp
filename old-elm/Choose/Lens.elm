@@ -8,6 +8,10 @@ module Choose.Lens exposing
 type alias Getter big small =          big -> small
 type alias Setter big small = small -> big -> big
 
+
+type Lens big small
+  = Classic 
+  
 type alias Lens big small =
   { get : Getter big small
   , set : Setter big small
