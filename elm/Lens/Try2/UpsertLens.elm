@@ -1,7 +1,7 @@
-module Lens.UpsertLens exposing
+module Lens.Try2.UpsertLens exposing
   ( .. )
 
-import Lens.Types as T exposing (WeakLens, Lens)
+import Lens.Try2.Types as T exposing (WeakLens, Lens)
 import Dict exposing (Dict)
 
 type alias UpsertLens big small = T.UpsertLens big small

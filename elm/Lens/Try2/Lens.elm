@@ -1,7 +1,7 @@
-module Lens.Lens exposing
+module Lens.Try2.Lens exposing
   ( .. )
 
-import Lens.Types as T
+import Lens.Try2.Types as T
 
 type alias Lens big small = T.Lens big small
 
@@ -41,18 +41,9 @@ andThen : Lens b c -> Lens a b -> Lens a c
 andThen = flip append
 
 
---- Common lenses of this type
+-- Used for testing
+ops : Lens big small -> (big -> small, small -> big -> big)
+ops (T.Classic lens) = (lens.get, lens.set)
 
-first : Lens (focus, a) focus
-first =
-  lens
-    (\ (first, _) -> first)
-    (\ first (_, second) -> (first, second))
-      
-second : Lens (a, focus) focus
-second =
-  lens
-    (\ (_, second) -> second)
-    (\ second (first, _) -> (first, second))
-         
 
+                       

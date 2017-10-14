@@ -1,4 +1,4 @@
-module Lens.Types exposing (..)
+module Lens.Try2.Types exposing (..)
 
 {- These are all crammed together in one module because of the
 circular dependencies. 

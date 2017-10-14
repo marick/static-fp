@@ -1,7 +1,7 @@
-module Lens.WeakLens exposing
+module Lens.Try2.WeakLens exposing
   ( .. )
 
-import Lens.Types as T exposing (Lens, UpsertLens)
+import Lens.Try2.Types as T exposing (Lens, UpsertLens)
 import Array exposing (Array)
 
 type alias WeakLens big small = T.WeakLens big small
