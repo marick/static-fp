@@ -86,7 +86,7 @@ tuple4ObeysLaws =
   , lensLaws "tuple4 - third"
       Tuple4.third (1, 2, "third", 4) "NEW" "overwritten"
   , lensLaws "tuple4 - fourth"
-      Tuple4.third (1, 2, "fourth", 4) "NEW" "overwritten"
+      Tuple4.fourth (1, 2, 3, "fourth") "NEW" "overwritten"
   ]
 
 lensPlusLensObeysLaws =
