@@ -1,4 +1,4 @@
-module Choose.ExampleWithout.Animal exposing (..)
+module Lens.Motivation.WithoutLenses.Animal exposing (..)
 
 import Array exposing (Array)
 

@@ -1,9 +1,9 @@
-module Choose.ExampleWithout.Main exposing (..)
+module Lens.Motivation.WithoutLenses.Main exposing (..)
 
 import Dict
 import Array
-import Choose.ExampleWithout.Model as Model exposing (Model)
-import Choose.ExampleWithout.Animal as Animal exposing (Animal)
+import Lens.Motivation.WithoutLenses.Model as Model exposing (Model)
+import Lens.Motivation.WithoutLenses.Animal as Animal exposing (Animal)
 
 type Msg =
   AddTag Animal.Id String
