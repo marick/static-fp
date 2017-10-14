@@ -77,3 +77,7 @@ dict key =
 
 
       
+-- Used for testing
+ops : UpsertLens big small -> (big -> Maybe small, Maybe small -> big -> big)
+ops (T.Upsert lens) = (lens.get, lens.set)
+
