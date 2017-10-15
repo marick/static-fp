@@ -5,19 +5,19 @@ circular dependencies.
 -}
 
 type Lens big small =
-  Classic
+  ClassicLens
   { get : big -> small
   , set : small -> big -> big
   }
 
 type UpsertLens big small =
-  Upsert
+  UpsertLens
   { get : big -> Maybe small
   , set : Maybe small -> big -> big
   }
     
 type WeakLens big small =
-  Weak
+  WeakLens
   { get : big -> Maybe small
   , set : small -> big -> big
   }
@@ -27,7 +27,7 @@ type WeakLens big small =
   
 lensMake : (big -> small) -> (small -> big -> big) -> Lens big small
 lensMake get set =
-  Classic { get = get, set = set}
+  ClassicLens { get = get, set = set}
 
 
 upsertMake : (big -> Maybe small)
@@ -43,7 +43,7 @@ upsertMake get upsert remove =
         Just val -> 
           upsert val
   in
-    Upsert { get = get, set = set_}
+    UpsertLens { get = get, set = set_}
 
 weakMake : (big -> Maybe small) -> (small -> big -> big) -> WeakLens big small
 weakMake get set =
@@ -53,6 +53,6 @@ weakMake get set =
         Nothing -> big
         Just _ -> set small big
   in
-    Weak { get = get, set = set_}
+    WeakLens { get = get, set = set_}
 
 

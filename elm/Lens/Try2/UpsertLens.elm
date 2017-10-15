@@ -13,13 +13,13 @@ lens : (big -> Maybe small)
 lens = T.upsertMake
 
 get : UpsertLens big small -> big -> Maybe small
-get (T.Upsert lens) = lens.get
+get (T.UpsertLens lens) = lens.get
     
 set : UpsertLens big small -> Maybe small -> big -> big
-set (T.Upsert lens) = lens.set
+set (T.UpsertLens lens) = lens.set
 
 update : UpsertLens big small -> (small -> small) -> big -> big
-update (T.Upsert lens) f big =
+update (T.UpsertLens lens) f big =
   case lens.get big of
     Nothing ->
       big
@@ -30,7 +30,7 @@ update (T.Upsert lens) f big =
 
 
 append : UpsertLens a b -> UpsertLens b c -> WeakLens a c
-append (T.Upsert a2b) (T.Upsert b2c) =
+append (T.UpsertLens a2b) (T.UpsertLens b2c) =
   let
     get a =
       case a2b.get a of
@@ -51,7 +51,7 @@ andThen = flip append
       
 
 appendLens : UpsertLens a b -> Lens b c -> WeakLens a c
-appendLens (T.Upsert a2b) (T.Classic b2c) = 
+appendLens (T.UpsertLens a2b) (T.ClassicLens b2c) = 
   let
     get a =
       case a2b.get a of
@@ -78,6 +78,5 @@ dict key =
 
       
 -- Used for testing
-ops : UpsertLens big small -> (big -> Maybe small, Maybe small -> big -> big)
-ops (T.Upsert lens) = (lens.get, lens.set)
+ops (T.UpsertLens lens) = lens
 

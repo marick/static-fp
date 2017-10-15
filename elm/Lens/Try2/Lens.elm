@@ -9,13 +9,13 @@ lens : (big -> small) -> (small -> big -> big) -> Lens big small
 lens = T.lensMake
 
 get : Lens big small -> big -> small
-get (T.Classic lens) = lens.get
+get (T.ClassicLens lens) = lens.get
     
 set : Lens big small -> small -> big -> big
-set (T.Classic lens) = lens.set
+set (T.ClassicLens lens) = lens.set
 
 update : Lens big small -> (small -> small) -> big -> big
-update (T.Classic lens) f big =
+update (T.ClassicLens lens) f big =
   lens.get big
     |> f
     |> flip lens.set big
@@ -23,7 +23,7 @@ update (T.Classic lens) f big =
 --- Composite lenses
        
 append : Lens a b -> Lens b c -> Lens a c
-append (T.Classic a2b) (T.Classic b2c) =
+append (T.ClassicLens a2b) (T.ClassicLens b2c) =
   let 
     get =
       a2b.get >> b2c.get
@@ -42,8 +42,7 @@ andThen = flip append
 
 
 -- Used for testing
-ops : Lens big small -> (big -> small, small -> big -> big)
-ops (T.Classic lens) = (lens.get, lens.set)
+ops (T.ClassicLens lens) = lens
 
 
                        

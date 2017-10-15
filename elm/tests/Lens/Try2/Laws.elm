@@ -3,16 +3,16 @@ module Lens.Try2.Laws exposing (..)
 import Test exposing (..)
 import TestBuilders exposing (..)
 
-set_part_can_be_gotten (get, set) whole part =
+set_part_can_be_gotten {get, set} whole part =
   equal (get (set part whole)) part
     "set part can be gotten"
 
-setting_part_with_same_value_leaves_whole_unchanged (get, set) whole = 
+setting_part_with_same_value_leaves_whole_unchanged {get, set} whole = 
   equal (set (get whole) whole) whole
     "setting part with the same value leaves the whole unchanged"
 
 
-set_changes_only_the_given_part (get, set) whole overwritten part = 
+set_changes_only_the_given_part {get, set} whole overwritten part = 
   let
     a_direct_change =        whole |>                    set part
     change_that_overwrites = whole |> set overwritten |> set part
