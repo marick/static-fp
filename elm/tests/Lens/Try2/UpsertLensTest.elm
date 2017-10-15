@@ -1,5 +1,6 @@
 module Lens.Try2.UpsertLensTest exposing (..)
 
+import Lens.Try2.Types as T
 import Lens.Try2.UpsertLens as UpsertLens exposing (UpsertLens)
 
 import Test exposing (..)
@@ -30,8 +31,18 @@ dictsObeyLensLaws =
   in
     describe "Dict and lens laws"
       [ Laws.lens "Just"
-          (UpsertLens.ops lens) whole (Just "NEW") (Just "overwritten")
+          (unwrap lens) whole (Just "NEW") (Just "overwritten")
       , Laws.lens "Nothing"
-          (UpsertLens.ops lens) whole Nothing (Just "overwritten")
+          (unwrap lens) whole Nothing (Just "overwritten")
       ]    
+      
+
+
+
+
+-- Support
+
+
+unwrap (T.UpsertLens lens) = lens
+
       

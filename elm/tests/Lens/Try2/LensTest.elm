@@ -1,5 +1,6 @@
 module Lens.Try2.LensTest exposing (..)
 
+import Lens.Try2.Types as T
 import Lens.Try2.Lens as Lens exposing (Lens)
 import Lens.Try2.Tuple2 as Tuple2
 import Lens.Try2.Tuple3 as Tuple3
@@ -20,36 +21,36 @@ recordsObeyLaws =
     lens = Lens.lens .part (\part whole -> {whole | part = part })
   in
     Laws.lens "records"
-      (Lens.ops lens) whole "NEW" "overwritten"
+      (unwrap lens) whole "NEW" "overwritten"
     
 tuple2ObeysLaws =
   concat
   [ Laws.lens "tuple2 - first "
-      (Lens.ops Tuple2.first) ("OLD", 1) "NEW" "overwritten"
+      (unwrap Tuple2.first) ("OLD", 1) "NEW" "overwritten"
   , Laws.lens "tuple2 - second"
-      (Lens.ops Tuple2.second) (1, "OLD") "NEW" "overwritten"
+      (unwrap Tuple2.second) (1, "OLD") "NEW" "overwritten"
   ]
 
 tuple3ObeysLaws =
   concat
   [ Laws.lens "tuple3 - first "
-      (Lens.ops Tuple3.first) ("OLD", 2, 3) "NEW" "overwritten"
+      (unwrap Tuple3.first) ("OLD", 2, 3) "NEW" "overwritten"
   , Laws.lens "tuple3 - second"
-      (Lens.ops Tuple3.second) (1, "OLD", 3) "NEW" "overwritten"
+      (unwrap Tuple3.second) (1, "OLD", 3) "NEW" "overwritten"
   , Laws.lens "tuple3 - third"
-      (Lens.ops Tuple3.third) (1, 2, "third") "NEW" "overwritten"
+      (unwrap Tuple3.third) (1, 2, "third") "NEW" "overwritten"
   ]
 
 tuple4ObeysLaws =
   concat
   [ Laws.lens "tuple4 - first "
-      (Lens.ops Tuple4.first) ("OLD", 2, 3, 4) "NEW" "overwritten"
+      (unwrap Tuple4.first) ("OLD", 2, 3, 4) "NEW" "overwritten"
   , Laws.lens "tuple4 - second"
-      (Lens.ops Tuple4.second) (1, "OLD", 3, 4) "NEW" "overwritten"
+      (unwrap Tuple4.second) (1, "OLD", 3, 4) "NEW" "overwritten"
   , Laws.lens "tuple4 - third"
-      (Lens.ops Tuple4.third) (1, 2, "third", 4) "NEW" "overwritten"
+      (unwrap Tuple4.third) (1, 2, "third", 4) "NEW" "overwritten"
   , Laws.lens "tuple4 - fourth"
-      (Lens.ops Tuple4.fourth) (1, 2, 3, "fourth") "NEW" "overwritten"
+      (unwrap Tuple4.fourth) (1, 2, 3, "fourth") "NEW" "overwritten"
   ]
 
 
@@ -61,6 +62,13 @@ lensPlusLensObeysLaws =
 
     a = { b = { c = "OLD" } }
   in
-    Laws.lens "compose 2 lenses" (Lens.ops a2c) a "NEW" "overwritten"
+    Laws.lens "compose 2 lenses" (unwrap a2c) a "NEW" "overwritten"
 
-  
+
+
+-- support      
+
+unwrap (T.ClassicLens lens) = lens
+
+
+                       

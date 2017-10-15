@@ -41,8 +41,3 @@ andThen : Lens b c -> Lens a b -> Lens a c
 andThen = flip append
 
 
--- Used for testing
-ops (T.ClassicLens lens) = lens
-
-
-                       

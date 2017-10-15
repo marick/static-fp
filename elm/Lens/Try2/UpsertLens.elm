@@ -74,9 +74,3 @@ appendLens (T.UpsertLens a2b) (T.ClassicLens b2c) =
 dict : comparable -> UpsertLens (Dict comparable val) val
 dict key =
   lens (Dict.get key) (Dict.insert key) (Dict.remove key)
-
-
-      
--- Used for testing
-ops (T.UpsertLens lens) = lens
-
