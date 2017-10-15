@@ -10,13 +10,13 @@ lens : (big -> Maybe small) -> (small -> big -> big) -> WeakLens big small
 lens = T.weakMake
 
 get : WeakLens big small -> big -> Maybe small
-get (T.Weak lens) = lens.get
+get (T.WeakLens lens) = lens.get
     
 set : WeakLens big small -> small -> big -> big
-set (T.Weak lens) = lens.set
+set (T.WeakLens lens) = lens.set
 
 update : WeakLens big small -> (small -> small) -> big -> big
-update (T.Weak lens) f big = 
+update (T.WeakLens lens) f big = 
   case lens.get big of
     Nothing ->
       big
@@ -27,7 +27,7 @@ update (T.Weak lens) f big =
 
         
 append : WeakLens a b -> WeakLens b c -> WeakLens a c
-append (T.Weak a2b) (T.Weak b2c) =
+append (T.WeakLens a2b) (T.WeakLens b2c) =
   let
     get a =
       case a2b.get a of

@@ -3,6 +3,8 @@ module Lens.Try2.Laws exposing (..)
 import Test exposing (..)
 import TestBuilders exposing (..)
 
+--- Lens laws
+
 set_part_can_be_gotten {get, set} whole part =
   equal (get (set part whole)) part
     "set part can be gotten"
@@ -23,10 +25,30 @@ set_changes_only_the_given_part {get, set} whole overwritten part =
 
 
 
-lens comment lens whole part overwritten = 
+lens comment unwrappedLens whole part overwritten = 
   describe comment
-    [ set_part_can_be_gotten lens whole part
-    , setting_part_with_same_value_leaves_whole_unchanged lens whole
-    , set_changes_only_the_given_part lens whole overwritten part
+    [ set_part_can_be_gotten unwrappedLens whole part
+    , setting_part_with_same_value_leaves_whole_unchanged unwrappedLens whole
+    , set_changes_only_the_given_part unwrappedLens whole overwritten part
     ]
-        
+
+
+--- WeakLens laws
+
+-- Even where the laws have the same meaning as for lens, the type signatures
+-- are too different.
+
+-- Compare to set_part_can_be_gotten
+weaklens_overwrites {get, set} whole original new  =
+  describe "when an element is present, set overwrites it"
+    [ equal (get          whole)      (Just original)  "show gets something"
+    , equal_ (get (set new whole))    (Just new)
+    ]
+
+weaklens_does_not_create {get, set} whole new = 
+  describe "when an element is missing, set does nothing"
+    [ equal (get          whole)       Nothing    "show gets nothing"
+    , equal (get (set new whole))     Nothing     "still gets nothing"
+    , equal      (set new whole)      whole       "nothing else changed"
+    ]
+
