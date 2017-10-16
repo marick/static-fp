@@ -4,24 +4,30 @@ module Lens.Try2.Types exposing (..)
 circular dependencies. 
 -}
 
-type Lens big small =
-  ClassicLens
+-- An UpsertLens is a Lens, so far as the lens laws go, provided you
+-- narrow "small" to "Maybe small". They're given separate types because
+-- they don't compose the same. However a lot of code can work on the
+-- unwrapped version of both. That code works with this type:
+type alias ObeysLensLaws big small =
   { get : big -> small
   , set : small -> big -> big
   }
 
+type Lens big small =
+  ClassicLens
+  (ObeysLensLaws big small)
+
 type UpsertLens big small =
   UpsertLens
-  { get : big -> Maybe small
-  , set : Maybe small -> big -> big
-  }
-    
+  (ObeysLensLaws big (Maybe small))
+
 type WeakLens big small =
   WeakLens
   { get : big -> Maybe small
   , set : small -> big -> big
   }
-    
+
+  
 
 ---- 
   
