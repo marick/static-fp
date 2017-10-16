@@ -40,8 +40,8 @@ dictsObey =
         (laws lens   (Just original)  (Dict.singleton "key" original))
         (laws lens   Nothing          (Dict.empty)))
 
-lensPlusDictObeys : Test 
-lensPlusDictObeys =
+lensPlusUpsertObeys : Test 
+lensPlusUpsertObeys =
   let
     lens =
       Tuple2.second

@@ -22,7 +22,6 @@ update (T.ClassicLens lens) f big =
 
 --- Composite lenses
 
-
 appendRaw a2b b2c = 
   let 
     get =
