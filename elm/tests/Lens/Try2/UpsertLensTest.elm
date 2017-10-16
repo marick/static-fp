@@ -7,7 +7,7 @@ import Test exposing (..)
 import TestBuilders exposing (..)
 import Lens.Try2.Laws as Laws
 import Dict exposing (Dict)
-
+import List.Extra as List
 
 -- Note: the getters and setters are tested via the laws
 update =
@@ -23,20 +23,14 @@ update =
                   (Dict.singleton "NOTKEY" 1)
       ]
 
-
 dictsObeyLensLaws =
   let
-    whole = Dict.singleton "key" "OLD"
     lens = UpsertLens.dict "key"
   in
-    describe "Dict and lens laws"
-      [ Laws.lens "Just"
-          (unwrap lens) whole (Just "NEW") (Just "overwritten")
-      , Laws.lens "Nothing"
-          (unwrap lens) whole Nothing (Just "overwritten")
-      ]    
-      
-
+    describe "dict obeys lens laws" <|
+      List.append
+        (checkLaws lens (Just "OLD") (Dict.singleton "key" "OLD"))
+        (checkLaws lens Nothing (Dict.empty))
 
 
 
@@ -45,4 +39,28 @@ dictsObeyLensLaws =
 
 unwrap (T.UpsertLens lens) = lens
 
+checkLaws wrappedLens original whole =
+  let
+    maybes x =
+      [Nothing, Just x]
+
+    partsTuples =
+      List.lift2 (,) (maybes Laws.overwritten) (maybes Laws.new)
+
+    tupleToRecord (overwritten, new) =
+      { original = original
+      , new = new
+      , overwritten = overwritten
+      }
+
+    oneCheck tuple =
+      Laws.lens
+        (toString (original, tuple))
+        (unwrap wrappedLens)
+        whole
+        (tupleToRecord tuple)
+  in
+    List.map oneCheck partsTuples
+    
+    
       

@@ -24,20 +24,20 @@ update =
       ]
 
 
-arrayObeysLensLaws =
-  let
-    whole = Array.fromList [ "OLD" ] 
-    found = WeakLens.array 0
-    fails = WeakLens.array 33
-  in
-    describe "Dict and lens laws "
-      [ -- This is the important difference
-        Laws.weaklens_does_not_create (unwrap fails) whole "NEW"
+-- arrayObeysLensLaws =
+--   let
+--     whole = Array.fromList [ "OLD" ] 
+--     found = WeakLens.array 0
+--     fails = WeakLens.array 33
+--   in
+--     describe "Dict and lens laws "
+--       [ -- This is the important difference
+--         Laws.weaklens_does_not_create (unwrap fails) whole "NEW"
 
-      , Laws.weaklens_overwrites (unwrap found) whole "OLD" "NEW"
-      , Laws.weaklens_setting_what_gotten_changes_nothing (unwrap found) whole "OLD"
-      , Laws.set_changes_only_the_given_part (unwrap found) whole "Overwritten" "NEW"
-      ]    
+--       , Laws.weaklens_overwrites (unwrap found) whole "OLD" "NEW"
+--       , Laws.weaklens_setting_what_gotten_changes_nothing (unwrap found) whole "OLD"
+--       , Laws.set_changes_only_the_given_part (unwrap found) whole "Overwritten" "NEW"
+--       ]    
       
 
 

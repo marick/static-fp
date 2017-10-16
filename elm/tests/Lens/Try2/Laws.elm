@@ -3,31 +3,38 @@ module Lens.Try2.Laws exposing (..)
 import Test exposing (..)
 import TestBuilders exposing (..)
 
+original = "OLD"
+new = "NEW"
+overwritten = "overwritten"
+
 --- Lens laws
 
-set_part_can_be_gotten {get, set} whole part =
-  equal (get (set part whole)) part
+set_part_can_be_gotten {get, set} whole {new} =
+  equal (get (set new whole)) new
     "set part can be gotten"
 
 setting_part_with_same_value_leaves_whole_unchanged {get, set} whole = 
   equal (set (get whole) whole) whole
     "setting part with the same value leaves the whole unchanged"
 
-
-set_changes_only_the_given_part {set} whole overwritten part = 
+set_changes_only_the_given_part {set} whole {overwritten, new} = 
   let
-    a_direct_change =        whole |>                    set part
-    change_that_overwrites = whole |> set overwritten |> set part
+    a_direct_change =        whole |>                    set new
+    change_that_overwrites = whole |> set overwritten |> set new
   in
     equal change_that_overwrites   a_direct_change
       "set changes only the given part (no counter, etc.)"
-      
 
-lens comment unwrappedLens whole part overwritten = 
+lens comment unwrappedLens whole inputValues = 
   describe comment
-    [ set_part_can_be_gotten unwrappedLens whole part
-    , setting_part_with_same_value_leaves_whole_unchanged unwrappedLens whole
-    , set_changes_only_the_given_part unwrappedLens whole overwritten part
+    [ set_part_can_be_gotten
+        unwrappedLens whole inputValues
+
+    , setting_part_with_same_value_leaves_whole_unchanged
+        unwrappedLens whole 
+
+    , set_changes_only_the_given_part
+        unwrappedLens whole inputValues
     ]
 
 
@@ -37,19 +44,19 @@ lens comment unwrappedLens whole part overwritten =
 -- are too different.
 
 -- Compare to set_part_can_be_gotten
-weaklens_overwrites {get, set} whole original new  =
+weaklens_overwrites {get, set} whole {original, new}  =
   describe "when an element is present, set overwrites it"
     [ equal  (get          whole)      (Just original)  "`get` gets original"
-    , equal_ (get (set new whole))    (Just new)
+    , equal_ (get (set new whole))     (Just new)
     ]
 
-weaklens_setting_what_gotten_changes_nothing {get, set} whole original =
+weaklens_setting_what_gotten_changes_nothing {get, set} whole {original} =
   describe "retrieving an element, then setting it"
     [ equal  (get          whole)     (Just original)  "`get` gets original"
     , equal_ (set original whole)     whole
     ]
 
-weaklens_does_not_create {get, set} whole new = 
+weaklens_does_not_create {get, set} whole {new} = 
   describe "when an element is missing, set does nothing"
     [ equal (get          whole)      Nothing     "show gets nothing"
     , equal (get (set new whole))     Nothing     "still gets nothing"

@@ -15,43 +15,35 @@ import Dict exposing (Dict)
 update =
   equal (Lens.update Tuple2.second negate ("foo", 1))    ("foo", -1)  "update - basic"
 
+
+-- Law tests
+
 recordsObeyLaws =
   let
-    whole = { part = "OLD" } 
     lens = Lens.lens .part (\part whole -> {whole | part = part })
   in
-    Laws.lens "records"
-      (unwrap lens) whole "NEW" "overwritten"
+    checkLaws "records" lens { part = Laws.original }
     
 tuple2ObeysLaws =
-  concat
-  [ Laws.lens "tuple2 - first "
-      (unwrap Tuple2.first) ("OLD", 1) "NEW" "overwritten"
-  , Laws.lens "tuple2 - second"
-      (unwrap Tuple2.second) (1, "OLD") "NEW" "overwritten"
-  ]
+  describe "tuple2 lens laws"
+    [ checkLaws "first " Tuple2.first   (Laws.original, 1)
+    , checkLaws "second" Tuple2.second  (1, Laws.original)
+    ]
 
 tuple3ObeysLaws =
-  concat
-  [ Laws.lens "tuple3 - first "
-      (unwrap Tuple3.first) ("OLD", 2, 3) "NEW" "overwritten"
-  , Laws.lens "tuple3 - second"
-      (unwrap Tuple3.second) (1, "OLD", 3) "NEW" "overwritten"
-  , Laws.lens "tuple3 - third"
-      (unwrap Tuple3.third) (1, 2, "third") "NEW" "overwritten"
-  ]
+  describe "tuple3 lens laws"
+    [ checkLaws "first " Tuple3.first    (Laws.original, 2, 3)
+    , checkLaws "second" Tuple3.second   (1, Laws.original, 3)
+    , checkLaws "third"  Tuple3.third    (1, 2, Laws.original)
+    ]
 
 tuple4ObeysLaws =
-  concat
-  [ Laws.lens "tuple4 - first "
-      (unwrap Tuple4.first) ("OLD", 2, 3, 4) "NEW" "overwritten"
-  , Laws.lens "tuple4 - second"
-      (unwrap Tuple4.second) (1, "OLD", 3, 4) "NEW" "overwritten"
-  , Laws.lens "tuple4 - third"
-      (unwrap Tuple4.third) (1, 2, "third", 4) "NEW" "overwritten"
-  , Laws.lens "tuple4 - fourth"
-      (unwrap Tuple4.fourth) (1, 2, 3, "fourth") "NEW" "overwritten"
-  ]
+  describe "tuple4 lens laws"
+    [ checkLaws "first " Tuple4.first      (Laws.original, 2, 3, 4) 
+    , checkLaws "second" Tuple4.second     (1, Laws.original, 3, 4) 
+    , checkLaws "third"  Tuple4.third      (1, 2, Laws.original, 4) 
+    , checkLaws "fourth" Tuple4.fourth     (1, 2, 3, Laws.original) 
+    ]
 
 
 lensPlusLensObeysLaws =
@@ -60,9 +52,9 @@ lensPlusLensObeysLaws =
     b2c = Lens.lens .c (\newC b -> {b | c = newC })
     a2c = a2b |> Lens.andThen b2c 
 
-    a = { b = { c = "OLD" } }
+    a = { b = { c = Laws.original } }
   in
-    Laws.lens "compose 2 lenses" (unwrap a2c) a "NEW" "overwritten"
+    checkLaws "compose 2 lenses" a2c a 
 
 
 
@@ -70,5 +62,15 @@ lensPlusLensObeysLaws =
 
 unwrap (T.ClassicLens lens) = lens
 
+checkLaws comment wrappedLens whole =
+  let
+    parts =
+      { original = Laws.original
+      , new = Laws.new
+      , overwritten = Laws.overwritten
+      }
+  in      
+    Laws.lens comment (unwrap wrappedLens) whole parts
+    
 
                        
