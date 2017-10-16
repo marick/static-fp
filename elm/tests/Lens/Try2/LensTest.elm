@@ -12,42 +12,47 @@ import Lens.Try2.Laws as Laws
 import Dict exposing (Dict)
 
 -- Note: the getters and setters are tested via the laws
+update : Test
 update =
   equal (Lens.update Tuple2.second negate ("foo", 1))    ("foo", -1)  "update - basic"
 
 
 -- Law tests
 
+recordsObeyLaws : Test
 recordsObeyLaws =
   let
     lens = Lens.lens .part (\part whole -> {whole | part = part })
   in
-    describe                                             "record lens laws"
+    describe                                             "lens laws: records"
       [ laws "records" lens { part = original }
       ]
     
+tuple2ObeysLaws : Test
 tuple2ObeysLaws =
-  describe                                               "tuple2 lens laws"
+  describe                                               "lens laws: Tuple2"
     [ laws "first " Tuple2.first   (original, 1)
     , laws "second" Tuple2.second  (1, original)
     ]
 
+tuple3ObeysLaws : Test
 tuple3ObeysLaws =
-  describe                                               "tuple3 lens laws"
+  describe                                               "lens laws: Tuple3"
     [ laws "first " Tuple3.first    (original, 2, 3)
     , laws "second" Tuple3.second   (1, original, 3)
     , laws "third"  Tuple3.third    (1, 2, original)
     ]
 
+tuple4ObeysLaws : Test    
 tuple4ObeysLaws =
-  describe                                               "tuple4 lens laws"
+  describe                                               "Lens laws: Tuple4"
     [ laws "first " Tuple4.first      (original, 2, 3, 4) 
     , laws "second" Tuple4.second     (1, original, 3, 4) 
     , laws "third"  Tuple4.third      (1, 2, original, 4) 
     , laws "fourth" Tuple4.fourth     (1, 2, 3, original) 
     ]
 
-
+lensPlusLensObeysLaws : Test
 lensPlusLensObeysLaws =
   let
     a2b = Lens.lens .b (\newB a -> {a | b = newB })
@@ -56,7 +61,7 @@ lensPlusLensObeysLaws =
 
     a = { b = { c = original } }
   in
-    describe                                             "lens + lens"
+    describe                                             "laws: lens + lens"
       [ laws "composition" a2c a 
       ]
 
@@ -74,5 +79,3 @@ original = parts.original
 laws : String -> Lens whole String -> whole -> Test
 laws comment (T.ClassicLens lens) whole =
   Laws.lens comment lens whole parts
-    
-                       

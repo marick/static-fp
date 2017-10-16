@@ -10,6 +10,7 @@ import Dict exposing (Dict)
 import List.Extra as List
 
 -- Note: the getters and setters are tested via the laws
+update : Test
 update =
   let
     lens = UpsertLens.dict "key"
@@ -23,11 +24,12 @@ update =
                   (Dict.singleton "NOTKEY" 1)
       ]
 
+dictsObeyLensLaws : Test
 dictsObeyLensLaws =
   let
     lens = UpsertLens.dict "key"
   in
-    describe "dict obeys lens laws" <|
+    describe                                             "dict obeys lens laws" <|
       List.append
         (laws lens   (Just original)  (Dict.singleton "key" original))
         (laws lens   Nothing          (Dict.empty))
