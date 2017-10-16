@@ -39,12 +39,15 @@ lens comment unwrappedLens whole inputValues =
 -- Even where the laws have the same meaning as for lens, the type signatures
 -- are too different.
 
--- Compare to set_part_can_be_gotten
+-- set_part_can_be_gotten, but only for 
+-- Difference is a check that it's only called with a whole that contains the element. 
 weaklens_overwrites {get, set} whole {original, new}  =
   describe "when an element is present, set overwrites it"
     [ equal  (get          whole)      (Just original)  "`get` gets original"
     , equal_ (get (set new whole))     (Just new)
     ]
+
+-- compare to setting_part_with_same_value_leaves_whole_unchanged
 
 weaklens_setting_what_gotten_changes_nothing {get, set} whole {original} =
   describe "retrieving an element, then setting it"

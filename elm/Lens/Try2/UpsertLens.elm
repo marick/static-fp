@@ -10,7 +10,7 @@ lens : (big -> Maybe small)
      -> (small -> big -> big)
      -> (big -> big)
      -> UpsertLens big small
-lens = T.upsertMake
+lens = T.upsertMake3
 
 get : UpsertLens big small -> big -> Maybe small
 get (T.UpsertLens lens) = lens.get

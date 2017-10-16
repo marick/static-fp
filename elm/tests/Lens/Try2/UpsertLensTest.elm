@@ -2,12 +2,14 @@ module Lens.Try2.UpsertLensTest exposing (..)
 
 import Lens.Try2.Types as T
 import Lens.Try2.UpsertLens as UpsertLens exposing (UpsertLens)
+import Lens.Try2.Lens as Lens
 
 import Test exposing (..)
 import TestBuilders exposing (..)
 import Lens.Try2.Laws as Laws
 import Dict exposing (Dict)
 import List.Extra as List
+import Lens.Try2.Tuple2 as Tuple2
 
 -- Note: the getters and setters are tested via the laws
 update : Test
@@ -24,17 +26,31 @@ update =
                   (Dict.singleton "NOTKEY" 1)
       ]
 
-dictsObeyLensLaws : Test
-dictsObeyLensLaws =
+-- Law tests
+-- Note: these are for expressions that *produce* UpsertLenses.
+
+      
+dictsObey : Test
+dictsObey =
   let
     lens = UpsertLens.dict "key"
   in
-    describe                                             "dict obeys lens laws" <|
-      List.append
+    describe                                             "dict obeys lens laws"
+      (List.append
         (laws lens   (Just original)  (Dict.singleton "key" original))
-        (laws lens   Nothing          (Dict.empty))
+        (laws lens   Nothing          (Dict.empty)))
 
-
+lensPlusDictObeys : Test 
+lensPlusDictObeys =
+  let
+    lens =
+      Tuple2.second
+        |> Lens.andThenUpsert (UpsertLens.dict "key")
+  in
+    describe                                             "Lens+Upsert"
+      (List.append
+        (laws lens   (Just original)  (1.3, (Dict.singleton "key" original)))
+        (laws lens   Nothing          (1.3, (Dict.empty))))
 
 -- Support
 
@@ -64,6 +80,3 @@ laws (T.UpsertLens lens) original whole =
         (tupleToRecord tuple)
   in
     List.map oneCheck partsTuples
-    
-    
-      

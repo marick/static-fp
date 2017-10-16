@@ -29,12 +29,16 @@ lensMake : (big -> small) -> (small -> big -> big) -> Lens big small
 lensMake get set =
   ClassicLens { get = get, set = set}
 
-
-upsertMake : (big -> Maybe small)
-           -> (small -> big -> big)
-           -> (big -> big)
+upsertMake : (big -> Maybe small) -> (Maybe small -> big -> big)
            -> UpsertLens big small
-upsertMake get upsert remove =
+upsertMake get set =
+  UpsertLens { get = get, set = set}
+
+upsertMake3 : (big -> Maybe small)
+            -> (small -> big -> big)
+            -> (big -> big)           -- separate `delete` function
+            -> UpsertLens big small
+upsertMake3 get upsert remove =
   let
     set_ maybe = 
       case maybe of
@@ -43,7 +47,7 @@ upsertMake get upsert remove =
         Just val -> 
           upsert val
   in
-    UpsertLens { get = get, set = set_}
+    upsertMake get set_
 
 weakMake : (big -> Maybe small) -> (small -> big -> big) -> WeakLens big small
 weakMake get set =

@@ -24,20 +24,35 @@ update =
                   (Array.fromList [10])        "no value at focus"
       ]
 
+-- Law tests
+-- Note: these are for expressions that *produce* WeakLenses.
 
-arrayObeysLensLaws : Test
-arrayObeysLensLaws =
+arrayObeys : Test
+arrayObeys =
   let
-    whole = Array.fromList [ parts.original ] 
-    found = WeakLens.array 0
-    fails = WeakLens.array 33
+    oneElement = Array.fromList [ parts.original ] 
   in
-    describe                                   "arrays obey lens laws" 
-      (laws found fails whole)
-      
+    describe                                   "weaklens laws: arrays"
+      [ presentLaws (WeakLens.array 0)   oneElement
+      , missingLaws (WeakLens.array 33)  oneElement    "array too short"
+      ]
 
-
-
+weakPlusWeakObeys : Test
+weakPlusWeakObeys =
+  let
+    oneElement =
+      Array.fromList [
+         Array.fromList [parts.original]
+      ]
+    fitsArray = WeakLens.array 0  |> WeakLens.andThen (WeakLens.array 0)
+    missOuter = WeakLens.array 33 |> WeakLens.andThen (WeakLens.array 0)
+    missInner = WeakLens.array 0  |> WeakLens.andThen (WeakLens.array 33)
+  in
+    describe                                   "weaklens laws: weak+weak"
+      [ presentLaws fitsArray oneElement
+      , missingLaws missOuter oneElement             "outer array"
+      , missingLaws missInner oneElement             "inner array"
+      ]
 
 -- Support
 
@@ -47,14 +62,19 @@ parts =
   , overwritten = '-'
   }
                            
-laws : WeakLens whole Char -> WeakLens whole Char -> whole -> List Test
-laws (T.WeakLens found) (T.WeakLens fails) whole =
-  [ -- This is the important difference
-    Laws.weaklens_does_not_create fails whole parts
-        
-  , Laws.weaklens_overwrites found whole parts
-  , Laws.weaklens_setting_what_gotten_changes_nothing found whole parts
-  , Laws.set_changes_only_the_given_part found whole parts
-  ]    
+missingLaws : WeakLens whole Char -> whole -> String -> Test
+missingLaws (T.WeakLens fails) whole why =
+  describe ("element not present: " ++ why)
+    [Laws.weaklens_does_not_create fails whole parts
+    ]
+
+  
+presentLaws : WeakLens whole Char -> whole -> Test
+presentLaws (T.WeakLens found) whole =
+  describe "element present"
+    [ Laws.weaklens_overwrites found whole parts
+    , Laws.weaklens_setting_what_gotten_changes_nothing found whole parts
+    , Laws.set_changes_only_the_given_part found whole parts
+    ]    
 
       

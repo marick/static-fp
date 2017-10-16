@@ -18,9 +18,10 @@ update =
 
 
 -- Law tests
+-- Note: these are for expressions that *produce* Lenses.
 
-recordsObeyLaws : Test
-recordsObeyLaws =
+recordsObey : Test
+recordsObey =
   let
     lens = Lens.lens .part (\part whole -> {whole | part = part })
   in
@@ -28,23 +29,23 @@ recordsObeyLaws =
       [ laws "records" lens { part = original }
       ]
     
-tuple2ObeysLaws : Test
-tuple2ObeysLaws =
+tuple2Obeys : Test
+tuple2Obeys =
   describe                                               "lens laws: Tuple2"
     [ laws "first " Tuple2.first   (original, 1)
     , laws "second" Tuple2.second  (1, original)
     ]
 
-tuple3ObeysLaws : Test
-tuple3ObeysLaws =
+tuple3Obeys : Test
+tuple3Obeys =
   describe                                               "lens laws: Tuple3"
     [ laws "first " Tuple3.first    (original, 2, 3)
     , laws "second" Tuple3.second   (1, original, 3)
     , laws "third"  Tuple3.third    (1, 2, original)
     ]
 
-tuple4ObeysLaws : Test    
-tuple4ObeysLaws =
+tuple4Obeys : Test    
+tuple4Obeys =
   describe                                               "Lens laws: Tuple4"
     [ laws "first " Tuple4.first      (original, 2, 3, 4) 
     , laws "second" Tuple4.second     (1, original, 3, 4) 
@@ -52,8 +53,8 @@ tuple4ObeysLaws =
     , laws "fourth" Tuple4.fourth     (1, 2, 3, original) 
     ]
 
-lensPlusLensObeysLaws : Test
-lensPlusLensObeysLaws =
+lensPlusLensObeys : Test
+lensPlusLensObeys =
   let
     a2b = Lens.lens .b (\newB a -> {a | b = newB })
     b2c = Lens.lens .c (\newC b -> {b | c = newC })

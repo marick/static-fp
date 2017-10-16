@@ -1,7 +1,7 @@
 module Lens.Try2.Lens exposing
   ( .. )
 
-import Lens.Try2.Types as T
+import Lens.Try2.Types as T exposing (UpsertLens)
 
 type alias Lens big small = T.Lens big small
 
@@ -21,9 +21,9 @@ update (T.ClassicLens lens) f big =
     |> flip lens.set big
 
 --- Composite lenses
-       
-append : Lens a b -> Lens b c -> Lens a c
-append (T.ClassicLens a2b) (T.ClassicLens b2c) =
+
+
+appendRaw a2b b2c = 
   let 
     get =
       a2b.get >> b2c.get
@@ -35,9 +35,21 @@ append (T.ClassicLens a2b) (T.ClassicLens b2c) =
       in
         a2b.set newB a
   in
-    lens get set
+    (get, set)
+       
+append : Lens a b -> Lens b c -> Lens a c
+append (T.ClassicLens a2b) (T.ClassicLens b2c) =
+  appendRaw a2b b2c |> uncurry lens
        
 andThen : Lens b c -> Lens a b -> Lens a c
 andThen = flip append
+
+
+appendUpsert : Lens a b -> UpsertLens b c -> UpsertLens a c
+appendUpsert (T.ClassicLens a2b) (T.UpsertLens b2c) =
+  appendRaw a2b b2c |> uncurry T.upsertMake
+       
+andThenUpsert : UpsertLens b c -> Lens a b -> UpsertLens a c
+andThenUpsert = flip appendUpsert
 
 
