@@ -22,27 +22,29 @@ recordsObeyLaws =
   let
     lens = Lens.lens .part (\part whole -> {whole | part = part })
   in
-    checkLaws "records" lens { part = Laws.original }
+    describe                                             "record lens laws"
+      [ laws "records" lens { part = original }
+      ]
     
 tuple2ObeysLaws =
-  describe "tuple2 lens laws"
-    [ checkLaws "first " Tuple2.first   (Laws.original, 1)
-    , checkLaws "second" Tuple2.second  (1, Laws.original)
+  describe                                               "tuple2 lens laws"
+    [ laws "first " Tuple2.first   (original, 1)
+    , laws "second" Tuple2.second  (1, original)
     ]
 
 tuple3ObeysLaws =
-  describe "tuple3 lens laws"
-    [ checkLaws "first " Tuple3.first    (Laws.original, 2, 3)
-    , checkLaws "second" Tuple3.second   (1, Laws.original, 3)
-    , checkLaws "third"  Tuple3.third    (1, 2, Laws.original)
+  describe                                               "tuple3 lens laws"
+    [ laws "first " Tuple3.first    (original, 2, 3)
+    , laws "second" Tuple3.second   (1, original, 3)
+    , laws "third"  Tuple3.third    (1, 2, original)
     ]
 
 tuple4ObeysLaws =
-  describe "tuple4 lens laws"
-    [ checkLaws "first " Tuple4.first      (Laws.original, 2, 3, 4) 
-    , checkLaws "second" Tuple4.second     (1, Laws.original, 3, 4) 
-    , checkLaws "third"  Tuple4.third      (1, 2, Laws.original, 4) 
-    , checkLaws "fourth" Tuple4.fourth     (1, 2, 3, Laws.original) 
+  describe                                               "tuple4 lens laws"
+    [ laws "first " Tuple4.first      (original, 2, 3, 4) 
+    , laws "second" Tuple4.second     (1, original, 3, 4) 
+    , laws "third"  Tuple4.third      (1, 2, original, 4) 
+    , laws "fourth" Tuple4.fourth     (1, 2, 3, original) 
     ]
 
 
@@ -52,25 +54,25 @@ lensPlusLensObeysLaws =
     b2c = Lens.lens .c (\newC b -> {b | c = newC })
     a2c = a2b |> Lens.andThen b2c 
 
-    a = { b = { c = Laws.original } }
+    a = { b = { c = original } }
   in
-    checkLaws "compose 2 lenses" a2c a 
-
+    describe                                             "lens + lens"
+      [ laws "composition" a2c a 
+      ]
 
 
 -- support      
 
-unwrap (T.ClassicLens lens) = lens
 
-checkLaws comment wrappedLens whole =
-  let
-    parts =
-      { original = Laws.original
-      , new = Laws.new
-      , overwritten = Laws.overwritten
-      }
-  in      
-    Laws.lens comment (unwrap wrappedLens) whole parts
+parts =
+  { original = "OLD"
+  , new = "NEW"
+  , overwritten = "overwritten"
+  }
+original = parts.original 
+
+laws : String -> Lens whole String -> whole -> Test
+laws comment (T.ClassicLens lens) whole =
+  Laws.lens comment lens whole parts
     
-
                        

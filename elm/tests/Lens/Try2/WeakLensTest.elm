@@ -10,34 +10,30 @@ import Array
 
 
 -- Note: the getters and setters are tested via the laws
+update : Test
 update =
   let
     lens = WeakLens.array 1
   in
     describe "update for WeakLenses"
-      [ equal_ (WeakLens.update lens negate
-                  (Array.fromList [10,  20]))
-                  (Array.fromList [10, -20])
-      , equal_ (WeakLens.update lens negate
+      [ equal (WeakLens.update lens negate
+                 (Array.fromList [10,  20]))
+                 (Array.fromList [10, -20])    "value exists at focus"
+      , equal (WeakLens.update lens negate
                   (Array.fromList [10]))
-                  (Array.fromList [10])
+                  (Array.fromList [10])        "no value at focus"
       ]
 
 
--- arrayObeysLensLaws =
---   let
---     whole = Array.fromList [ "OLD" ] 
---     found = WeakLens.array 0
---     fails = WeakLens.array 33
---   in
---     describe "Dict and lens laws "
---       [ -- This is the important difference
---         Laws.weaklens_does_not_create (unwrap fails) whole "NEW"
-
---       , Laws.weaklens_overwrites (unwrap found) whole "OLD" "NEW"
---       , Laws.weaklens_setting_what_gotten_changes_nothing (unwrap found) whole "OLD"
---       , Laws.set_changes_only_the_given_part (unwrap found) whole "Overwritten" "NEW"
---       ]    
+arrayObeysLensLaws : Test
+arrayObeysLensLaws =
+  let
+    whole = Array.fromList [ parts.original ] 
+    found = WeakLens.array 0
+    fails = WeakLens.array 33
+  in
+    describe                                   "arrays obey lens laws" 
+      (laws found fails whole)
       
 
 
@@ -45,7 +41,20 @@ update =
 
 -- Support
 
-
-unwrap (T.WeakLens lens) = lens
+parts =
+  { original = 'o'
+  , new = 'n'
+  , overwritten = '-'
+  }
+                           
+laws : WeakLens whole Char -> WeakLens whole Char -> whole -> List Test
+laws (T.WeakLens found) (T.WeakLens fails) whole =
+  [ -- This is the important difference
+    Laws.weaklens_does_not_create fails whole parts
+        
+  , Laws.weaklens_overwrites found whole parts
+  , Laws.weaklens_setting_what_gotten_changes_nothing found whole parts
+  , Laws.set_changes_only_the_given_part found whole parts
+  ]    
 
       

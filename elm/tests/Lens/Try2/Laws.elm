@@ -3,10 +3,6 @@ module Lens.Try2.Laws exposing (..)
 import Test exposing (..)
 import TestBuilders exposing (..)
 
-original = "OLD"
-new = "NEW"
-overwritten = "overwritten"
-
 --- Lens laws
 
 set_part_can_be_gotten {get, set} whole {new} =
@@ -62,11 +58,3 @@ weaklens_does_not_create {get, set} whole {new} =
     , equal (get (set new whole))     Nothing     "still gets nothing"
     , equal      (set new whole)      whole       "nothing else changed"
     ]
-
-
--- how_weaklens_is_like_lens comment unwrappedLens whole oldPart newPart overwrittenPart = 
---   describe comment
---     [ Laws.weaklens_overwrites unwrappedLens whole oldPart newPart
---     , Laws.weaklens_setting_what_gotten_changes_nothing unwrappedLens whole oldPart
---     , Laws.set_changes_only_the_given_part unwrappedLens  whole overwritten newPart
---     ]    

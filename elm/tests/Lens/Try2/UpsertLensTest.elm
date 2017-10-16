@@ -29,23 +29,24 @@ dictsObeyLensLaws =
   in
     describe "dict obeys lens laws" <|
       List.append
-        (checkLaws lens (Just "OLD") (Dict.singleton "key" "OLD"))
-        (checkLaws lens Nothing (Dict.empty))
+        (laws lens   (Just original)  (Dict.singleton "key" original))
+        (laws lens   Nothing          (Dict.empty))
 
 
 
 -- Support
 
+original = 1    -- This marks the original value at the lens's focus,
+                -- provided there is such a value.
 
-unwrap (T.UpsertLens lens) = lens
-
-checkLaws wrappedLens original whole =
+laws : UpsertLens whole Int -> Maybe Int -> whole -> List Test
+laws (T.UpsertLens lens) original whole =
   let
     maybes x =
       [Nothing, Just x]
 
     partsTuples =
-      List.lift2 (,) (maybes Laws.overwritten) (maybes Laws.new)
+      List.lift2 (,) (maybes 0) (maybes 300)
 
     tupleToRecord (overwritten, new) =
       { original = original
@@ -56,7 +57,7 @@ checkLaws wrappedLens original whole =
     oneCheck tuple =
       Laws.lens
         (toString (original, tuple))
-        (unwrap wrappedLens)
+        lens
         whole
         (tupleToRecord tuple)
   in
