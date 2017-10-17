@@ -61,3 +61,18 @@ weaklens_does_not_create {get, set} whole {new} =
     , equal (get (set new whole))     Nothing     "still gets nothing"
     , equal      (set new whole)      whole       "nothing else changed"
     ]
+
+---- SumLens laws
+
+sumlens_get_set_round_trip {get, set} whole wrapped =
+  describe "if `get` succeeds, `set` recreates the sum type value"
+    [ equal_ (get whole)       (Just wrapped) 
+    , equal_ (set wrapped)     whole
+    ]
+
+sumlens_set_get_round_trip {get, set} whole wrapped =
+  describe "`get` always retrieves what `set` sets"
+    [ equal_      (set wrapped)     whole
+    , equal_ (get (set wrapped))    (Just wrapped)
+    ]
+    

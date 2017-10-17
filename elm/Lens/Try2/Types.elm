@@ -27,7 +27,11 @@ type WeakLens big small =
   , set : small -> big -> big
   }
 
-  
+type SumLens big small = 
+  SumLens
+  { get : big -> Maybe small
+  , set : small -> big
+  }
 
 ---- 
   
@@ -66,3 +70,6 @@ weakMake get set =
     WeakLens { get = get, set = set_}
 
 
+sumMake : (big -> Maybe small) -> (small -> big) -> SumLens big small
+sumMake get set =
+  SumLens { get = get, set = set }
