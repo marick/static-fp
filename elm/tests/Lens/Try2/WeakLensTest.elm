@@ -2,14 +2,17 @@ module Lens.Try2.WeakLensTest exposing (..)
 
 import Lens.Try2.Types as T
 import Lens.Try2.WeakLens as WeakLens exposing (WeakLens)
+import Lens.Try2.UpsertLens as UpsertLens
+import Lens.Try2.Tuple2 as Tuple2
 
 import Test exposing (..)
 import TestBuilders exposing (..)
 import Lens.Try2.Laws as Laws
 import Array
+import Dict
 
 
--- Note: the getters and setters are tested via the laws
+-- Note: the getters and setters are tested indirectly, here and in the laws
 update : Test
 update =
   let
@@ -44,14 +47,49 @@ weakPlusWeakObeys =
       Array.fromList [
          Array.fromList [parts.original]
       ]
-    fitsArray = WeakLens.array 0  |> WeakLens.andThen (WeakLens.array 0)
-    missOuter = WeakLens.array 33 |> WeakLens.andThen (WeakLens.array 0)
-    missInner = WeakLens.array 0  |> WeakLens.andThen (WeakLens.array 33)
+    hit = WeakLens.array 0
+    miss = WeakLens.array 333
+                
+    fitsArray = WeakLens.compose   hit  hit
+    missOuter = WeakLens.compose   miss hit
+    missInner = WeakLens.compose   hit  miss
   in
     describe                                   "weaklens laws: weak+weak"
       [ presentLaws fitsArray oneElement
       , missingLaws missOuter oneElement             "outer array"
       , missingLaws missInner oneElement             "inner array"
+      ]
+
+upsertPlusUpsertObeys : Test 
+upsertPlusUpsertObeys =
+  let
+    lens =
+      UpsertLens.compose (UpsertLens.dict "key") (UpsertLens.dict "key2")
+    lensApplies =
+      Dict.singleton "key" (Dict.singleton "key2" parts.original)
+    badOuter =
+      Dict.empty
+    badInner =
+      Dict.singleton "key" Dict.empty
+  in
+    describe                                  "weaklens laws: upsert + upsert"
+      [ presentLaws lens lensApplies
+      , missingLaws lens badOuter             "bad wrapping dict"
+      , missingLaws lens badInner             "bad wrapped dict"
+      ]
+
+upsertPlusClassicObeys =
+  let
+    lens =
+      UpsertLens.composeLens (UpsertLens.dict "key") Tuple2.first
+    lensApplies =
+      Dict.singleton "key" (parts.original, "-")
+    badOuter =
+      Dict.singleton "NOT" (parts.original, "-")
+  in
+    describe                                  "weaklens laws: upsert + classic"
+      [ presentLaws lens lensApplies
+      , missingLaws lens badOuter             "bad wrapping dict"
       ]
 
 -- Support

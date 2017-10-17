@@ -11,7 +11,7 @@ import TestBuilders exposing (..)
 import Lens.Try2.Laws as Laws
 import Dict exposing (Dict)
 
--- Note: the getters and setters are tested via the laws
+-- Note: the getters and setters are tested indirectly, here and in the laws
 update : Test
 update =
   equal (Lens.update Tuple2.second negate ("foo", 1))    ("foo", -1)  "update - basic"
@@ -58,7 +58,7 @@ lensPlusLensObeys =
   let
     a2b = Lens.lens .b (\newB a -> {a | b = newB })
     b2c = Lens.lens .c (\newC b -> {b | c = newC })
-    a2c = a2b |> Lens.andThen b2c 
+    a2c = Lens.compose a2b b2c 
 
     a = { b = { c = original } }
   in

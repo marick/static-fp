@@ -29,8 +29,8 @@ update (T.UpsertLens lens) f big =
 --- Composite lenses
 
 
-append : UpsertLens a b -> UpsertLens b c -> WeakLens a c
-append (T.UpsertLens a2b) (T.UpsertLens b2c) =
+compose : UpsertLens a b -> UpsertLens b c -> WeakLens a c
+compose (T.UpsertLens a2b) (T.UpsertLens b2c) =
   let
     get a =
       case a2b.get a of
@@ -46,12 +46,8 @@ append (T.UpsertLens a2b) (T.UpsertLens b2c) =
   in
     T.weakMake get set
 
-andThen : UpsertLens b c -> UpsertLens a b -> WeakLens a c
-andThen = flip append
-      
-
-appendLens : UpsertLens a b -> Lens b c -> WeakLens a c
-appendLens (T.UpsertLens a2b) (T.ClassicLens b2c) = 
+composeLens : UpsertLens a b -> Lens b c -> WeakLens a c
+composeLens (T.UpsertLens a2b) (T.ClassicLens b2c) = 
   let
     get a =
       case a2b.get a of

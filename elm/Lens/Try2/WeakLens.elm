@@ -26,8 +26,8 @@ update (T.WeakLens lens) f big =
 --- Composite lenses
 
         
-append : WeakLens a b -> WeakLens b c -> WeakLens a c
-append (T.WeakLens a2b) (T.WeakLens b2c) =
+compose : WeakLens a b -> WeakLens b c -> WeakLens a c
+compose (T.WeakLens a2b) (T.WeakLens b2c) =
   let
     get a =
       case a2b.get a of
@@ -42,9 +42,6 @@ append (T.WeakLens a2b) (T.WeakLens b2c) =
           a2b.set (b2c.set c b) a
   in
     lens get set
-
-andThen : WeakLens b c -> WeakLens a b -> WeakLens a c
-andThen = flip append
 
 --- Common lenses of this type
 

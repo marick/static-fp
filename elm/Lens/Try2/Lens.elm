@@ -22,9 +22,9 @@ update (T.ClassicLens lens) f big =
 
 --- Composite lenses
 
-coreAppend : T.ObeysLensLaws a b -> T.ObeysLensLaws b c
-           -> ( a -> c , c -> a -> a )
-coreAppend a2b b2c = 
+genericCompose : T.ObeysLensLaws a b -> T.ObeysLensLaws b c
+               -> ( a -> c , c -> a -> a )
+genericCompose a2b b2c = 
   let 
     get =
       a2b.get >> b2c.get
@@ -38,19 +38,11 @@ coreAppend a2b b2c =
   in
     (get, set)
        
-append : Lens a b -> Lens b c -> Lens a c
-append (T.ClassicLens a2b) (T.ClassicLens b2c) =
-  coreAppend a2b b2c |> uncurry lens
+compose : Lens a b -> Lens b c -> Lens a c
+compose (T.ClassicLens a2b) (T.ClassicLens b2c) =
+  genericCompose a2b b2c |> uncurry lens
        
-andThen : Lens b c -> Lens a b -> Lens a c
-andThen = flip append
-
-
-appendUpsert : Lens a b -> UpsertLens b c -> UpsertLens a c
-appendUpsert (T.ClassicLens a2b) (T.UpsertLens b2c) =
-  coreAppend a2b b2c |> uncurry T.upsertMake
-       
-andThenUpsert : UpsertLens b c -> Lens a b -> UpsertLens a c
-andThenUpsert = flip appendUpsert
-
+composeUpsert : Lens a b -> UpsertLens b c -> UpsertLens a c
+composeUpsert (T.ClassicLens a2b) (T.UpsertLens b2c) =
+  genericCompose a2b b2c |> uncurry T.upsertMake
 

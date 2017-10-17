@@ -11,7 +11,7 @@ import Dict exposing (Dict)
 import List.Extra as List
 import Lens.Try2.Tuple2 as Tuple2
 
--- Note: the getters and setters are tested via the laws
+-- Note: the getters and setters are tested indirectly, here and in the laws
 update : Test
 update =
   let
@@ -40,12 +40,12 @@ dictsObey =
         (laws lens   (Just original)  (Dict.singleton "key" original))
         (laws lens   Nothing          (Dict.empty)))
 
+        
 lensPlusUpsertObeys : Test 
 lensPlusUpsertObeys =
   let
     lens =
-      Tuple2.second
-        |> Lens.andThenUpsert (UpsertLens.dict "key")
+      Lens.composeUpsert Tuple2.second (UpsertLens.dict "key")
   in
     describe                                             "Lens+Upsert"
       (List.append
