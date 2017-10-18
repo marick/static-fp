@@ -93,7 +93,7 @@ lensPlusLensObeysLaws =
   let
     a2b = Lens.lens .b (\newB a -> {a | b = newB })
     b2c = Lens.lens .c (\newC b -> {b | c = newC })
-    a2c = a2b |> Lens.andThen b2c 
+    a2c = Lens.compose a2b b2c 
 
     a = { b = { c = "OLD" } }
   in
@@ -104,7 +104,7 @@ lensPlusLensObeysLaws =
 dictPlusLensObeysLaws =
   let
     a2b = Lens.dict_2 "b"
-    a2c = a2b |> Lens.andThen Tuple2.second
+    a2c = Lens.compose a2b Tuple2.second
 
     a = Dict.singleton "b" (1, "OLD") 
   in

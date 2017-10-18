@@ -11,7 +11,8 @@ import Expect
   Forms that don't follow that form are deprecated.
 -}
 
-
+-- Note that this eagerly evaluates both the actual and expected
+-- values. See the various `f_N_...` functions if that's a problem.
 equal = actual_expected_comment
 equal_ = actual_expected  -- The less informative version of equal
 
@@ -27,6 +28,16 @@ unchanged f original comment =
   equal (f original) original comment
 unchanged_ f original =
   actual_expected (f original) original
+
+-- Use built-in `Expect` functions to take advantage of nice error reporting.
+-- Note this evaluates the actual and not-expected arguments.
+notEqual actual notExpected comment = 
+  test comment <|
+    \_ ->
+      actual |> Expect.notEqual notExpected
+
+notEqual_ actual notExpected = 
+  notEqual actual notExpected (toString actual)
 
     
 --- Deprecated
@@ -267,3 +278,5 @@ actual_expected_comment actual expected comment =
 actual_expected actual expected =
   actual_expected_comment actual expected (toString actual)
 
+
+  
