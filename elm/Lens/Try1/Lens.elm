@@ -65,8 +65,8 @@ dict_2 key =
 
 --- Composite lenses
        
-append : Lens a b -> Lens b c -> Lens a c
-append a2b b2c =
+compose : Lens a b -> Lens b c -> Lens a c
+compose a2b b2c =
   let 
     get =
       a2b.get >> b2c.get
@@ -79,6 +79,3 @@ append a2b b2c =
         a2b.set newB a
   in
     lens get set
-       
-andThen : Lens b c -> Lens a b -> Lens a c
-andThen = flip append
