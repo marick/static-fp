@@ -2,6 +2,7 @@ module Lens.Try2.Lens exposing
   ( .. )
 
 import Lens.Try2.Types as T exposing (UpsertLens)
+import Lens.Try2.WeakLens as WeakLens exposing (WeakLens)
 
 type alias Lens big small = T.Lens big small
 
@@ -19,6 +20,15 @@ update (T.ClassicLens lens) f big =
   lens.get big
     |> f
     |> flip lens.set big
+
+--- Conversions
+
+toWeakLens : Lens big small -> WeakLens big small
+toWeakLens (T.ClassicLens {get, set}) =
+  let
+    get_ = get >> Just
+  in
+    T.weakMake get_ set
 
 --- Composite lenses
 

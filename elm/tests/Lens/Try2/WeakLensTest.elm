@@ -3,6 +3,7 @@ module Lens.Try2.WeakLensTest exposing (..)
 import Lens.Try2.Types as T
 import Lens.Try2.WeakLens as WeakLens exposing (WeakLens)
 import Lens.Try2.UpsertLens as UpsertLens
+import Lens.Try2.Lens as Lens
 import Lens.Try2.Tuple2 as Tuple2
 
 import Test exposing (..)
@@ -40,6 +41,28 @@ arrayObeys =
       , missingLaws (WeakLens.array 33)  oneElement    "array too short"
       ]
 
+fromClassicLensObeys : Test
+fromClassicLensObeys =
+  let
+    lens = Lens.toWeakLens Tuple2.second
+  in
+    describe                                   "weaklens laws: lens->weak"
+      [ presentLaws lens   ("-", parts.original)
+      ]
+
+fromUpsertLensObeys : Test
+fromUpsertLensObeys =
+  let
+    lens = UpsertLens.toWeakLens (UpsertLens.dict "key")
+    hasKey = Dict.singleton "key" parts.original
+    missingKey = Dict.empty
+  in
+    describe                                   "weaklens laws: upsert->weak"
+      [ presentLaws lens hasKey
+      , missingLaws lens missingKey               "missing key too short"
+      ]
+
+      
 weakPlusWeakObeys : Test
 weakPlusWeakObeys =
   let

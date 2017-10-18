@@ -39,11 +39,14 @@ lensMake : (big -> small) -> (small -> big -> big) -> Lens big small
 lensMake get set =
   ClassicLens { get = get, set = set}
 
+-- This version is handy for composing `UpsertLens` to other lenses.    
 upsertMake : (big -> Maybe small) -> (Maybe small -> big -> big)
            -> UpsertLens big small
 upsertMake get set =
   UpsertLens { get = get, set = set}
 
+
+-- This version is handy for creating isolated `UpsertLens` values.     
 upsertMake3 : (big -> Maybe small)
             -> (small -> big -> big)
             -> (big -> big)           -- separate `delete` function
@@ -61,13 +64,7 @@ upsertMake3 get upsert remove =
 
 weakMake : (big -> Maybe small) -> (small -> big -> big) -> WeakLens big small
 weakMake get set =
-  let
-    set_ small big =
-      case get big of
-        Nothing -> big
-        Just _ -> set small big
-  in
-    WeakLens { get = get, set = set_}
+  WeakLens { get = get, set = set}
 
 
 sumMake : (big -> Maybe small) -> (small -> big) -> SumLens big small

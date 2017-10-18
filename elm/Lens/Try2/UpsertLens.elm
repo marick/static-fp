@@ -1,8 +1,11 @@
 module Lens.Try2.UpsertLens exposing
   ( .. )
 
-import Lens.Try2.Types as T exposing (WeakLens, Lens)
+import Lens.Try2.Types as T exposing (Lens)
+import Lens.Try2.WeakLens as WeakLens exposing (WeakLens)
+import Lens.Try2.Lens as Lens
 import Dict exposing (Dict)
+import Maybe.Extra as Maybe
 
 type alias UpsertLens big small = T.UpsertLens big small
 
@@ -18,51 +21,31 @@ get (T.UpsertLens lens) = lens.get
 set : UpsertLens big small -> Maybe small -> big -> big
 set (T.UpsertLens lens) = lens.set
 
-update : UpsertLens big small -> (small -> small) -> big -> big
-update (T.UpsertLens lens) f big =
-  case lens.get big of
-    Nothing ->
-      big
-    Just small ->
-      lens.set (Just <| f small) big
+
+
+--- Conversions
+
+toWeakLens : UpsertLens big small -> WeakLens big small
+toWeakLens (T.UpsertLens {get, set}) =
+  let
+    set_ small big =
+      case get big of
+        Nothing -> big
+        Just _ -> set (Just small) big
+  in
+    T.weakMake get set_
 
 --- Composite lenses
 
 
+
 compose : UpsertLens a b -> UpsertLens b c -> WeakLens a c
-compose (T.UpsertLens a2b) (T.UpsertLens b2c) =
-  let
-    get a =
-      case a2b.get a of
-        Nothing -> Nothing
-        Just b -> b2c.get b
-                  
-    set c a =
-      case a2b.get a of
-        Nothing ->
-          a
-        Just b ->
-          a2b.set (Just (b2c.set (Just c) b)) a
-  in
-    T.weakMake get set
+compose a2b b2c =
+  WeakLens.compose (toWeakLens a2b) (toWeakLens b2c)
 
 composeLens : UpsertLens a b -> Lens b c -> WeakLens a c
-composeLens (T.UpsertLens a2b) (T.ClassicLens b2c) = 
-  let
-    get a =
-      case a2b.get a of
-        Nothing -> Nothing
-        Just b -> Just (b2c.get b)
-                  
-    set c a =
-      case a2b.get a of
-        Nothing ->
-          a
-        Just b ->
-          a2b.set (Just <| b2c.set c b) a
-  in
-    T.weakMake get set
-
+composeLens a2b b2c =
+  WeakLens.compose (toWeakLens a2b) (Lens.toWeakLens b2c)
 
 
 --- Common lenses of this type
@@ -70,3 +53,45 @@ composeLens (T.UpsertLens a2b) (T.ClassicLens b2c) =
 dict : comparable -> UpsertLens (Dict comparable val) val
 dict key =
   lens (Dict.get key) (Dict.insert key) (Dict.remove key)
+
+
+
+
+
+
+{- 
+
+           NO PEEKING!  EXERCISE SOLUTIONS BELOW!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+update : UpsertLens big small -> (small -> small) -> big -> big
+update (T.UpsertLens lens) f big =
+  case lens.get big of
+    Nothing ->
+      big
+    just ->
+      lens.set (Maybe.map f just) big
+
+-}
