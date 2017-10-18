@@ -43,14 +43,14 @@ lens comment unwrappedLens whole inputValues =
 -- Difference is a check that it's only called with a whole that contains the element. 
 weaklens_overwrites {get, set} whole {original, new}  =
   describe "when an element is present, set overwrites it"
-    [ equal  (get          whole)      (Just original)  "`get` gets original"
-    , equal_ (get (set new whole))     (Just new)
+    [ notEqual original new                           "correct test values"  
+    , equal  (get          whole)    (Just original)  "correct `whole`"
+    , equal_ (get (set new whole))   (Just new)
     ]
 
 -- compare to setting_part_with_same_value_leaves_whole_unchanged
-
 weaklens_setting_what_gotten_changes_nothing {get, set} whole {original} =
-  describe "retrieving an element, then setting it"
+  describe "retrieving an element, then setting it back"
     [ equal  (get          whole)     (Just original)  "`get` gets original"
     , equal_ (set original whole)     whole
     ]

@@ -12,6 +12,9 @@ import List.Extra as List
 import Lens.Try2.Tuple2 as Tuple2
 
 -- Note: the getters and setters are tested indirectly, here and in the laws
+
+{-   Commented out because writing `UpsertLens.update` is an exercise. 
+
 update : Test
 update =
   let
@@ -25,6 +28,8 @@ update =
                   (Dict.singleton "NOTKEY" 1))
                   (Dict.singleton "NOTKEY" 1)
       ]
+
+-}
 
 -- Law tests
 -- Note: these are for expressions that *produce* UpsertLenses.
