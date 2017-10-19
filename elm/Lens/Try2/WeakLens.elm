@@ -23,7 +23,9 @@ update (T.WeakLens lens) f big =
     Just small ->
       lens.set (f small) big
 
---- Composite lenses
+{-                      Conversions             -}
+
+{-                      Composite lenses        -}
 
         
 compose : WeakLens a b -> WeakLens b c -> WeakLens a c
@@ -41,14 +43,12 @@ compose (T.WeakLens a2b) (T.WeakLens b2c) =
         Just b ->
           a2b.set (b2c.set c b) a
   in
-    lens get set
+    T.weakMake get set
 
 --- Common lenses of this type
 
 array : Int -> WeakLens (Array a) a
 array i =
-  lens (Array.get i) (Array.set i)
+  T.weakMake (Array.get i) (Array.set i)
 
 
-    
-         

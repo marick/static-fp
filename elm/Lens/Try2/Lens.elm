@@ -21,14 +21,9 @@ update (T.ClassicLens lens) f big =
     |> f
     |> flip lens.set big
 
---- Conversions
+{-                      Composite lenses        -}
 
-toWeakLens : Lens big small -> WeakLens big small
-toWeakLens (T.ClassicLens {get, set}) =
-  let
-    get_ = get >> Just
-  in
-    T.weakMake get_ set
+-- toWeakLens is in the exercise solutions below.
 
 --- Composite lenses
 
@@ -56,3 +51,43 @@ composeUpsert : Lens a b -> UpsertLens b c -> UpsertLens a c
 composeUpsert (T.ClassicLens a2b) (T.UpsertLens b2c) =
   genericCompose a2b b2c |> uncurry T.upsertMake
 
+
+
+
+
+
+
+
+{- 
+
+           NO PEEKING!  EXERCISE SOLUTIONS BELOW!
+
+-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+toWeakLens : Lens big small -> WeakLens big small
+toWeakLens (T.ClassicLens {get, set}) =
+  let
+    get_ = get >> Just
+  in
+    T.weakMake get_ set

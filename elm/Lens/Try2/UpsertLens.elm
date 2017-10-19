@@ -21,9 +21,9 @@ get (T.UpsertLens lens) = lens.get
 set : UpsertLens big small -> Maybe small -> big -> big
 set (T.UpsertLens lens) = lens.set
 
+-- Update is defined in exercise solutions, way at the end.
 
-
---- Conversions
+{-                      Conversions             -}
 
 toWeakLens : UpsertLens big small -> WeakLens big small
 toWeakLens (T.UpsertLens {get, set}) =
@@ -35,7 +35,7 @@ toWeakLens (T.UpsertLens {get, set}) =
   in
     T.weakMake get set_
 
---- Composite lenses
+{-                      Composite lenses        -}
 
 
 
@@ -63,6 +63,7 @@ dict key =
 
            NO PEEKING!  EXERCISE SOLUTIONS BELOW!
 
+-}
 
 
 
@@ -94,4 +95,3 @@ update (T.UpsertLens lens) f big =
     just ->
       lens.set (Maybe.map f just) big
 
--}

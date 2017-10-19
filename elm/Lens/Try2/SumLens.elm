@@ -24,7 +24,10 @@ update (T.SumLens lens) f big =
     Just small ->
       lens.set (f small) 
 
---- Composite lenses
+{-                      Conversions             -}
+
+
+{-                      Composite lenses        -}
         
 compose : SumLens a b -> SumLens b c -> SumLens a c
 compose (T.SumLens a2b) (T.SumLens b2c) =
