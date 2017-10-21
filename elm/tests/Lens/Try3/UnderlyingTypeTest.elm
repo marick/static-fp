@@ -31,47 +31,40 @@ record = Lens.classic .part (\part whole -> { whole | part = part })
 classicUpdate : Test
 classicUpdate =
   describe "update for various common base types (classic lenses)"
-    [ up record         {part = 3}        {part = -3}
+    [ upt record         {part = 3}        {part = -3}
         
-    , up Tuple2.first   (3, "")           (-3, "")
-    , up Tuple2.second  ("", 3)           ("", -3)
+    , upt Tuple2.first   (3, "")           (-3, "")
+    , upt Tuple2.second  ("", 3)           ("", -3)
       
-    , up Tuple3.first   (3, "", "")       (-3, "", "")
-    , up Tuple3.second  ("", 3, "")       ("", -3, "")
-    , up Tuple3.third   ("", "", 3)       ("", "", -3)
+    , upt Tuple3.first   (3, "", "")       (-3, "", "")
+    , upt Tuple3.second  ("", 3, "")       ("", -3, "")
+    , upt Tuple3.third   ("", "", 3)       ("", "", -3)
       
-    , up Tuple4.first   (3, "", "", "")   (-3, "", "", "")
-    , up Tuple4.second  ("", 3, "", "")   ("", -3, "", "")
-    , up Tuple4.third   ("", "", 3, "")   ("", "", -3, "")
-    , up Tuple4.fourth  ("", "", "", 3)   ("", "", "", -3)
+    , upt Tuple4.first   (3, "", "", "")   (-3, "", "", "")
+    , upt Tuple4.second  ("", 3, "", "")   ("", -3, "", "")
+    , upt Tuple4.third   ("", "", 3, "")   ("", "", -3, "")
+    , upt Tuple4.fourth  ("", "", "", 3)   ("", "", "", -3)
     ]
   
 classicLaws : Test
 classicLaws =
   let
-    original = "OLD"
-    parts =
-      { original = original
-      , new = "NEW"
-      , overwritten = "overwritten"
-      }
-    try lens whole =
-      Laws.classic lens whole parts (toString whole)
+    (original, parts, legal) = classicLawSupport
   in
     describe "classic lens laws for various base types"
-      [ try record         {part = original}       
+      [ legal record         {part = original}       
 
-      , try Tuple2.first   (original, "")          
-      , try Tuple2.second  ("", original)          
+      , legal Tuple2.first   (original, "")          
+      , legal Tuple2.second  ("", original)          
 
-      , try Tuple3.first   (original, "", "")      
-      , try Tuple3.second  ("", original, "")      
-      , try Tuple3.third   ("", "", original)      
+      , legal Tuple3.first   (original, "", "")      
+      , legal Tuple3.second  ("", original, "")      
+      , legal Tuple3.third   ("", "", original)      
 
-      , try Tuple4.first   (original, "", "", "")  
-      , try Tuple4.second  ("", original, "", "")  
-      , try Tuple4.third   ("", "", original, "")  
-      , try Tuple4.fourth  ("", "", "", original)  
+      , legal Tuple4.first   (original, "", "", "")  
+      , legal Tuple4.second  ("", original, "", "")  
+      , legal Tuple4.third   ("", "", original, "")  
+      , legal Tuple4.fourth  ("", "", "", original)  
       ]
 
       
@@ -80,27 +73,20 @@ classicLaws =
 upsertUpdate : Test
 upsertUpdate =
   describe "update for various common base types (upsert lenses)"
-    [ up (Dict.lens "key") (Dict.singleton "key" 3) <| Dict.singleton "key" -3
-    , up (Dict.lens "key") (Dict.singleton "k  " 3) (Dict.singleton "k  "  3)          
-    , up (Dict.lens "key")  Dict.empty               Dict.empty
+    [ upt (Dict.lens "key") (Dict.singleton "key" 3) <| Dict.singleton "key" -3
+    , upt (Dict.lens "key") (Dict.singleton "k  " 3) (Dict.singleton "k  "  3)          
+    , upt (Dict.lens "key")  Dict.empty               Dict.empty
     ]
 
 upsertLaws : Test
 upsertLaws =
   let
-    original = "OLD"
-    parts =
-      { original = Just original
-      , new = Just "NEW"
-      , overwritten = Just "overwritten"
-      }
-    try lens whole =
-      Laws.classic lens whole parts (toString whole)
+    (original, parts, legal) = upsertLawSupport
   in
     describe "upsert lenses obey the classic lens laws"
       [ describe "dict"
-          [ try (Dict.lens "key") (Dict.singleton "key" original)
-          , try (Dict.lens "key") (Dict.singleton "---" original)
+          [ legal (Dict.lens "key") (Dict.singleton "key" original)
+          , legal (Dict.lens "key") (Dict.singleton "---" original)
           ]
       ]
 
@@ -110,25 +96,16 @@ upsertLaws =
 iffyUpdate : Test
 iffyUpdate =
   describe "update for various common base types (iffy lenses)"
-    [ up (Array.lens 0) (Array.fromList [3]) (Array.fromList [-3])
-    , up (Array.lens 1) (Array.fromList [3]) (Array.fromList [ 3])
-    , up (Array.lens 1)  Array.empty          Array.empty
+    [ upt (Array.lens 0) (Array.fromList [3]) (Array.fromList [-3])
+    , upt (Array.lens 1) (Array.fromList [3]) (Array.fromList [ 3])
+    , upt (Array.lens 1)  Array.empty          Array.empty
     ]
 
       
 iffyLaws : Test
 iffyLaws =
   let
-    original = '1'
-    parts =
-      { original = original
-      , overwritten = '-'
-      , new = '2'
-      }
-    present lens whole =
-      Laws.iffyPartPresent lens whole parts
-    missing lens whole why = 
-      Laws.iffyPartMissing lens whole parts why
+    (original, parts, present, missing) = iffyLawSupport
   in
     describe "iffy lenses obey the iffy lens laws"
       [ present (Array.lens 1)   (Array.fromList [' ', original])

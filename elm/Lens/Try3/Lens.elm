@@ -50,8 +50,31 @@ classic get set =
       get big |> f |> flip set big
   in
     Tagged { get = get, set = set, update = update }
-          
 
+toIffy : ClassicLens big small -> IffyLens big small
+toIffy (Tagged lens) = 
+  iffy (lens.get >> Just) lens.set 
+
+compose : ClassicLens a b -> ClassicLens b c -> ClassicLens a c
+compose (Tagged a2b) (Tagged b2c) =
+  classic
+    (compose_get_with_certainty a2b.get b2c.get)
+    (compose_set_with_certainty a2b.get b2c.set a2b.set)
+
+
+composeUpsert : ClassicLens a b -> UpsertLens b c -> UpsertLens a c
+composeUpsert (Tagged a2b) (Tagged b2c) =
+  upsert2
+    (compose_get_with_certainty a2b.get b2c.get)
+    (compose_set_with_certainty a2b.get b2c.set a2b.set)
+
+-- upsertComposeClassic : UpsertLens a b -> ClassicLens b c -> IffyLens a c
+-- upsertComposeClassic (Tagged a2b) (Tagged b2c) =
+--   iffy
+--     (a2b.get >> b2c.get)
+--     (compose_set_with_certainty a2b.get b2c.set a2b.set)
+    
+      
 {-                  Upsert Lenses               -}
 
 type UpsertTag = UpsertTag IsUnused
@@ -66,25 +89,32 @@ upsert : (big -> Maybe small)
       -> (small -> big -> big)
       -> (big -> big)          -- separate `delete` function
       -> UpsertLens big small
-upsert get upsert remove =
+upsert get upserter remove =
   let
     set_ maybe = 
       case maybe of
         Nothing ->
           remove
         Just val -> 
-          upsert val
+          upserter val
+  in
+    upsert2 get set_
 
+upsert2 : (big -> Maybe small)
+        -> (Maybe small -> big -> big)
+        -> UpsertLens big small
+upsert2 get set =           
+  let
     update f big =
       case get big of
         Nothing ->
           big
         Just small ->
-          set_ (Just <| f small) big
+          set (Just <| f small) big
   in
-    Tagged { get = get, set = set_, update = update }
-          
+    Tagged { get = get, set = set, update = update }
 
+           
       
 
 {-                  Iffy Lenses               -}
@@ -116,5 +146,18 @@ iffy get set =
 
 {-                 Util                        -}
 
-      
+
+compose_get_with_certainty : (a -> b) -> (b -> c) -> (a -> c)
+compose_get_with_certainty getB getC =
+  getB >> getC
+
+
+compose_set_with_certainty : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c -> a -> a)
+compose_set_with_certainty getB setB setA =
+  \c a -> setA (getB a |> setB c) a
+
+
+    
+
+
 type IsUnused = IsUnused IsUnused
