@@ -12,6 +12,7 @@ import Lens.Try3.Array as Array
 import Test exposing (..)
 import TestBuilders exposing (..)
 import Lens.Try3.Laws as Laws
+import Lens.Try3.Util exposing (..)
 
 
 
@@ -29,25 +30,21 @@ record = Lens.classic .part (\part whole -> { whole | part = part })
 
 classicUpdate : Test
 classicUpdate =
-  let
-    try lens whole expected =
-      equal_ (update lens negate whole) expected
-  in
-    describe "update for various common base types (classic lenses)"
-      [ try record         {part = 3}        {part = -3}
-
-      , try Tuple2.first   (3, "")           (-3, "")
-      , try Tuple2.second  ("", 3)           ("", -3)
-
-      , try Tuple3.first   (3, "", "")       (-3, "", "")
-      , try Tuple3.second  ("", 3, "")       ("", -3, "")
-      , try Tuple3.third   ("", "", 3)       ("", "", -3)
-
-      , try Tuple4.first   (3, "", "", "")   (-3, "", "", "")
-      , try Tuple4.second  ("", 3, "", "")   ("", -3, "", "")
-      , try Tuple4.third   ("", "", 3, "")   ("", "", -3, "")
-      , try Tuple4.fourth  ("", "", "", 3)   ("", "", "", -3)
-      ]
+  describe "update for various common base types (classic lenses)"
+    [ up record         {part = 3}        {part = -3}
+        
+    , up Tuple2.first   (3, "")           (-3, "")
+    , up Tuple2.second  ("", 3)           ("", -3)
+      
+    , up Tuple3.first   (3, "", "")       (-3, "", "")
+    , up Tuple3.second  ("", 3, "")       ("", -3, "")
+    , up Tuple3.third   ("", "", 3)       ("", "", -3)
+      
+    , up Tuple4.first   (3, "", "", "")   (-3, "", "", "")
+    , up Tuple4.second  ("", 3, "", "")   ("", -3, "", "")
+    , up Tuple4.third   ("", "", 3, "")   ("", "", -3, "")
+    , up Tuple4.fourth  ("", "", "", 3)   ("", "", "", -3)
+    ]
   
 classicLaws : Test
 classicLaws =
@@ -82,15 +79,11 @@ classicLaws =
 
 upsertUpdate : Test
 upsertUpdate =
-  let
-    try lens whole expected =
-      equal_ (update lens negate whole) expected
-  in
-    describe "update for various common base types (upsert lenses)"
-      [ try (Dict.lens "key") (Dict.singleton "key" 3) <| Dict.singleton "key" -3
-      , try (Dict.lens "key") (Dict.singleton "k  " 3) (Dict.singleton "k  "  3)          
-      , try (Dict.lens "key")  Dict.empty               Dict.empty
-      ]
+  describe "update for various common base types (upsert lenses)"
+    [ up (Dict.lens "key") (Dict.singleton "key" 3) <| Dict.singleton "key" -3
+    , up (Dict.lens "key") (Dict.singleton "k  " 3) (Dict.singleton "k  "  3)          
+    , up (Dict.lens "key")  Dict.empty               Dict.empty
+    ]
 
 upsertLaws : Test
 upsertLaws =
@@ -116,15 +109,11 @@ upsertLaws =
 
 iffyUpdate : Test
 iffyUpdate =
-  let
-    try lens whole expected =
-      equal_ (update lens negate whole) expected
-  in
-    describe "update for various common base types (iffy lenses)"
-      [ try (Array.lens 0) (Array.fromList [3]) (Array.fromList [-3])
-      , try (Array.lens 1) (Array.fromList [3]) (Array.fromList [ 3])
-      , try (Array.lens 1)  Array.empty          Array.empty
-      ]
+  describe "update for various common base types (iffy lenses)"
+    [ up (Array.lens 0) (Array.fromList [3]) (Array.fromList [-3])
+    , up (Array.lens 1) (Array.fromList [3]) (Array.fromList [ 3])
+    , up (Array.lens 1)  Array.empty          Array.empty
+    ]
 
       
 iffyLaws : Test
