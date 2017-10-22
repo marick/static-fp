@@ -141,6 +141,24 @@ iffy get set =
   , set = set
   , update = ifPresentUpdater get set
   }
+
+
+iffyComposeIffy (Tagged a2b) (Tagged b2c) =
+  let 
+    get a =
+      case a2b.get a of
+        Nothing -> Nothing
+        Just b -> b2c.get b
+                  
+    set c a =
+      case a2b.get a of
+        Nothing ->
+          a
+        Just b ->
+          a2b.set (b2c.set c b) a
+  in
+    iffy get set
+    
       
 
 {-                 Util                        -}

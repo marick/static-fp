@@ -109,6 +109,6 @@ iffyLaws =
   in
     describe "iffy lenses obey the iffy lens laws"
       [ present (Array.lens 1)   (Array.fromList [' ', original])
-      , missing (Array.lens 1)   (Array.fromList [original])         "short"
+      , missing (Array.lens 1)   (Array.fromList [' '          ])   "short"
       ]
 

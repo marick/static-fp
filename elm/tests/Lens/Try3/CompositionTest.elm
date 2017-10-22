@@ -40,12 +40,35 @@ compose_classic_with_upsert =
           , upt   lens (  Dict.empty,               "")
                        (  Dict.empty,               "")
           ]
-      , describe "dict"
+      , describe "laws"
           [ legal lens ( (Dict.singleton "key" original), "")
           , legal lens ( (Dict.singleton "---" original), "")
           ]
       ]
 
+compose_iffy_with_iffy : Test
+compose_iffy_with_iffy =
+  let
+    lens = Lens.iffyComposeIffy (Array.lens 0) (Array.lens 1)
+    (original, parts, present, missing) = iffyLawSupport
+
+    a listOfList =
+      List.map Array.fromList listOfList
+        |> Array.fromList
+  in
+    describe "iffy + iffy"
+      [ describe "update"
+          [ upt lens   (a [[0, 3]])   (a [[0, -3]])
+          , upt lens   (a [[0   ]])   (a [[0    ]])
+          , upt lens   (a [[    ]])   (a [[     ]])
+          ]
+      , describe "laws"
+          [ present lens  (a [[' ', original]])
+          , missing lens  (a [[' '          ]])       "short"
+          , missing lens  (a [              ])        "missing"
+          ]
+      ]
+  
 
 -- compose_upsert_with_classic : Test 
 -- compose_upsert_with_classic =
@@ -57,4 +80,5 @@ compose_classic_with_upsert =
 --       [ describe "update for various common base types (iffy lenses)"
 --           [ upt (Dict.singleton "key" (3, ""))   Dict.singleton "key" (-3 "")
 --           ]
+--       ]
       
