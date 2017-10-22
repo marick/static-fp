@@ -18,10 +18,29 @@ classic_iffy =
   let
     lens = Lens.toIffy Tuple2.first
     (original, parts, present, missing) = iffyLawSupport
-
   in
     describe "lens to iffy lens"
       [ upt     lens   ( 3,       "")
                        (-3,       "")
       , present lens   (original, "")
       ]
+
+
+upsert_iffy : Test
+upsert_iffy =
+  let
+    lens = Lens.upsertToIffy (Dict.lens "key")
+    (original, parts, present, missing) = iffyLawSupport
+  in
+    describe "upsert to iffy lens"
+      [ upt    lens  (Dict.singleton "key" 3)
+                     (Dict.singleton "key" -3)
+      , upt    lens  Dict.empty
+                     Dict.empty
+
+      , present lens  (Dict.singleton "key" original)
+      , missing lens  (Dict.singleton "---" original)   "wrong key"
+      , missing lens   Dict.empty                       "empty"
+      ]
+                     
+         

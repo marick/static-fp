@@ -114,7 +114,18 @@ upsert2 get set =
   in
     Tagged { get = get, set = set, update = update }
 
-           
+upsertToIffy : UpsertLens big small -> IffyLens big small
+upsertToIffy (Tagged lens) =
+  let
+    set_ small big =
+      case lens.get big of
+        Nothing ->
+          big
+        Just _ ->
+          lens.set (Just small) big
+  in
+    iffy lens.get set_
+    
       
 
 {-                  Iffy Lenses               -}
@@ -156,8 +167,18 @@ compose_set_with_certainty : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c ->
 compose_set_with_certainty getB setB setA =
   \c a -> setA (getB a |> setB c) a
 
-
-    
+-- DELETE.          
+generic_maybe_update : (big -> Maybe small)
+                     -> (small -> transformed)
+                     -> (transformed -> big -> big)
+                     -> big -> big
+generic_maybe_update get f set =
+  (\ big ->
+     case get big of
+       Nothing ->
+         big
+       Just small ->
+         set (f small) big)
 
 
 type IsUnused = IsUnused IsUnused
