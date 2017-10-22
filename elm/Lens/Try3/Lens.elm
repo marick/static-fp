@@ -2,8 +2,6 @@ module Lens.Try3.Lens exposing (..)
 
 
 import Tagged exposing (Tagged(..))
-import Dict exposing (Dict)
-import Array exposing (Array)
 
 {- These are all crammed together in one module to avoid 
 circular dependencies. 
@@ -58,21 +56,22 @@ toIffy (Tagged lens) =
 compose : ClassicLens a b -> ClassicLens b c -> ClassicLens a c
 compose (Tagged a2b) (Tagged b2c) =
   classic
-    (compose_get_with_certainty a2b.get b2c.get)
-    (compose_set_with_certainty a2b.get b2c.set a2b.set)
+    (composeLensGet a2b.get b2c.get)
+    (composeLensSet a2b.get b2c.set a2b.set)
 
-
+-- We can use the `compose` helpers here because an `UpsertLens` is just
+-- a classic lens with the `part` type narrowed to `Maybe part`.
 composeUpsert : ClassicLens a b -> UpsertLens b c -> UpsertLens a c
 composeUpsert (Tagged a2b) (Tagged b2c) =
   upsert2
-    (compose_get_with_certainty a2b.get b2c.get)
-    (compose_set_with_certainty a2b.get b2c.set a2b.set)
+    (composeLensGet a2b.get b2c.get)
+    (composeLensSet a2b.get b2c.set a2b.set)
 
 -- upsertComposeClassic : UpsertLens a b -> ClassicLens b c -> IffyLens a c
 -- upsertComposeClassic (Tagged a2b) (Tagged b2c) =
 --   iffy
 --     (a2b.get >> b2c.get)
---     (compose_set_with_certainty a2b.get b2c.set a2b.set)
+--     (composeLensSet a2b.get b2c.set a2b.set)
     
       
 {-                  Upsert Lenses               -}
@@ -105,24 +104,19 @@ upsert2 : (big -> Maybe small)
         -> UpsertLens big small
 upsert2 get set =           
   let
-    update f big =
-      case get big of
-        Nothing ->
-          big
-        Just small ->
-          set (Just <| f small) big
+    update f = ifPresentUpdater get set (f >> Just)
   in
-    Tagged { get = get, set = set, update = update }
+    Tagged
+    { get = get
+    , set = set
+    , update = update
+    }
 
 upsertToIffy : UpsertLens big small -> IffyLens big small
 upsertToIffy (Tagged lens) =
   let
-    set_ small big =
-      case lens.get big of
-        Nothing ->
-          big
-        Just _ ->
-          lens.set (Just small) big
+    set_ small =
+      ifPresentSetter lens.get lens.set (Just small)
   in
     iffy lens.get set_
     
@@ -142,43 +136,43 @@ iffy : (big -> Maybe small)
      -> (small -> big -> big)
      -> IffyLens big small
 iffy get set =
-  let
-    update f big =
-      case get big of
-        Nothing ->
-          big
-        Just small ->
-          set (f small) big
-  in
-    Tagged { get = get, set = set, update = update }
-          
-
+  Tagged
+  { get = get
+  , set = set
+  , update = ifPresentUpdater get set
+  }
       
 
 {-                 Util                        -}
 
+ifPresentSetter : (big -> Maybe small)
+                -> (Maybe small -> big -> big)
+                -> (Maybe small -> big -> big)
+ifPresentSetter get set =
+  always >> ifPresentUpdater get set 
 
-compose_get_with_certainty : (a -> b) -> (b -> c) -> (a -> c)
-compose_get_with_certainty getB getC =
+
+-- Note: In some cases, type `transformed` is `Maybe small`. But in some it
+-- is `small`. 
+ifPresentUpdater : (big -> Maybe small)
+                 -> (transformed -> big -> big)
+                 -> (small -> transformed) -> big -> big
+    
+ifPresentUpdater get set f big =
+  case get big of
+    Nothing ->
+      big
+    Just small ->
+      set (f small) big
+
+composeLensGet : (a -> b) -> (b -> c) -> (a -> c)
+composeLensGet getB getC =
   getB >> getC
 
-
-compose_set_with_certainty : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c -> a -> a)
-compose_set_with_certainty getB setB setA =
+composeLensSet : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c -> a -> a)
+composeLensSet getB setB setA =
   \c a -> setA (getB a |> setB c) a
 
--- DELETE.          
-generic_maybe_update : (big -> Maybe small)
-                     -> (small -> transformed)
-                     -> (transformed -> big -> big)
-                     -> big -> big
-generic_maybe_update get f set =
-  (\ big ->
-     case get big of
-       Nothing ->
-         big
-       Just small ->
-         set (f small) big)
 
 
 type IsUnused = IsUnused IsUnused
