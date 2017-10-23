@@ -45,18 +45,17 @@ upsert_iffy =
       ]
                      
          
--- oneCase_iffy : Test
--- oneCase_iffy =
---   let
---     lens = Lens.oneCaseToIffy Result.okLens
---     (original, present, missing) = iffyLawSupport
---   in
---     describe "one-part to iffy lens"
---       [ upt lens  (Ok 3)  (Ok  -3)
---       , upt lens  (Err 3) (Err -3)
+oneCase_iffy : Test
+oneCase_iffy =
+  let
+    lens = Lens.oneCaseToIffy Result.okLens
+    (original, present, missing) = iffyLawSupport
+  in
+    describe "one-part to iffy lens"
+      [ upt lens   (Ok 3)  (Ok  -3)
+      , upt lens  (Err 3)  (Err  3)
 
-
---       , present lens (Ok original)
---       , missing lens (Err original)
---       ]
+      , present lens (Ok original)
+      , missing lens (Err original)   "different case"
+      ]
         

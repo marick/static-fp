@@ -187,6 +187,15 @@ oneCase get set =
     , update = update_
     }
 
+oneCaseToIffy : OneCaseLens big small -> IffyLens big small
+oneCaseToIffy (Tagged lens) =
+  let
+    set_ small big =
+      case lens.get big of
+        Nothing -> big
+        _ -> lens.set small
+  in
+    iffy lens.get set_
       
 {-                 Util                        -}
 
