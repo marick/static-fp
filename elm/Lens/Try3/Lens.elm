@@ -159,6 +159,33 @@ iffyComposeIffy (Tagged a2b) (Tagged b2c) =
   in
     iffy get set
 
+{-                  OneCaseLens Lenses               -}
+
+type OneCaseTag = OneCaseTag IsUnused
+type alias OneCaseLens big small =
+  Tagged OneCaseTag
+    { get : big -> Maybe small
+    , set : small -> big
+    , update : (small -> small) -> big -> big
+    }
+
+oneCase : (big -> Maybe small)
+     -> (small -> big)
+     -> OneCaseLens big small
+oneCase get set =
+  let
+    update_ f big =
+      case get big of
+        Nothing ->
+          big
+        Just small ->
+          set (f small)
+  in
+    Tagged
+    { get = get
+    , set = set
+    , update = update_
+    }
 
       
 {-                 Util                        -}

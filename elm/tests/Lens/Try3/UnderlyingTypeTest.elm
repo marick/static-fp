@@ -8,6 +8,7 @@ import Dict
 import Lens.Try3.Dict as Dict
 import Array
 import Lens.Try3.Array as Array
+import Lens.Try3.Result as Result
 
 import Test exposing (..)
 import TestBuilders exposing (..)
@@ -49,7 +50,7 @@ classicUpdate =
 classicLaws : Test
 classicLaws =
   let
-    (original, parts, legal) = classicLawSupport
+    (original, legal) = classicLawSupport
   in
     describe "classic lens laws for various base types"
       [ legal record         {part = original}       
@@ -81,7 +82,7 @@ upsertUpdate =
 upsertLaws : Test
 upsertLaws =
   let
-    (original, parts, legal) = upsertLawSupport
+    (original, legal) = upsertLawSupport
   in
     describe "upsert lenses obey the classic lens laws"
       [ describe "dict"
@@ -105,10 +106,33 @@ iffyUpdate =
 iffyLaws : Test
 iffyLaws =
   let
-    (original, parts, present, missing) = iffyLawSupport
+    (original, present, missing) = iffyLawSupport
   in
     describe "iffy lenses obey the iffy lens laws"
       [ present (Array.lens 1)   (Array.fromList [' ', original])
       , missing (Array.lens 1)   (Array.fromList [' '          ])   "short"
+      ]
+
+{-         Types used to construct OneCase lenses        -}
+
+oneCaseUpdate : Test
+oneCaseUpdate =
+  describe "update for various common base types (one-case lenses)"
+    [ upt Result.okLens (Ok  3)  (Ok  -3)
+    , upt Result.okLens (Err 3)  (Err  3)
+
+    , upt Result.errLens (Ok  3) (Ok   3)
+    , upt Result.errLens (Err 3) (Err -3)
+    ]
+
+      
+oneCaseLaws : Test
+oneCaseLaws =
+  let
+    legal = Laws.onePart
+  in
+    describe "oneCase lenses obey the oneCase lens laws"
+      [ legal Result.okLens   Ok      "okLens"
+      , legal Result.errLens Err      "errLens"
       ]
 
