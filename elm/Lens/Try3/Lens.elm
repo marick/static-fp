@@ -48,24 +48,6 @@ classic get set =
   in
     Tagged { get = get, set = set, update = update }
 
-toIffy : ClassicLens big small -> IffyLens big small
-toIffy (Tagged lens) = 
-  iffy (lens.get >> Just) lens.set 
-
-compose : ClassicLens a b -> ClassicLens b c -> ClassicLens a c
-compose (Tagged a2b) (Tagged b2c) =
-  classic
-    (composeLensGet a2b.get b2c.get)
-    (composeLensSet a2b.get b2c.set a2b.set)
-
--- We can use the `compose` helpers here because an `UpsertLens` is just
--- a classic lens with the `part` type narrowed to `Maybe part`.
-composeUpsert : ClassicLens a b -> UpsertLens b c -> UpsertLens a c
-composeUpsert (Tagged a2b) (Tagged b2c) =
-  upsert2
-    (composeLensGet a2b.get b2c.get)
-    (composeLensSet a2b.get b2c.set a2b.set)
-
       
       
 {-                  Upsert Lenses               -}
@@ -106,20 +88,6 @@ upsert2 get set =
     , update = update
     }
 
-upsertToIffy : UpsertLens big small -> IffyLens big small
-upsertToIffy (Tagged lens) =
-  let
-    set_ small =
-      ifPresentSetter lens.get lens.set (Just small)
-  in
-    iffy lens.get set_
-    
-upsertComposeClassic : UpsertLens a b -> ClassicLens b c -> IffyLens a c
-upsertComposeClassic a2b b2c =
-  iffyComposeIffy
-    (upsertToIffy a2b)
-    (toIffy b2c)
-    
       
 
 {-                  Iffy Lenses               -}
@@ -142,22 +110,15 @@ iffy get set =
   , update = ifPresentUpdater get set
   }
 
+addGuard : (small -> big -> big) -> (big -> Maybe small)
+         -> (small -> big -> big)
+addGuard set guardingGet small big = 
+  case guardingGet big of
+    Nothing ->
+      big
+    Just _ ->
+      set small big
 
-iffyComposeIffy (Tagged a2b) (Tagged b2c) =
-  let 
-    get a =
-      case a2b.get a of
-        Nothing -> Nothing
-        Just b -> b2c.get b
-                  
-    set c a =
-      case a2b.get a of
-        Nothing ->
-          a
-        Just b ->
-          a2b.set (b2c.set c b) a
-  in
-    iffy get set
 
 {-                  OneCaseLens Lenses               -}
 
@@ -187,26 +148,9 @@ oneCase get set =
     , update = update_
     }
 
-oneCaseToIffy : OneCaseLens big small -> IffyLens big small
-oneCaseToIffy (Tagged lens) =
-  let
-    set_ small big =
-      case lens.get big of
-        Nothing -> big
-        _ -> lens.set small
-  in
-    iffy lens.get set_
-      
 {-                 Util                        -}
 
-ifPresentSetter : (big -> Maybe small)
-                -> (Maybe small -> big -> big)
-                -> (Maybe small -> big -> big)
-ifPresentSetter get set =
-  always >> ifPresentUpdater get set 
-
-
--- Note: In some cases, type `transformed` is `Maybe small`. But in some it
+-- Note: In some cases, type `transformed` is `Maybe small`. But in others, it
 -- is `small`. 
 ifPresentUpdater : (big -> Maybe small)
                  -> (transformed -> big -> big)
@@ -218,14 +162,6 @@ ifPresentUpdater get set f big =
       big
     Just small ->
       set (f small) big
-
-composeLensGet : (a -> b) -> (b -> c) -> (a -> c)
-composeLensGet getB getC =
-  getB >> getC
-
-composeLensSet : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c -> a -> a)
-composeLensSet getB setB setA =
-  \c a -> setA (getB a |> setB c) a
 
 
 

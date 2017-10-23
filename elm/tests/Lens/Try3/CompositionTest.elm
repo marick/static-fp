@@ -1,6 +1,7 @@
 module Lens.Try3.CompositionTest exposing (..)
 
 import Lens.Try3.Lens as Lens exposing (ClassicLens, get, set, update)
+import Lens.Try3.Compose as Lens
 import Lens.Try3.Tuple2 as Tuple2
 
 import Test exposing (..)
@@ -15,7 +16,7 @@ import Lens.Try3.Util exposing (..)
 compose_classic_with_classic : Test 
 compose_classic_with_classic =
   let
-    lens = Lens.compose Tuple2.first Tuple2.second
+    lens = Lens.classicAndClassic Tuple2.first Tuple2.second
     (original, legal) = classicLawSupport
   in
     describe "lens plus lens"
@@ -28,7 +29,7 @@ compose_classic_with_classic =
 compose_classic_with_upsert : Test 
 compose_classic_with_upsert =
   let
-    lens = Lens.composeUpsert Tuple2.first (Dict.lens "key")
+    lens = Lens.classicAndUpsert Tuple2.first (Dict.lens "key")
     (original, legal) = upsertLawSupport
   in
     describe "lens plus upsert"
@@ -49,7 +50,7 @@ compose_classic_with_upsert =
 compose_iffy_with_iffy : Test
 compose_iffy_with_iffy =
   let
-    lens = Lens.iffyComposeIffy (Array.lens 0) (Array.lens 1)
+    lens = Lens.iffyAndIffy (Array.lens 0) (Array.lens 1)
     (original, present, missing) = iffyLawSupport
 
     a listOfList =
@@ -74,7 +75,7 @@ compose_iffy_with_iffy =
 compose_upsert_with_classic : Test
 compose_upsert_with_classic =
   let
-    lens = Lens.upsertComposeClassic (Dict.lens "key") (Tuple2.first)
+    lens = Lens.upsertAndClassic (Dict.lens "key") (Tuple2.first)
     (original, present, missing) = iffyLawSupport
 
     d key tuple = Dict.singleton key tuple
@@ -92,5 +93,3 @@ compose_upsert_with_classic =
           ]
       ]
   
-
-      

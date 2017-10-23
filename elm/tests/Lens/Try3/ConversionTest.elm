@@ -1,6 +1,7 @@
 module Lens.Try3.ConversionTest exposing (..)
 
 import Lens.Try3.Lens as Lens exposing (ClassicLens, get, set, update)
+import Lens.Try3.Compose as Lens
 import Lens.Try3.Tuple2 as Tuple2
 import Test exposing (..)
 import TestBuilders exposing (..)
@@ -17,7 +18,7 @@ import Lens.Try3.Util exposing (..)
 classic_iffy : Test
 classic_iffy =
   let
-    lens = Lens.toIffy Tuple2.first
+    lens = Lens.classicToIffy Tuple2.first
     (original, present, missing) = iffyLawSupport
   in
     describe "lens to iffy lens"
