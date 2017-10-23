@@ -16,7 +16,7 @@ compose_classic_with_classic : Test
 compose_classic_with_classic =
   let
     lens = Lens.compose Tuple2.first Tuple2.second
-    (original, parts, legal) = classicLawSupport
+    (original, legal) = classicLawSupport
   in
     describe "lens plus lens"
       [ upt   lens (("",        3), "")
@@ -29,7 +29,7 @@ compose_classic_with_upsert : Test
 compose_classic_with_upsert =
   let
     lens = Lens.composeUpsert Tuple2.first (Dict.lens "key")
-    (original, parts, legal) = upsertLawSupport
+    (original, legal) = upsertLawSupport
   in
     describe "lens plus upsert"
       [ describe "update"
@@ -50,7 +50,7 @@ compose_iffy_with_iffy : Test
 compose_iffy_with_iffy =
   let
     lens = Lens.iffyComposeIffy (Array.lens 0) (Array.lens 1)
-    (original, parts, present, missing) = iffyLawSupport
+    (original, present, missing) = iffyLawSupport
 
     a listOfList =
       List.map Array.fromList listOfList
@@ -75,7 +75,7 @@ compose_upsert_with_classic : Test
 compose_upsert_with_classic =
   let
     lens = Lens.upsertComposeClassic (Dict.lens "key") (Tuple2.first)
-    (original, parts, present, missing) = iffyLawSupport
+    (original, present, missing) = iffyLawSupport
 
     d key tuple = Dict.singleton key tuple
   in

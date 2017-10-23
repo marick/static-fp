@@ -22,7 +22,7 @@ iffyLawSupport =
     missing lens whole why = 
       Laws.iffyPartMissing lens whole parts why
   in
-    (original, parts, present, missing)
+    (original, present, missing)
 
 classicLawSupport =
   let 
@@ -35,7 +35,7 @@ classicLawSupport =
     legal lens whole =
       Laws.classic lens whole parts (toString whole)
   in
-    (original, parts, legal)
+    (original, legal)
 
 -- Same as classic law support, but using `Just` when inserting elements.
 upsertLawSupport =
@@ -49,4 +49,4 @@ upsertLawSupport =
     legal lens whole =
       Laws.classic lens whole parts (toString whole)
   in
-    (original, parts, legal)
+    (original, legal)
