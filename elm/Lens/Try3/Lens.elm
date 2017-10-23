@@ -30,7 +30,6 @@ update (Tagged lens) =
   lens.update
 
 
-  
 {-                  Classic Lenses             -}
 
 type ClassicTag = ClassicTag IsUnused
@@ -67,12 +66,7 @@ composeUpsert (Tagged a2b) (Tagged b2c) =
     (composeLensGet a2b.get b2c.get)
     (composeLensSet a2b.get b2c.set a2b.set)
 
--- upsertComposeClassic : UpsertLens a b -> ClassicLens b c -> IffyLens a c
--- upsertComposeClassic (Tagged a2b) (Tagged b2c) =
---   iffy
---     (a2b.get >> b2c.get)
---     (composeLensSet a2b.get b2c.set a2b.set)
-    
+      
       
 {-                  Upsert Lenses               -}
 
@@ -120,6 +114,12 @@ upsertToIffy (Tagged lens) =
   in
     iffy lens.get set_
     
+upsertComposeClassic : UpsertLens a b -> ClassicLens b c -> IffyLens a c
+upsertComposeClassic a2b b2c =
+  iffyComposeIffy
+    (upsertToIffy a2b)
+    (toIffy b2c)
+    
       
 
 {-                  Iffy Lenses               -}
@@ -158,9 +158,9 @@ iffyComposeIffy (Tagged a2b) (Tagged b2c) =
           a2b.set (b2c.set c b) a
   in
     iffy get set
-    
-      
 
+
+      
 {-                 Util                        -}
 
 ifPresentSetter : (big -> Maybe small)

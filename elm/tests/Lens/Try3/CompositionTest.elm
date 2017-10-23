@@ -70,15 +70,27 @@ compose_iffy_with_iffy =
       ]
   
 
--- compose_upsert_with_classic : Test 
--- compose_upsert_with_classic =
---   let
---     lens = Lens.upsertComposeClassic (Dict.lens "key") Tuple2.first 
---     (original, parts, present, missing) = iffyLawSupport
---   in
---     describe "upsert plus lens"
---       [ describe "update for various common base types (iffy lenses)"
---           [ upt (Dict.singleton "key" (3, ""))   Dict.singleton "key" (-3 "")
---           ]
---       ]
+      
+compose_upsert_with_classic : Test
+compose_upsert_with_classic =
+  let
+    lens = Lens.upsertComposeClassic (Dict.lens "key") (Tuple2.first)
+    (original, parts, present, missing) = iffyLawSupport
+
+    d key tuple = Dict.singleton key tuple
+  in
+    describe "upsert + classic"
+      [ describe "update"
+          [ upt lens   (d "key" (3, ""))   (d "key" (-3, ""))
+          , upt lens   (d "---" (3, ""))   (d "---" ( 3, ""))
+          , upt lens   Dict.empty          Dict.empty
+          ]
+      , describe "laws"
+          [ present lens  (d "key" (original, ""))
+          , missing lens  (d "---" (original, ""))    "wrong key"
+          , missing lens  Dict.empty                  "missing"
+          ]
+      ]
+  
+
       
