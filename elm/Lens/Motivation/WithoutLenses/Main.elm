@@ -42,10 +42,9 @@ addTag id tag model =
 addTag2 : Animal.Id -> String -> Model -> Model        
 addTag2 id tag model =
   let
-    adder = Animal.addTag tag
+    adder = Animal.addTag tag |> Maybe.map
   in
     { model |
-        animals = 
-          Dict.update id (Maybe.map adder) model.animals
+        animals = Dict.update id adder model.animals
     }
       
