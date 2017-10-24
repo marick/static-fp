@@ -14,7 +14,7 @@ type alias Animal =
 tags : ClassicLens Animal Tags
 tags = Lens.classic .tags (\tags animal -> { animal | tags = tags })
   
-
+-- Note: let's make it the UI's job to disallow duplicate tags.
 addTagToAnimal : String -> Animal -> Animal
 addTagToAnimal tag animal = 
   Lens.update tags (Array.push tag) animal
