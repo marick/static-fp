@@ -1,7 +1,7 @@
 module Lens.Motivation.WithLenses.Animal exposing (..)
 
 import Array exposing (Array)
-import Lens.Try2.Lens as Lens exposing (Lens)
+import Lens.Try3.Lens as Lens exposing (ClassicLens)
 
 type alias Id = Int
 type alias Tags = Array String
@@ -11,8 +11,8 @@ type alias Animal =
   , id : Id
   }
 
-tags : Lens Animal Tags
-tags = Lens.lens .tags (\tags animal -> { animal | tags = tags })
+tags : ClassicLens Animal Tags
+tags = Lens.classic .tags (\tags animal -> { animal | tags = tags })
   
 
 addTagToAnimal : String -> Animal -> Animal
@@ -21,5 +21,3 @@ addTagToAnimal tag animal =
 
 addTagToTags : String -> Tags -> Tags
 addTagToTags = Array.push 
-
-    

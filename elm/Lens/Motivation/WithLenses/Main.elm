@@ -4,8 +4,7 @@ import Dict
 import Array
 import Lens.Motivation.WithLenses.Model as Model exposing (Model)
 import Lens.Motivation.WithLenses.Animal as Animal exposing (Animal)
-import Lens.Try2.WeakLens as WeakLens
-import Lens.Try2.UpsertLens as UpsertLens
+import Lens.Try3.Lens as Lens
 
 type Msg 
   = AddTag Animal.Id String
@@ -31,7 +30,7 @@ update : Msg -> Model -> Model
 update msg model = 
   case msg of
     AddTag animalId tag ->
-      UpsertLens.update
+      Lens.update
         (Model.animal animalId)
         (Animal.addTagToAnimal tag)
         model
@@ -43,7 +42,7 @@ update msg model =
         model
 
     AddTag3 animalId tag ->
-      WeakLens.update
+      Lens.update
         (Model.animalTags animalId)
         (Animal.addTagToTags tag)
         model

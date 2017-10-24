@@ -1,30 +1,29 @@
 module Lens.Motivation.WithLenses.Model exposing (..)
 
 import Lens.Motivation.WithLenses.Animal as Animal exposing (Animal)
-import Lens.Try2.Lens as Lens exposing (Lens)
-import Lens.Try2.UpsertLens as UpsertLens exposing (UpsertLens)
-import Lens.Try2.WeakLens as WeakLens exposing (WeakLens)
+import Lens.Try3.Lens as Lens exposing (ClassicLens, UpsertLens, IffyLens)
+import Lens.Try3.Compose.Operators exposing (..)
 import Dict exposing (Dict)
+import Lens.Try3.Dict as Dict
 
 
 type alias Model =
   { animals : Dict Animal.Id Animal
   }
 
-animals : Lens Model (Dict Animal.Id Animal) 
+animals : ClassicLens Model (Dict Animal.Id Animal) 
 animals =
-  Lens.lens .animals (\animals model -> { model | animals = animals })
-
+  Lens.classic .animals (\animals model -> { model | animals = animals })
 
 animal : Animal.Id -> UpsertLens Model Animal
 animal id =
-  Lens.composeUpsert animals (UpsertLens.dict id)
+  animals ...^ Dict.lens id
 
-animalTags : Animal.Id -> WeakLens Model Animal.Tags
+animalTags : Animal.Id -> IffyLens Model Animal.Tags
 animalTags id =
-  UpsertLens.composeLens (animal id) Animal.tags
+  animal id ^... Animal.tags
     
 updateAnimal : Animal.Id -> (Animal -> Animal) -> Model -> Model
 updateAnimal id =
-  UpsertLens.update (animal id)
+  Lens.update (animal id)
   
