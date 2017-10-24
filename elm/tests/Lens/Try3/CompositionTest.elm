@@ -1,17 +1,15 @@
 module Lens.Try3.CompositionTest exposing (..)
 
-import Lens.Try3.Lens as Lens exposing (ClassicLens, get, set, update)
-import Lens.Try3.Compose as Lens
-import Lens.Try3.Tuple2 as Tuple2
-
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Lens.Try3.Laws as Laws
-import Dict
-import Lens.Try3.Dict as Dict
-import Array
-import Lens.Try3.Array as Array
 import Lens.Try3.Util exposing (..)
+import Dict
+import Array
+
+import Lens.Try3.Compose as Lens
+import Lens.Try3.Tuple2 as Tuple2
+import Lens.Try3.Dict as Dict
+import Lens.Try3.Array as Array
 
 compose_classic_with_classic : Test 
 compose_classic_with_classic =

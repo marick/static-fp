@@ -4,21 +4,21 @@ module Lens.Try3.Tuple3 exposing
   , third
   )
 
-import Lens.Try3.Lens as Lens exposing (ClassicLens)
+import Lens.Try3.Lens as Lens
 
-first : ClassicLens (focus, a, b) focus
+first : Lens.Classic (focus, a, b) focus
 first =
   Lens.classic
     (\ (first, _, _) -> first)
     (\ first (_, second, third) -> (first, second, third))
       
-second : ClassicLens (a, focus, b) focus
+second : Lens.Classic (a, focus, b) focus
 second =
   Lens.classic
     (\ (_, second, _) -> second)
     (\ second (first, _, third) -> (first, second, third))
 
-third : ClassicLens (a, b, focus) focus
+third : Lens.Classic (a, b, focus) focus
 third =
   Lens.classic
     (\ (_, _, third) -> third)

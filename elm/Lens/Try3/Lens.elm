@@ -11,21 +11,21 @@ circular dependencies.
 {- By radically widening the types, we can have `get`, `set`, and
    `update` that work with different kinds of lenses.
 -}
-type alias GenericLens getter setter update =
+type alias Generic getter setter update =
   { get : getter 
   , set : setter
   , update : update
   }
 
-get : Tagged tag (GenericLens getter s_ u_) -> getter
+get : Tagged tag (Generic getter s_ u_) -> getter
 get (Tagged lens) =
   lens.get
 
-set : Tagged tag (GenericLens g_ setter u_) -> setter
+set : Tagged tag (Generic g_ setter u_) -> setter
 set (Tagged lens) =
   lens.set
 
-update : Tagged tag (GenericLens g_ s_ updater) -> updater
+update : Tagged tag (Generic g_ s_ updater) -> updater
 update (Tagged lens) =
   lens.update
 
@@ -33,14 +33,14 @@ update (Tagged lens) =
 {-                  Classic Lenses             -}
 
 type ClassicTag = ClassicTag IsUnused
-type alias ClassicLens big small =
+type alias Classic big small =
   Tagged ClassicTag
     { get : big -> small
     , set : small -> big -> big
     , update : (small -> small) -> big -> big
     }
 
-classic : (big -> small) -> (small -> big -> big) -> ClassicLens big small
+classic : (big -> small) -> (small -> big -> big) -> Classic big small
 classic get set =
   let 
     update f big =
@@ -53,7 +53,7 @@ classic get set =
 {-                  Upsert Lenses               -}
 
 type UpsertTag = UpsertTag IsUnused
-type alias UpsertLens big small =
+type alias Upsert big small =
   Tagged UpsertTag
     { get : big -> Maybe small
     , set : Maybe small -> big -> big
@@ -63,7 +63,7 @@ type alias UpsertLens big small =
 upsert : (big -> Maybe small)
       -> (small -> big -> big)
       -> (big -> big)          -- separate `delete` function
-      -> UpsertLens big small
+      -> Upsert big small
 upsert get upserter remove =
   let
     set_ maybe = 
@@ -77,7 +77,7 @@ upsert get upserter remove =
 
 upsert2 : (big -> Maybe small)
         -> (Maybe small -> big -> big)
-        -> UpsertLens big small
+        -> Upsert big small
 upsert2 get set =           
   let
     update f = ifPresentUpdater get set (f >> Just)
@@ -93,7 +93,7 @@ upsert2 get set =
 {-                  Iffy Lenses               -}
 
 type IffyTag = IffyTag IsUnused
-type alias IffyLens big small =
+type alias Iffy big small =
   Tagged IffyTag
     { get : big -> Maybe small
     , set : small -> big -> big
@@ -102,7 +102,7 @@ type alias IffyLens big small =
 
 iffy : (big -> Maybe small)
      -> (small -> big -> big)
-     -> IffyLens big small
+     -> Iffy big small
 iffy get set =
   Tagged
   { get = get
@@ -120,10 +120,10 @@ addGuard set guardingGet small big =
       set small big
 
 
-{-                  OneCaseLens Lenses               -}
+{-                  OneCase Lenses               -}
 
 type OneCaseTag = OneCaseTag IsUnused
-type alias OneCaseLens big small =
+type alias OneCase big small =
   Tagged OneCaseTag
     { get : big -> Maybe small
     , set : small -> big
@@ -132,7 +132,7 @@ type alias OneCaseLens big small =
 
 oneCase : (big -> Maybe small)
      -> (small -> big)
-     -> OneCaseLens big small
+     -> OneCase big small
 oneCase get set =
   let
     update_ f big =

@@ -3,13 +3,13 @@ module Lens.Try3.Result exposing
   , errLens
   )
 
-import Lens.Try3.Lens as Lens exposing (OneCaseLens)
+import Lens.Try3.Lens as Lens
 
-okLens : OneCaseLens (Result err ok) ok
+okLens : Lens.OneCase (Result err ok) ok
 okLens =
   Lens.oneCase Result.toMaybe Ok
 
-errLens : OneCaseLens (Result err ok) err
+errLens : Lens.OneCase (Result err ok) err
 errLens =
   let
     get big =

@@ -1,18 +1,18 @@
 module Lens.Try3.Compose.Pipeline exposing (..)
 
-import Lens.Try3.Lens exposing (..)
+import Lens.Try3.Lens as Lens
 import Lens.Try3.Compose exposing (..)
 
 
-cc : ClassicLens b c -> ClassicLens a b -> ClassicLens a c
+cc : Lens.Classic b c -> Lens.Classic a b -> Lens.Classic a c
 cc = flip classicAndClassic
 
-cu : UpsertLens b c -> ClassicLens a b -> UpsertLens a c
+cu : Lens.Upsert b c -> Lens.Classic a b -> Lens.Upsert a c
 cu = flip classicAndUpsert
              
-uc : ClassicLens b c -> UpsertLens a b -> IffyLens a c
+uc : Lens.Classic b c -> Lens.Upsert a b -> Lens.Iffy a c
 uc = flip upsertAndClassic
 
-ii : IffyLens b c -> IffyLens a b -> IffyLens a c
+ii : Lens.Iffy b c -> Lens.Iffy a b -> Lens.Iffy a c
 ii = flip iffyAndIffy
 

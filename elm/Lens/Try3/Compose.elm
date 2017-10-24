@@ -2,15 +2,15 @@ module Lens.Try3.Compose exposing (..)
 
 
 import Tagged exposing (Tagged(..))
-import Lens.Try3.Lens as Lens exposing (ClassicLens, UpsertLens, IffyLens, OneCaseLens)
+import Lens.Try3.Lens as Lens 
 
 {-          Conversions               -}
 
-classicToIffy : ClassicLens big small -> IffyLens big small
+classicToIffy : Lens.Classic big small -> Lens.Iffy big small
 classicToIffy (Tagged lens) = 
   Lens.iffy (lens.get >> Just) lens.set
 
-upsertToIffy : UpsertLens big small -> IffyLens big small
+upsertToIffy : Lens.Upsert big small -> Lens.Iffy big small
 upsertToIffy (Tagged lens) =
   let
     set_ small big =
@@ -18,7 +18,7 @@ upsertToIffy (Tagged lens) =
   in
     Lens.iffy lens.get (Lens.addGuard set_ lens.get)
       
-oneCaseToIffy : OneCaseLens big small -> IffyLens big small
+oneCaseToIffy : Lens.OneCase big small -> Lens.Iffy big small
 oneCaseToIffy (Tagged lens) =
   let
     set_ small _ =
@@ -31,27 +31,27 @@ oneCaseToIffy (Tagged lens) =
 
       
 
-classicAndClassic : ClassicLens a b -> ClassicLens b c -> ClassicLens a c
+classicAndClassic : Lens.Classic a b -> Lens.Classic b c -> Lens.Classic a c
 classicAndClassic (Tagged a2b) (Tagged b2c) =
   Lens.classic
     (composeLensGet a2b.get b2c.get)
     (composeLensSet a2b.get b2c.set a2b.set)
 
--- We can use the `compose` helpers here because an `UpsertLens` is just
+-- We can use the `compose` helpers here because an `Lens.Upsert` is just
 -- a classic lens with the `part` type narrowed to `Maybe part`.
-classicAndUpsert : ClassicLens a b -> UpsertLens b c -> UpsertLens a c
+classicAndUpsert : Lens.Classic a b -> Lens.Upsert b c -> Lens.Upsert a c
 classicAndUpsert (Tagged a2b) (Tagged b2c) =
   Lens.upsert2
     (composeLensGet a2b.get b2c.get)
     (composeLensSet a2b.get b2c.set a2b.set)
 
-upsertAndClassic : UpsertLens a b -> ClassicLens b c -> IffyLens a c
+upsertAndClassic : Lens.Upsert a b -> Lens.Classic b c -> Lens.Iffy a c
 upsertAndClassic a2b b2c =
   iffyAndIffy
     (upsertToIffy a2b)
     (classicToIffy b2c)
     
-iffyAndIffy : IffyLens a b -> IffyLens b c -> IffyLens a c
+iffyAndIffy : Lens.Iffy a b -> Lens.Iffy b c -> Lens.Iffy a c
 iffyAndIffy (Tagged a2b) (Tagged b2c) =
   let 
     get a =

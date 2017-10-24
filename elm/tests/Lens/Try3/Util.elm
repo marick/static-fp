@@ -1,13 +1,13 @@
 module Lens.Try3.Util exposing (..)
 
-import Lens.Try3.Lens as Lens exposing (GenericLens, get, set, update)
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Lens.Try3.Laws as Laws
 
+import Lens.Try3.Laws as Laws
+import Lens.Try3.Lens as Lens
 
 upt lens whole expected =
-  equal_ (update lens negate whole) expected
+  equal_ (Lens.update lens negate whole) expected
 
 iffyLawSupport =
   let 
