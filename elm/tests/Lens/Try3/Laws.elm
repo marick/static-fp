@@ -16,10 +16,10 @@ setting_part_with_same_value_leaves_whole_unchanged (Tagged {get, set}) whole =
 
 set_changes_only_the_given_part (Tagged {set}) whole {overwritten, new} = 
   let
-    a_direct_change =        whole |>                    set new
-    change_that_overwrites = whole |> set overwritten |> set new
+    inOneStep  = whole |>                    set new
+    inTwoSteps = whole |> set overwritten |> set new
   in
-    equal change_that_overwrites   a_direct_change
+    equal inTwoSteps   inOneStep
       "set changes only the given part (no counter, etc.)"
 
 classic lens whole inputValues comment = 
@@ -42,28 +42,28 @@ classic lens whole inputValues comment =
 
 -- Like `set_part_can_be_gotten`.  Difference is that the law applies only 
 -- when the whole already contains the part.
-humblelens_set_part_can_be_gotten
+humble_set_part_can_be_gotten
   (Tagged {get, set}) whole {original, new}  =
-  describe "when an part is present, set overwrites it"
-    [ notEqual original new                           "test values allow difference to be seen"  
-    , equal  (get          whole)    (Just original)  "`whole` contains original"
+  describe "when a part is present, set overwrites it"
+    [ notEqual original new                           "sensible test values"  
+    , equal  (get          whole)    (Just original)  "appropriate `whole`"
     , equal_ (get (set new whole))   (Just new)
     ]
 
 -- Like `setting_part_with_same_value_leaves_whole_unchanged`. Difference
 -- is that the law applies only when the whole already contains the
 -- part.
-humblelens_setting_part_with_same_value_leaves_whole_unchanged
+humble_setting_part_with_same_value_leaves_whole_unchanged
   (Tagged {get, set}) whole {original} =
-  describe "retrieving an part, then setting it back"
+  describe "retrieving a part, then setting it back"
     [ equal  (get          whole)     (Just original)  "`whole` contains original"
     , equal_ (set original whole)     whole
     ]
 
-humblelens_does_not_create
+humble_does_not_create
   (Tagged {get, set}) whole {new} = 
-  describe "when an part is missing, `set` does nothing"
-    [ equal (get          whole)      Nothing     "show part is missing"
+  describe "when a part is missing, `set` does nothing"
+    [ equal (get          whole)      Nothing     "see: part is missing"
     , equal (get (set new whole))     Nothing     "`get` still gets nothing"
     , equal      (set new whole)      whole       "nothing else changed"
     ]
@@ -73,10 +73,10 @@ humblelens_does_not_create
     
 humblePartPresent lens whole inputValues = 
   describe "part present"
-    [ humblelens_set_part_can_be_gotten
+    [ humble_set_part_can_be_gotten
         lens whole inputValues
 
-    , humblelens_setting_part_with_same_value_leaves_whole_unchanged
+    , humble_setting_part_with_same_value_leaves_whole_unchanged
         lens whole inputValues
 
     , set_changes_only_the_given_part  -- Note we can reuse lens law
@@ -85,13 +85,13 @@ humblePartPresent lens whole inputValues =
 
 humblePartMissing lens whole inputValues why = 
   describe ("part not present: " ++ why)
-    [ humblelens_does_not_create 
+    [ humble_does_not_create 
         lens whole inputValues
     ]
 
 ---- OnePart laws
 
-{-         Laws for the HUMBLE Lens.          -}
+{-         Laws for the OnePart Lens.          -}
 
 gotten_part_can_be_set_back (Tagged {get, set}) whole part  =
   describe "if `get` succeeds, `set` recreates the sum type value"

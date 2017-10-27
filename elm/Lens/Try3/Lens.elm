@@ -101,8 +101,8 @@ type alias Humble big small =
     }
 
 humble : (big -> Maybe small)
-     -> (small -> big -> big)
-     -> Humble big small
+       -> (small -> big -> big)
+       -> Humble big small
 humble get set =
   Tagged
   { get = get
