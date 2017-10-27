@@ -37,12 +37,12 @@ maybeCombinations original overwritten new =
   in
     List.map recordify tuples
 
-upsertLensObeysClassicLaws lens empty wholeMaker ({original} as parts) =
+upsertLensObeysClassicLaws {lens, focusMissing, makeFocus} ({original} as parts) =
   let
     whole = 
       case original of
-        Nothing -> empty
-        Just a -> wholeMaker a
+        Nothing -> focusMissing
+        Just a -> makeFocus a
   in 
     Laws.classic lens whole parts (toString parts)
                      

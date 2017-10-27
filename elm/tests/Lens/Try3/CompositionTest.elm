@@ -41,9 +41,11 @@ compose_classic_with_upsert =
       , describe "laws" <|
           List.map 
             (upsertLensObeysClassicLaws
-               lens
-               ( Dict.empty, "")
-               (\original -> (Dict.singleton "key" original, "")))
+               { lens = lens
+               , focusMissing = (Dict.empty, "")
+               , makeFocus = 
+                   \original -> (Dict.singleton "key" original, "")
+               })
             (maybeCombinations 1 2 3)
       ]
 

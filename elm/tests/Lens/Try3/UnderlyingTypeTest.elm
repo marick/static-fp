@@ -2,7 +2,7 @@ module Lens.Try3.UnderlyingTypeTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Lens.Try3.Util exposing (..)
+import Lens.Try3.Util as Util exposing (..)
 import Dict
 import Array
 
@@ -76,22 +76,21 @@ classicLaws =
 upsertUpdate : Test
 upsertUpdate =
   describe "update for various common base types (upsert lenses)"
-    [ upt (Dict.lens "key") (Dict.singleton "key" 3) <| Dict.singleton "key" -3
-    , upt (Dict.lens "key") (Dict.singleton "k  " 3) (Dict.singleton "k  "  3)          
+    [ upt (Dict.lens "key") (Dict.singleton "key" 3) (Dict.singleton "key" -3)
+    , upt (Dict.lens "key") (Dict.singleton "k  " 3) (Dict.singleton "k  "  3)
     , upt (Dict.lens "key")  Dict.empty               Dict.empty
     ]
 
-upsertLaws : Test
-upsertLaws =
-  let
-    (original, legal) = upsertLawSupport
-  in
-    describe "upsert lenses obey the classic lens laws"
-      [ describe "dict"
-          [ legal (Dict.lens "key") (Dict.singleton "key" original)
-          , legal (Dict.lens "key") (Dict.singleton "---" original)
-          ]
-      ]
+laws : Test
+laws =
+  describe "classic laws apply to Dict lenses" <|
+    List.map 
+      (Util.upsertLensObeysClassicLaws
+         { lens = Dict.lens "key"
+         , focusMissing = Dict.empty
+         , makeFocus = Dict.singleton "key"
+         })
+      (Util.maybeCombinations "OLD" "overwritten" "NEW")
 
 
 {-         Types used to construct IFFY lenses        -}
