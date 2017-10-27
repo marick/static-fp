@@ -28,7 +28,6 @@ compose_classic_with_upsert : Test
 compose_classic_with_upsert =
   let
     lens = Lens.classicAndUpsert Tuple2.first (Dict.lens "key")
-    (original, legal) = upsertLawSupport
   in
     describe "lens plus upsert"
       [ describe "update"
@@ -39,10 +38,13 @@ compose_classic_with_upsert =
           , upt   lens (  Dict.empty,               "")
                        (  Dict.empty,               "")
           ]
-      , describe "laws"
-          [ legal lens ( (Dict.singleton "key" original), "")
-          , legal lens ( (Dict.singleton "---" original), "")
-          ]
+      , describe "laws" <|
+          List.map 
+            (upsertLensObeysClassicLaws
+               lens
+               ( Dict.empty, "")
+               (\original -> (Dict.singleton "key" original, "")))
+            (maybeCombinations 1 2 3)
       ]
 
 compose_iffy_with_iffy : Test

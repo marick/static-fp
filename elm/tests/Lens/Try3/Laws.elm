@@ -4,7 +4,7 @@ import Tagged exposing (Tagged(..))
 import Test exposing (..)
 import TestBuilders exposing (..)
 
-{-         Laws for the CLASSIC Lens.          -}
+{-         Laws for the CLASSIC and UPSERT Lens.          -}
 
 set_part_can_be_gotten (Tagged {get, set}) whole {new} =
   equal (get (set new whole)) new
