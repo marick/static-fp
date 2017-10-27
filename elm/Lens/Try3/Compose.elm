@@ -2,7 +2,8 @@ module Lens.Try3.Compose exposing (..)
 
 
 import Tagged exposing (Tagged(..))
-import Lens.Try3.Lens as Lens 
+import Lens.Try3.Lens as Lens
+import Lens.Try3.Helpers as H
 
 {-          Conversions               -}
 
@@ -16,7 +17,7 @@ upsertToHumble (Tagged lens) =
     set_ small big =
       lens.set (Just small) big
   in
-    Lens.humble lens.get (Lens.addGuard set_ lens.get)
+    Lens.humble lens.get (H.guardedSet lens.get set_)
       
 oneCaseToHumble : Lens.OneCase big small -> Lens.Humble big small
 oneCaseToHumble (Tagged lens) =
@@ -24,7 +25,7 @@ oneCaseToHumble (Tagged lens) =
     set_ small _ =
       lens.set small
   in
-    Lens.humble lens.get (Lens.addGuard set_ lens.get)
+    Lens.humble lens.get (H.guardedSet lens.get set_ )
 
 
 {-          Composition               -}
@@ -34,16 +35,16 @@ oneCaseToHumble (Tagged lens) =
 classicAndClassic : Lens.Classic a b -> Lens.Classic b c -> Lens.Classic a c
 classicAndClassic (Tagged a2b) (Tagged b2c) =
   Lens.classic
-    (composeLensGet a2b.get b2c.get)
-    (composeLensSet a2b.get b2c.set a2b.set)
+    (composeGets a2b.get b2c.get)
+    (composeSets a2b.get b2c.set a2b.set)
 
 -- We can use the `compose` helpers here because an `Lens.Upsert` is just
 -- a classic lens with the `part` type narrowed to `Maybe part`.
 classicAndUpsert : Lens.Classic a b -> Lens.Upsert b c -> Lens.Upsert a c
 classicAndUpsert (Tagged a2b) (Tagged b2c) =
   Lens.upsert2
-    (composeLensGet a2b.get b2c.get)
-    (composeLensSet a2b.get b2c.set a2b.set)
+    (composeGets a2b.get b2c.get)
+    (composeSets a2b.get b2c.set a2b.set)
 
 upsertAndClassic : Lens.Upsert a b -> Lens.Classic b c -> Lens.Humble a c
 upsertAndClassic a2b b2c =
@@ -71,10 +72,11 @@ humbleAndHumble (Tagged a2b) (Tagged b2c) =
 
 -----------------
 
-composeLensGet : (a -> b) -> (b -> c) -> (a -> c)
-composeLensGet getB getC =
+composeGets : (a -> b) -> (b -> c) -> (a -> c)
+composeGets getB getC =
   getB >> getC
 
-composeLensSet : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c -> a -> a)
-composeLensSet getB setB setA c a =
+composeSets : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c -> a -> a)
+composeSets getB setB setA c a =
   setA (getB a |> setB c) a
+

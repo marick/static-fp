@@ -2,11 +2,7 @@ module Lens.Try3.Lens exposing (..)
 
 
 import Tagged exposing (Tagged(..))
-
-{- These are all crammed together in one module to avoid 
-circular dependencies. 
--}
-
+import Lens.Try3.Helpers as H
 
 {- By radically widening the types, we can have `get`, `set`, and
    `update` that work with different kinds of lenses.
@@ -80,7 +76,7 @@ upsert2 : (big -> Maybe small)
         -> Upsert big small
 upsert2 get set =           
   let
-    update f = ifPresentUpdater get set (f >> Just)
+    update f = H.guardedUpdate get set (f >> Just)
   in
     Tagged
     { get = get
@@ -107,7 +103,7 @@ humble get set =
   Tagged
   { get = get
   , set = set
-  , update = ifPresentUpdater get set
+  , update = H.guardedUpdate get set
   }
 
 addGuard : (small -> big -> big) -> (big -> Maybe small)
@@ -149,20 +145,5 @@ oneCase get set =
     }
 
 {-                 Util                        -}
-
--- Note: In some cases, type `transformed` is `Maybe small`. But in others, it
--- is `small`. 
-ifPresentUpdater : (big -> Maybe small)
-                 -> (transformed -> big -> big)
-                 -> (small -> transformed) -> big -> big
-    
-ifPresentUpdater get set f big =
-  case get big of
-    Nothing ->
-      big
-    Just small ->
-      set (f small) big
-
-
 
 type IsUnused = IsUnused IsUnused
