@@ -3,16 +3,16 @@ module Lens.Try1.Tuple2 exposing
   , second
   )
 
-import Lens.Try1.Lens as Lens exposing (Lens, lens)
+import Lens.Try1.Lens as Lens
 
-first : Lens (focus, a) focus
+first : Lens.Classic (focus, a) focus
 first =
-  lens
+  Lens.classic
     (\ (first, _) -> first)
     (\ first (_, second) -> (first, second))
       
-second : Lens (a, focus) focus
+second : Lens.Classic (a, focus) focus
 second =
-  lens
+  Lens.classic
     (\ (_, second) -> second)
     (\ second (first, _) -> (first, second))

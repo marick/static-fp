@@ -1,6 +1,6 @@
 module Lens.Try1.LensTest exposing (..)
 
-import Lens.Try1.Lens as Lens exposing (Lens)
+import Lens.Try1.Lens as Lens
 import Lens.Try1.Tuple2 as Tuple2
 import Lens.Try1.Tuple3 as Tuple3
 import Lens.Try1.Tuple4 as Tuple4
@@ -54,7 +54,7 @@ lensLaws comment lens whole part overwritten =
 recordsObeyLaws =
   let
     whole = { part = "OLD" } 
-    lens = Lens.lens .part (\part whole -> {whole | part = part })
+    lens = Lens.classic .part (\part whole -> {whole | part = part })
   in
     lensLaws "records"
       lens whole "NEW" "overwritten"
@@ -89,10 +89,10 @@ tuple4ObeysLaws =
       Tuple4.fourth (1, 2, 3, "fourth") "NEW" "overwritten"
   ]
 
-lensPlusLensObeysLaws =
+recordPlusRecordObeysLaws =
   let
-    a2b = Lens.lens .b (\newB a -> {a | b = newB })
-    b2c = Lens.lens .c (\newC b -> {b | c = newC })
+    a2b = Lens.classic .b (\newB a -> {a | b = newB })
+    b2c = Lens.classic .c (\newC b -> {b | c = newC })
     a2c = Lens.compose a2b b2c 
 
     a = { b = { c = "OLD" } }
