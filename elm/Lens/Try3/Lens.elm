@@ -11,21 +11,21 @@ circular dependencies.
 {- By radically widening the types, we can have `get`, `set`, and
    `update` that work with different kinds of lenses.
 -}
-type alias Generic getter setter update =
-  { get : getter 
+type alias Generic getter setter updater =
+  { get : getter
   , set : setter
-  , update : update
+  , update : updater
   }
 
-get : Tagged tag (Generic getter s_ u_) -> getter
+get : Tagged tag (Generic getter setter updater) -> getter
 get (Tagged lens) =
   lens.get
 
-set : Tagged tag (Generic g_ setter u_) -> setter
+set : Tagged tag (Generic getter setter updater) -> setter
 set (Tagged lens) =
   lens.set
 
-update : Tagged tag (Generic g_ s_ updater) -> updater
+update : Tagged tag (Generic getter setter updater) -> updater
 update (Tagged lens) =
   lens.update
 
