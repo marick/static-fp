@@ -12,11 +12,11 @@ infixl 0 ....
 (...^) = Compose.classicAndUpsert
 infixl 0 ...^    
 
-(^...) : Lens.Upsert a b -> Lens.Classic b c -> Lens.Iffy a c
+(^...) : Lens.Upsert a b -> Lens.Classic b c -> Lens.Humble a c
 (^...) = Compose.upsertAndClassic
 infixl 0 ^...
 
-(?..?) : Lens.Iffy a b -> Lens.Iffy b c -> Lens.Iffy a c
-(?..?) = Compose.iffyAndIffy
+(?..?) : Lens.Humble a b -> Lens.Humble b c -> Lens.Humble a c
+(?..?) = Compose.humbleAndHumble
 infixl 0 ?..?
 

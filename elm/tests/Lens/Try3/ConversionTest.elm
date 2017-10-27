@@ -15,26 +15,26 @@ import Lens.Try3.Result as Result
 
 
 
-classic_iffy : Test
-classic_iffy =
+classic_humble : Test
+classic_humble =
   let
-    lens = Lens.classicToIffy Tuple2.first
-    (original, present, missing) = iffyLawSupport
+    lens = Lens.classicToHumble Tuple2.first
+    (original, present, missing) = humbleLawSupport
   in
-    describe "lens to iffy lens"
+    describe "lens to humble lens"
       [ upt     lens   ( 3,       "")
                        (-3,       "")
       , present lens   (original, "")
       ]
 
 
-upsert_iffy : Test
-upsert_iffy =
+upsert_humble : Test
+upsert_humble =
   let
-    lens = Lens.upsertToIffy (Dict.lens "key")
-    (original, present, missing) = iffyLawSupport
+    lens = Lens.upsertToHumble (Dict.lens "key")
+    (original, present, missing) = humbleLawSupport
   in
-    describe "upsert to iffy lens"
+    describe "upsert to humble lens"
       [ upt    lens   (Dict.singleton "key"  3)
                       (Dict.singleton "key" -3)
       , upt    lens    Dict.empty
@@ -46,13 +46,13 @@ upsert_iffy =
       ]
                      
          
-oneCase_iffy : Test
-oneCase_iffy =
+oneCase_humble : Test
+oneCase_humble =
   let
-    lens = Lens.oneCaseToIffy Result.okLens
-    (original, present, missing) = iffyLawSupport
+    lens = Lens.oneCaseToHumble Result.okLens
+    (original, present, missing) = humbleLawSupport
   in
-    describe "one-part to iffy lens"
+    describe "one-part to humble lens"
       [ upt lens   (Ok 3)  (Ok  -3)
       , upt lens  (Err 3)  (Err  3)
 

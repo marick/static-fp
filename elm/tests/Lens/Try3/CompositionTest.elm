@@ -49,17 +49,17 @@ compose_classic_with_upsert =
             (maybeCombinations 1 2 3)
       ]
 
-compose_iffy_with_iffy : Test
-compose_iffy_with_iffy =
+compose_humble_with_humble : Test
+compose_humble_with_humble =
   let
-    lens = Lens.iffyAndIffy (Array.lens 0) (Array.lens 1)
-    (original, present, missing) = iffyLawSupport
+    lens = Lens.humbleAndHumble (Array.lens 0) (Array.lens 1)
+    (original, present, missing) = humbleLawSupport
 
     a listOfList =
       List.map Array.fromList listOfList
         |> Array.fromList
   in
-    describe "iffy + iffy"
+    describe "humble + humble"
       [ describe "update"
           [ upt lens   (a [[0, 3]])   (a [[0, -3]])
           , upt lens   (a [[0   ]])   (a [[0    ]])
@@ -78,7 +78,7 @@ compose_upsert_with_classic : Test
 compose_upsert_with_classic =
   let
     lens = Lens.upsertAndClassic (Dict.lens "key") (Tuple2.first)
-    (original, present, missing) = iffyLawSupport
+    (original, present, missing) = humbleLawSupport
 
     d key tuple = Dict.singleton key tuple
   in

@@ -47,7 +47,7 @@ upsertLensObeysClassicLaws {lens, focusMissing, makeFocus} ({original} as parts)
     Laws.classic lens whole parts (toString parts)
                      
 
-iffyLawSupport =
+humbleLawSupport =
   let 
     original = '1'
     parts =
@@ -56,9 +56,9 @@ iffyLawSupport =
       , new = '2'
       }
     present lens whole =
-      Laws.iffyPartPresent lens whole parts
+      Laws.humblePartPresent lens whole parts
     missing lens whole why = 
-      Laws.iffyPartMissing lens whole parts why
+      Laws.humblePartMissing lens whole parts why
   in
     (original, present, missing)
 

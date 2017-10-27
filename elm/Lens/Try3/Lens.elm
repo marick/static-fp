@@ -90,20 +90,20 @@ upsert2 get set =
 
       
 
-{-                  Iffy Lenses               -}
+{-                  Humble Lenses               -}
 
-type IffyTag = IffyTag IsUnused
-type alias Iffy big small =
-  Tagged IffyTag
+type HumbleTag = HumbleTag IsUnused
+type alias Humble big small =
+  Tagged HumbleTag
     { get : big -> Maybe small
     , set : small -> big -> big
     , update : (small -> small) -> big -> big
     }
 
-iffy : (big -> Maybe small)
+humble : (big -> Maybe small)
      -> (small -> big -> big)
-     -> Iffy big small
-iffy get set =
+     -> Humble big small
+humble get set =
   Tagged
   { get = get
   , set = set

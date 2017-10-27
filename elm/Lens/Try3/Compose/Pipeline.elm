@@ -10,9 +10,9 @@ cc = flip classicAndClassic
 cu : Lens.Upsert b c -> Lens.Classic a b -> Lens.Upsert a c
 cu = flip classicAndUpsert
              
-uc : Lens.Classic b c -> Lens.Upsert a b -> Lens.Iffy a c
+uc : Lens.Classic b c -> Lens.Upsert a b -> Lens.Humble a c
 uc = flip upsertAndClassic
 
-ii : Lens.Iffy b c -> Lens.Iffy a b -> Lens.Iffy a c
-ii = flip iffyAndIffy
+hh : Lens.Humble b c -> Lens.Humble a b -> Lens.Humble a c
+hh = flip humbleAndHumble
 

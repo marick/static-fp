@@ -16,4 +16,4 @@ import Lens.Try3.Array as Array
 test_cc = Tuple2.first    |> cc Tuple2.second
 test_cu = Tuple2.first    |> cu (Dict.lens "key")
 test_uc = Dict.lens "key" |> uc Tuple2.first
-test_ii = Array.lens 0    |> ii (Array.lens 3)
+test_hh = Array.lens 0    |> hh (Array.lens 3)

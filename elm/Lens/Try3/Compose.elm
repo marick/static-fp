@@ -6,25 +6,25 @@ import Lens.Try3.Lens as Lens
 
 {-          Conversions               -}
 
-classicToIffy : Lens.Classic big small -> Lens.Iffy big small
-classicToIffy (Tagged lens) = 
-  Lens.iffy (lens.get >> Just) lens.set
+classicToHumble : Lens.Classic big small -> Lens.Humble big small
+classicToHumble (Tagged lens) = 
+  Lens.humble (lens.get >> Just) lens.set
 
-upsertToIffy : Lens.Upsert big small -> Lens.Iffy big small
-upsertToIffy (Tagged lens) =
+upsertToHumble : Lens.Upsert big small -> Lens.Humble big small
+upsertToHumble (Tagged lens) =
   let
     set_ small big =
       lens.set (Just small) big
   in
-    Lens.iffy lens.get (Lens.addGuard set_ lens.get)
+    Lens.humble lens.get (Lens.addGuard set_ lens.get)
       
-oneCaseToIffy : Lens.OneCase big small -> Lens.Iffy big small
-oneCaseToIffy (Tagged lens) =
+oneCaseToHumble : Lens.OneCase big small -> Lens.Humble big small
+oneCaseToHumble (Tagged lens) =
   let
     set_ small _ =
       lens.set small
   in
-    Lens.iffy lens.get (Lens.addGuard set_ lens.get)
+    Lens.humble lens.get (Lens.addGuard set_ lens.get)
 
 
 {-          Composition               -}
@@ -45,14 +45,14 @@ classicAndUpsert (Tagged a2b) (Tagged b2c) =
     (composeLensGet a2b.get b2c.get)
     (composeLensSet a2b.get b2c.set a2b.set)
 
-upsertAndClassic : Lens.Upsert a b -> Lens.Classic b c -> Lens.Iffy a c
+upsertAndClassic : Lens.Upsert a b -> Lens.Classic b c -> Lens.Humble a c
 upsertAndClassic a2b b2c =
-  iffyAndIffy
-    (upsertToIffy a2b)
-    (classicToIffy b2c)
+  humbleAndHumble
+    (upsertToHumble a2b)
+    (classicToHumble b2c)
     
-iffyAndIffy : Lens.Iffy a b -> Lens.Iffy b c -> Lens.Iffy a c
-iffyAndIffy (Tagged a2b) (Tagged b2c) =
+humbleAndHumble : Lens.Humble a b -> Lens.Humble b c -> Lens.Humble a c
+humbleAndHumble (Tagged a2b) (Tagged b2c) =
   let 
     get a =
       case a2b.get a of
@@ -66,7 +66,7 @@ iffyAndIffy (Tagged a2b) (Tagged b2c) =
         Just b ->
           a2b.set (b2c.set c b) a
   in
-    Lens.iffy get set
+    Lens.humble get set
 
 
 -----------------

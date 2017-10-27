@@ -93,23 +93,23 @@ laws =
       (Util.maybeCombinations "OLD" "overwritten" "NEW")
 
 
-{-         Types used to construct IFFY lenses        -}
+{-         Types used to construct HUMBLE lenses        -}
 
-iffyUpdate : Test
-iffyUpdate =
-  describe "update for various common base types (iffy lenses)"
+humbleUpdate : Test
+humbleUpdate =
+  describe "update for various common base types (humble lenses)"
     [ upt (Array.lens 0) (Array.fromList [3]) (Array.fromList [-3])
     , upt (Array.lens 1) (Array.fromList [3]) (Array.fromList [ 3])
     , upt (Array.lens 1)  Array.empty          Array.empty
     ]
 
       
-iffyLaws : Test
-iffyLaws =
+humbleLaws : Test
+humbleLaws =
   let
-    (original, present, missing) = iffyLawSupport
+    (original, present, missing) = humbleLawSupport
   in
-    describe "iffy lenses obey the iffy lens laws"
+    describe "humble lenses obey the humble lens laws"
       [ present (Array.lens 1)   (Array.fromList [' ', original])
       , missing (Array.lens 1)   (Array.fromList [' '          ])   "short"
       ]
