@@ -106,15 +106,6 @@ humble get set =
   , update = H.guardedUpdate get set
   }
 
-addGuard : (small -> big -> big) -> (big -> Maybe small)
-         -> (small -> big -> big)
-addGuard set guardingGet small big = 
-  case guardingGet big of
-    Nothing ->
-      big
-    Just _ ->
-      set small big
-
 
 {-                  OneCase Lenses               -}
 
