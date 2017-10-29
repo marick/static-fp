@@ -30,21 +30,11 @@ update : Msg -> Model -> Model
 update msg model = 
   case msg of
     AddTag animalId tag ->
-      Lens.update
-        (Model.animal animalId)
-        (Animal.addTag tag)
-        model
+      Lens.update (Model.animal animalId) (Animal.addTag tag) model
 
     AddTag2 animalId tag ->
-      Model.updateAnimal
-        animalId
-        (Animal.addTag tag)
-        model
+      Model.updateAnimal        animalId  (Animal.addTag tag) model
 
     AddTag3 animalId tag ->
-      Lens.update
-        (Model.animalTags animalId)
-        (Animal.addTagToTags tag)
-        model
-
-        
+      Model.addAnimalTag        animalId                 tag  model
+          

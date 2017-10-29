@@ -5,6 +5,7 @@ import Lens.Try3.Lens as Lens
 import Lens.Try3.Compose as Compose
 import Dict exposing (Dict)
 import Lens.Try3.Dict as Dict
+import Array
 
 
 type alias Model =
@@ -19,12 +20,17 @@ animal : Animal.Id -> Lens.Upsert Model Animal
 animal id =
   Compose.classicAndUpsert animals (Dict.lens id)
 
-
-animalTags : Animal.Id -> Lens.Humble Model Animal.Tags
-animalTags id =
-  Compose.upsertAndClassic (animal id) Animal.tags
-    
 updateAnimal : Animal.Id -> (Animal -> Animal) -> Model -> Model
 updateAnimal id =
   Lens.update (animal id)
+
+
+-- An alternate example    
+    
+animalTags : Animal.Id -> Lens.Humble Model Animal.Tags
+animalTags id =
+  Compose.upsertAndClassic (animal id) Animal.tags
   
+addAnimalTag : Animal.Id -> String -> Model -> Model
+addAnimalTag id tag =
+  updateAnimal id (Animal.addTag tag)

@@ -19,8 +19,5 @@ addTag : String -> Animal -> Animal
 addTag tag animal = 
   Lens.update tags (Array.push tag) animal
 
-addTagToTags : String -> Tags -> Tags
-addTagToTags = Array.push 
-
 emptyTags : Animal -> Animal
 emptyTags = Lens.set tags Array.empty 
