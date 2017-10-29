@@ -2,7 +2,7 @@ module Lens.Motivation.WithLenses.Model exposing (..)
 
 import Lens.Motivation.WithLenses.Animal as Animal exposing (Animal)
 import Lens.Try3.Lens as Lens 
-import Lens.Try3.Compose.Operators exposing (..)
+import Lens.Try3.Compose as Compose
 import Dict exposing (Dict)
 import Lens.Try3.Dict as Dict
 
@@ -17,11 +17,12 @@ animals =
 
 animal : Animal.Id -> Lens.Upsert Model Animal
 animal id =
-  animals ...^ Dict.lens id
+  Compose.classicAndUpsert animals (Dict.lens id)
+
 
 animalTags : Animal.Id -> Lens.Humble Model Animal.Tags
 animalTags id =
-  animal id ^... Animal.tags
+  Compose.upsertAndClassic (animal id) Animal.tags
     
 updateAnimal : Animal.Id -> (Animal -> Animal) -> Model -> Model
 updateAnimal id =

@@ -32,13 +32,13 @@ update msg model =
     AddTag animalId tag ->
       Lens.update
         (Model.animal animalId)
-        (Animal.addTagToAnimal tag)
+        (Animal.addTag tag)
         model
 
     AddTag2 animalId tag ->
       Model.updateAnimal
         animalId
-        (Animal.addTagToAnimal tag)
+        (Animal.addTag tag)
         model
 
     AddTag3 animalId tag ->

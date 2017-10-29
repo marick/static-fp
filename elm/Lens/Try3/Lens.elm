@@ -118,8 +118,8 @@ type alias OneCase big small =
     }
 
 oneCase : (big -> Maybe small)
-     -> (small -> big)
-     -> OneCase big small
+        -> (small -> big)
+        -> OneCase big small
 oneCase get set =
   let
     update_ f big =
