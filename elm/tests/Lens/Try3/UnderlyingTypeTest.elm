@@ -97,11 +97,22 @@ laws =
 
 humbleUpdate : Test
 humbleUpdate =
-  describe "update for various common base types (humble lenses)"
-    [ upt (Array.lens 0) (Array.fromList [3]) (Array.fromList [-3])
-    , upt (Array.lens 1) (Array.fromList [3]) (Array.fromList [ 3])
-    , upt (Array.lens 1)  Array.empty          Array.empty
-    ]
+  let
+    at0 = Array.lens 0
+    at1 = Array.lens 1
+
+    dictLens = Dict.humbleLens "key"
+    d = Dict.singleton 
+  in
+    describe "update for various common base types (humble lenses)"
+      [ upt at0 (Array.fromList [3]) (Array.fromList [-3])
+      , upt at1 (Array.fromList [3]) (Array.fromList [ 3])
+      , upt at1  Array.empty          Array.empty
+        
+      , upt dictLens (d "key" 3)   (d "key" -3)
+      , upt dictLens (d "---" 3)   (d "---"  3)
+      , upt dictLens Dict.empty    Dict.empty
+      ]
 
       
 humbleLaws : Test
