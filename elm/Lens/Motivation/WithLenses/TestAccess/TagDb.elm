@@ -1,4 +1,4 @@
-module Lens.Motivation.WithLenses.TestAccess.Tags exposing (..)
+module Lens.Motivation.WithLenses.TestAccess.TagDb exposing (..)
 
 import Lens.Motivation.WithLenses.Animal as Animal
 import Lens.Try3.Lens as Lens
@@ -11,7 +11,7 @@ import Array exposing (Array)
 type alias IdToTags = Dict Animal.Id (Array String)
 type alias TagToIds = Dict String (Array Animal.Id)
 
-type alias Main =
+type alias TagDb =
   { allTags : IdToTags
   , allIds : TagToIds
   }
@@ -19,27 +19,27 @@ type alias Main =
 
 -- Lenses
 
-allTags : Lens.Classic Main IdToTags
+allTags : Lens.Classic TagDb IdToTags
 allTags =
   Lens.classic .allTags (\dict whole -> { whole | allTags = dict })
 
-allIds : Lens.Classic Main TagToIds
+allIds : Lens.Classic TagDb TagToIds
 allIds =
   Lens.classic .allIds (\dict whole -> { whole | allIds = dict })
 
 
-idTags : Animal.Id -> Lens.Humble Main (Array String)
+idTags : Animal.Id -> Lens.Humble TagDb (Array String)
 idTags id =
   Compose.classicAndHumble allTags (Dict.humbleLens id)
 
-idTags_upsert : Animal.Id -> Lens.Upsert Main (Array String)
+idTags_upsert : Animal.Id -> Lens.Upsert TagDb (Array String)
 idTags_upsert id =
   Compose.classicAndUpsert allTags (Dict.lens id)
 
-tagIds : String -> Lens.Humble Main (Array Animal.Id)
+tagIds : String -> Lens.Humble TagDb (Array Animal.Id)
 tagIds tag =
   Compose.classicAndHumble allIds (Dict.humbleLens tag)
 
-tagIds_upsert : String -> Lens.Upsert Main (Array Animal.Id)
+tagIds_upsert : String -> Lens.Upsert TagDb (Array Animal.Id)
 tagIds_upsert tag =
   Compose.classicAndUpsert allIds (Dict.lens tag)
