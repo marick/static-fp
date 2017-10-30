@@ -12,21 +12,31 @@ type Msg
   | AddTag2 Animal.Id String
   | AddTag3 Animal.Id String
 
-startingId : Animal.Id    
-startingId = 3838
 
-startingAnimal : Animal
-startingAnimal =
-  { tags = Array.fromList ["mare"]
-  , id = startingId
-  }
-  
+{- 
+   `init` is here for convenience when working in the repl:
+
+   > import Lens.Motivation.WithLenses.Main exposing (..)
+   > update (AddTag 3838 "skittish") init
+
+   In real life, it would probably be in the `Model` module.
+-}
+
 init : Model
 init =
   { animals = 
-      Dict.singleton startingId startingAnimal
+      Dict.singleton startingAnimal.id startingAnimal
+  }
+  
+startingAnimal : Animal
+startingAnimal =
+  { id = 3838
+  , name = "Genesis"
+  , tags = Array.fromList ["mare"]
   }
 
+---
+  
 update : Msg -> Model -> Model
 update msg model = 
   case msg of

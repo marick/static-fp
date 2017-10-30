@@ -7,8 +7,9 @@ type alias Id = Int
 type alias Tags = Array String
 
 type alias Animal =
-  { tags : Tags
-  , id : Id
+  { id : Id
+  , name : String
+  , tags : Tags
   }
 
 tags : Lens.Classic Animal Tags

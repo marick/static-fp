@@ -8,21 +8,30 @@ import Lens.Motivation.WithoutLenses.Animal as Animal exposing (Animal)
 type Msg =
   AddTag Animal.Id String
 
-startingId : Animal.Id    
-startingId = 3838
+{- 
+   `init` is here for convenience when working in the repl:
 
-startingAnimal : Animal
-startingAnimal =
-  { tags = Array.fromList ["mare"]
-  , id = startingId
-  }
-  
+   > import Lens.Motivation.WithoutLenses.Main exposing (..)
+   > update (AddTag 3838 "skittish") init
+
+   In real life, it would probably be in the `Model` module.
+-}
+
 init : Model
 init =
   { animals = 
-      Dict.singleton startingId startingAnimal
+      Dict.singleton startingAnimal.id startingAnimal
   }
-                     
+  
+startingAnimal : Animal
+startingAnimal =
+  { id = 3838
+  , name = "Genesis"
+  , tags = Array.fromList ["mare"]
+  }
+
+---
+  
 update : Msg -> Model -> Model
 update msg model = 
   case msg of

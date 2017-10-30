@@ -5,8 +5,9 @@ import Array exposing (Array)
 type alias Id = Int
 
 type alias Animal =
-  { tags : Array String
-  , id : Id
+  { id : Id
+  , name : String
+  , tags : Array String
   }
 
 addTag : String -> Animal -> Animal
