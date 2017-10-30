@@ -29,6 +29,11 @@ unchanged f original comment =
 unchanged_ f original =
   actual_expected (f original) original
 
+is = actual_predicate_comment
+
+is_ = actual_predicate     
+
+
 -- Use built-in `Expect` functions to take advantage of nice error reporting.
 -- Note this evaluates the actual and not-expected arguments.
 notEqual actual notExpected comment = 
@@ -279,4 +284,10 @@ actual_expected actual expected =
   actual_expected_comment actual expected (toString actual)
 
 
-  
+actual_predicate_comment actual pred comment = 
+  test comment <|
+    \_ ->
+      pred actual |> Expect.true "false predicate"
+
+actual_predicate actual pred =
+  actual_predicate_comment actual pred (toString actual)
