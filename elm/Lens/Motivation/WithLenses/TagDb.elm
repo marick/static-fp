@@ -23,14 +23,6 @@ empty =
   , allIds = Dict.empty
   }
 
-  
-
-idTags : Animal.Id -> Lens.Humble TagDb (Array String)
-idTags = Support.idTags
-
-tagIds : String -> Lens.Humble TagDb (Array Animal.Id)
-tagIds = Support.tagIds
-
 addAnimal : Animal.Id -> List String -> TagDb -> TagDb
 addAnimal id tags db =
   let
@@ -46,6 +38,14 @@ addTag id tag db =
       |> updateIdTags id (Array.push tag)
       |> updateTagIds tag (Array.push id)
 
+--- Exported lenses (not all should be public)
+
+idTags : Animal.Id -> Lens.Humble TagDb (Array String)
+idTags = Support.idTags
+
+tagIds : String -> Lens.Humble TagDb (Array Animal.Id)
+tagIds = Support.tagIds
+
 
 --- Helpers
 
@@ -54,7 +54,7 @@ type alias IdsMapper = Array Animal.Id -> Array Animal.Id
 
 updateIdTags : Animal.Id -> StringsMapper -> TagDb -> TagDb
 updateIdTags id = 
-  Lens.update (Support.idTags id)
+  Lens.update (idTags id)
 
 updateTagIds: String -> IdsMapper -> TagDb -> TagDb
 updateTagIds tag =
