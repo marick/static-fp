@@ -1,13 +1,13 @@
 module Lens.Motivation.WithLenses.TagDb exposing
   ( TagDb
   , empty
-  , tags
-  , ids
+  , idTags
+  , tagIds
   , addAnimal
   , addTag
   )
 
-import Lens.Motivation.WithLenses.TestAccess.TagDb as Support exposing (..)
+import Lens.Motivation.WithLenses.TestAccess.TagDb as Support
 
 import Lens.Motivation.WithLenses.Animal as Animal
 import Lens.Try3.Lens as Lens
@@ -23,17 +23,19 @@ empty =
   , allIds = Dict.empty
   }
 
-tags : Animal.Id -> TagDb -> Maybe (Array String)
-tags = idTags >> Lens.get
+  
 
-ids : String -> TagDb -> Maybe (Array Animal.Id)
-ids = tagIds >> Lens.get
-    
+idTags : Animal.Id -> Lens.Humble TagDb (Array String)
+idTags = Support.idTags
+
+tagIds : String -> Lens.Humble TagDb (Array Animal.Id)
+tagIds = Support.tagIds
+
 addAnimal : Animal.Id -> List String -> TagDb -> TagDb
 addAnimal id tags db =
   let
     withId =
-      Lens.set (idTags_upsert id) (Just Array.empty) db
+      Lens.set (Support.idTags_upsert id) (Just Array.empty) db
   in
     List.foldl (addTag id) withId tags
   
@@ -52,11 +54,11 @@ type alias IdsMapper = Array Animal.Id -> Array Animal.Id
 
 updateIdTags : Animal.Id -> StringsMapper -> TagDb -> TagDb
 updateIdTags id = 
-  Lens.update (idTags id)
+  Lens.update (Support.idTags id)
 
 updateTagIds: String -> IdsMapper -> TagDb -> TagDb
 updateTagIds tag =
-  Lens.updateWithDefault (tagIds_upsert tag) Array.empty
+  Lens.updateWithDefault (Support.tagIds_upsert tag) Array.empty
 
     
          
