@@ -72,6 +72,29 @@ compose_humble_with_humble =
           ]
       ]
   
+compose_classic_with_humble : Test
+compose_classic_with_humble =
+  let
+    lens = Lens.classicAndHumble Tuple2.second (Array.lens 1)
+    (original, present, missing) = humbleLawSupport
+
+    whole zeroElt oneElt =
+      ( Array.fromList zeroElt
+      , Array.fromList oneElt
+      )
+  in
+    describe "classic + humble"
+      [ describe "update"
+          [ upt lens   (whole [] [])   (whole [] [])
+          , upt lens   (whole [] [3])   (whole [] [3])
+          , upt lens   (whole [] [5, 3])   (whole [] [5, -3])
+          ]
+      , describe "laws"
+          [ present lens  (whole [] ['a', original])
+          , missing lens  (whole [] ['a'])               "short"
+          ]
+      ]
+  
 
       
 compose_upsert_with_classic : Test

@@ -46,6 +46,10 @@ classicAndUpsert (Tagged a2b) (Tagged b2c) =
     (composeGets a2b.get b2c.get)
     (composeSets a2b.get b2c.set a2b.set)
 
+classicAndHumble : Lens.Classic a b -> Lens.Humble b c -> Lens.Humble a c
+classicAndHumble a2b b2c = 
+  humbleAndHumble (classicToHumble a2b) b2c
+
 upsertAndClassic : Lens.Upsert a b -> Lens.Classic b c -> Lens.Humble a c
 upsertAndClassic a2b b2c =
   humbleAndHumble
