@@ -1,11 +1,12 @@
 module Lens.Motivation.WithLenses.Model exposing (..)
 
 import Lens.Motivation.WithLenses.Animal as Animal exposing (Animal)
+import Lens.Motivation.WithLenses.TagDb as TagDb exposing (TagDb)
+import Lens.Motivation.WithLenses.TagDb as TagDb exposing (TagDb)
 import Lens.Try3.Lens as Lens 
 import Lens.Try3.Compose as Compose
-import Dict exposing (Dict)
 import Lens.Try3.Dict as Dict
-import Array
+import Dict exposing (Dict)
 
 
 type alias Model =
@@ -16,20 +17,13 @@ animals : Lens.Classic Model (Dict Animal.Id Animal)
 animals =
   Lens.classic .animals (\animals model -> { model | animals = animals })
 
-animal : Animal.Id -> Lens.Upsert Model Animal
-animal id =
+oneAnimal : Animal.Id -> Lens.Upsert Model Animal
+oneAnimal id =
   Compose.classicAndUpsert animals (Dict.lens id)
 
 updateAnimal : Animal.Id -> (Animal -> Animal) -> Model -> Model
 updateAnimal id =
-  Lens.update (animal id)
-
-
--- An alternate example    
-    
-animalTags : Animal.Id -> Lens.Humble Model Animal.Tags
-animalTags id =
-  Compose.upsertAndClassic (animal id) Animal.tags
+  Lens.update (oneAnimal id)
   
 addAnimalTag : Animal.Id -> String -> Model -> Model
 addAnimalTag id tag =

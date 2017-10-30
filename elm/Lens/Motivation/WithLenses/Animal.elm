@@ -18,6 +18,3 @@ tags = Lens.classic .tags (\tags animal -> { animal | tags = tags })
 addTag : String -> Animal -> Animal
 addTag tag animal = 
   Lens.update tags (Array.push tag) animal
-
-emptyTags : Animal -> Animal
-emptyTags = Lens.set tags Array.empty 
