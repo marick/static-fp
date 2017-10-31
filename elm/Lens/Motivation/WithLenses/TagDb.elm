@@ -1,8 +1,6 @@
 module Lens.Motivation.WithLenses.TagDb exposing
   ( TagDb
   , empty
-  , idTags
-  , tagIds
   , addAnimal
   , addTag
   )
@@ -38,14 +36,6 @@ addTag id tag db =
       |> updateIdTags id (Array.push tag)
       |> updateTagIds tag (Array.push id)
 
---- Exported lenses (not all should be public)
-
-idTags : Animal.Id -> Lens.Humble TagDb (Array String)
-idTags = Support.idTags
-
-tagIds : String -> Lens.Humble TagDb (Array Animal.Id)
-tagIds = Support.tagIds
-
 
 --- Helpers
 
@@ -54,7 +44,7 @@ type alias IdsMapper = Array Animal.Id -> Array Animal.Id
 
 updateIdTags : Animal.Id -> StringsMapper -> TagDb -> TagDb
 updateIdTags id = 
-  Lens.update (idTags id)
+  Lens.update (Support.idTags id)
 
 updateTagIds: String -> IdsMapper -> TagDb -> TagDb
 updateTagIds tag =

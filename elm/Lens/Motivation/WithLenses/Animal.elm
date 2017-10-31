@@ -1,4 +1,8 @@
-module Lens.Motivation.WithLenses.Animal exposing (..)
+module Lens.Motivation.WithLenses.Animal exposing
+  ( Animal
+  , Id
+  , addTag
+  )
 
 import Array exposing (Array)
 import Lens.Try3.Lens as Lens

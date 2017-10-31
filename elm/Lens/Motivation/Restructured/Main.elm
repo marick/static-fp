@@ -3,9 +3,7 @@ module Lens.Motivation.Restructured.Main exposing (..)
 import Lens.Motivation.Restructured.Model as Model exposing (Model)
 import Lens.Motivation.Restructured.Animal as Animal exposing (Animal)
 import Lens.Motivation.Restructured.TagDb as TagDb exposing (TagDb)
-import Lens.Try3.Lens as Lens
 import Dict
-import Array
 
 type Msg 
   = AddTag3 Animal.Id String
