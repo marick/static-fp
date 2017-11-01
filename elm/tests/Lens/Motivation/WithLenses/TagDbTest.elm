@@ -8,6 +8,7 @@ import Dict
 import Array
 
 import Lens.Motivation.WithLenses.TagDb as Db
+import Lens.Motivation.WithLenses.TestAccess.TagDb as Db
 
 tags = Lens.get << Db.idTags
 ids = Lens.get << Db.tagIds
