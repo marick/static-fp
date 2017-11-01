@@ -1,16 +1,16 @@
 module Lens.Try3.Result exposing
-  ( okLens
-  , errLens
+  ( ok
+  , err
   )
 
 import Lens.Try3.Lens as Lens
 
-okLens : Lens.OneCase (Result err ok) ok
-okLens =
+ok : Lens.OneCase (Result err ok) ok
+ok =
   Lens.oneCase Result.toMaybe Ok
 
-errLens : Lens.OneCase (Result err ok) err
-errLens =
+err : Lens.OneCase (Result err ok) err
+err =
   let
     get big =
       case big of

@@ -15,7 +15,7 @@ import Lens.Try3.Tuple4 as Tuple4
 import Lens.Try3.Dict as Dict
 import Lens.Try3.Array as Array
 import Lens.Try3.Result as Result
-
+import Lens.Try3.Maybe as Maybe
 
 
 
@@ -130,11 +130,14 @@ humbleLaws =
 oneCaseUpdate : Test
 oneCaseUpdate =
   describe "update for various common base types (one-case lenses)"
-    [ upt Result.okLens (Ok  3)  (Ok  -3)
-    , upt Result.okLens (Err 3)  (Err  3)
+    [ upt Result.ok (Ok  3)  (Ok  -3)
+    , upt Result.ok (Err 3)  (Err  3)
 
-    , upt Result.errLens (Ok  3) (Ok   3)
-    , upt Result.errLens (Err 3) (Err -3)
+    , upt Result.err (Ok  3) (Ok   3)
+    , upt Result.err (Err 3) (Err -3)
+
+    , upt Maybe.just (Just 3)  (Just  -3)
+    , upt Maybe.just Nothing   Nothing
     ]
 
       
@@ -144,7 +147,9 @@ oneCaseLaws =
     legal = Laws.onePart
   in
     describe "oneCase lenses obey the oneCase lens laws"
-      [ legal Result.okLens   Ok      "okLens"
-      , legal Result.errLens Err      "errLens"
+      [ legal Result.ok   Ok      "ok lens"
+      , legal Result.err  Err     "err lens"
+
+      , legal Maybe.just  Just    "just lens"
       ]
 

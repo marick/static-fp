@@ -49,7 +49,7 @@ upsert_humble =
 oneCase_humble : Test
 oneCase_humble =
   let
-    lens = Lens.oneCaseToHumble Result.okLens
+    lens = Lens.oneCaseToHumble Result.ok
     (original, present, missing) = humbleLawSupport
   in
     describe "one-part to humble lens"

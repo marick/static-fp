@@ -95,14 +95,14 @@ humblePartMissing lens whole inputValues why =
 
 gotten_part_can_be_set_back (Tagged {get, set}) whole part  =
   describe "if `get` succeeds, `set` recreates the sum type value"
-    [ equal_ (get whole)    (Just part) 
-    , equal_ (set part)     whole
+    [ equal  (get whole)    (Just part)   "whole is set up correctly"
+    , equal  (set part)     whole         "law is upheld"
     ]
 
 set_part_can_be_gotten_back (Tagged {get, set}) whole part =
   describe "`get` always retrieves what `set` sets"
-    [ equal_      (set part)     whole
-    , equal_ (get (set part))    (Just part)
+    [ equal       (set part)     whole          "whole and part match"
+    , equal  (get (set part))    (Just part)    "law is upheld"
     ]
     
 onePart lens constructor comment =
