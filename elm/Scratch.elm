@@ -25,22 +25,12 @@ Functions defined here are easy to use in the repl. Here are two ways:
 > length2 [1, 2] ["3", "4"]
 4 : Int
 
-If you change something in this file, repeat the `import` statement to
-make it available. NOTE: if you use the `exposing` form, and you want
-the changed functions to stay available without qualification by the
-module name, you have to repeat the whole line, including `exposing (..)`. 
+Once you've successfully(*) imported a module, the Elm repl will
+automatically reload it whenever you change it. So if you've typed
+an expression that didn't work and then change the module, simply redo the
+expression to try the new version.
+
+(*) If you get errors while importing the module, Elm won't automatically
+retry when the module changes. You need to manually redo the import.
 
 -}
-
-type LinkedList a 
-  = Node a (LinkedList a)
-  | End
-
-
-circle =
-  let
-    start = Node 1 (Node 2 end)
-    end = Node 3 start
-  in
-    start
-    
