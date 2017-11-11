@@ -2,6 +2,12 @@ module Dict.Foldl exposing (..)
 
 import Dict exposing (Dict)
 
+
+{-
+   Functions are given nonsensical definitions so that the tests
+   can load this module without compiler errors.
+-}
+
 -- Exercise 1
 
 fromList : List (comparable, v) -> Dict comparable v

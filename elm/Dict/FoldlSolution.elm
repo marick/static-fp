@@ -39,12 +39,12 @@ toList dict =
 -- Exercise 4
 
 uncurry : (a1 -> a2 -> r) -> (a1, a2) -> r
-uncurry takes2Args (arg1, arg2) =
-  takes2Args arg1 arg2
+uncurry fnTaking2Args (arg1, arg2) =
+  fnTaking2Args arg1 arg2
 
 curry : ( (a1, a2) -> r) -> a1 -> a2 -> r
-curry takesTuple arg1 arg2 =
-  takesTuple (arg1, arg2)
+curry fnTakingTuple arg1 arg2 =
+  fnTakingTuple (arg1, arg2)
 
 
 -- Exercise 5
@@ -63,6 +63,5 @@ map f dict =
 -- Exercise 6
 
 withValue : (value -> result) -> (key -> value -> result)
-withValue f key value =
-  f value 
+withValue f key = f 
   
