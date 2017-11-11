@@ -1,4 +1,4 @@
-module Lens.Motivation.OneCase.BoxTest exposing (..)
+module Lens.Try3.Exercises.BoxTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
@@ -10,7 +10,7 @@ import Lens.Try3.Compose as Lens
 import Lens.Try3.Tuple2 as Tuple2
 import Lens.Try3.Result as Result
 
-import Lens.Motivation.OneCase.BoxSolution as Box
+import Lens.Try3.Exercises.BoxSolution as Box
   exposing (Box(..), Contents(..))
 
 -- Exercise 1    

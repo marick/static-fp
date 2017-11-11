@@ -1,4 +1,4 @@
-module Lens.Motivation.OneCase.BoxSolution exposing (..)
+module Lens.Try3.Exercises.BoxSolution exposing (..)
 
 import Lens.Try3.Lens as Lens
 import Lens.Try3.Compose as Compose
