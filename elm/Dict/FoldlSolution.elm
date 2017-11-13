@@ -14,14 +14,27 @@ fromList list =
 
 -- Exercise 2
 
+-- reverse : Dict comparableKey comparableVal
+--        -> Dict comparableVal comparableKey
+-- reverse dict = 
+--   let
+--     step k v acc =
+--       Dict.insert v k acc
+--   in
+--     Dict.foldl step Dict.empty dict
+
 reverse : Dict comparableKey comparableVal
        -> Dict comparableVal comparableKey
 reverse dict = 
-  let
-    step k v acc =
-      Dict.insert v k acc
-  in
-    Dict.foldl step Dict.empty dict
+  Dict.foldl (flip Dict.insert) Dict.empty dict
+
+
+reverse2 : Dict comparableKey comparableVal
+        -> Dict comparableVal comparableKey
+reverse2 = 
+  Dict.foldl (flip Dict.insert) Dict.empty
+
+
 
 -- Exercise 3
       
@@ -41,6 +54,11 @@ toList dict =
 uncurry : (a1 -> a2 -> r) -> (a1, a2) -> r
 uncurry fnTaking2Args (arg1, arg2) =
   fnTaking2Args arg1 arg2
+
+fromList2 : List (comparable, v) -> Dict comparable v
+fromList2 =
+  List.foldl (uncurry Dict.insert) Dict.empty
+    
 
 curry : ( (a1, a2) -> r) -> a1 -> a2 -> r
 curry fnTakingTuple arg1 arg2 =
