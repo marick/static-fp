@@ -1,10 +1,9 @@
 module Array.ListGet exposing (..)
 
 
--- This shows that lists are
--- traversed in linear time.
+-- This code reveals that lists are traversed in linear time.
 
-get : Int -> (List a) -> Maybe a
+get : Int -> List a -> Maybe a
 get n list =
   case compare n 0 of
     LT -> Nothing
