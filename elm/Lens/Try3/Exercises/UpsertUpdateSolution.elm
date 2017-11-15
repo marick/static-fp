@@ -82,10 +82,6 @@ upsert2 get set =
         Just small ->
           set (Just <| f small) big
   in
-    Tagged
-    { get = get
-    , set = set
-    , update = update
-    }
+    Tagged { get = get, set = set, update = update }
 
 type IsUnused = IsUnused IsUnused

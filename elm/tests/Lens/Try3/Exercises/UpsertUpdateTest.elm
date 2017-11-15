@@ -11,8 +11,9 @@ import Lens.Try3.Laws as Laws
 
 
 
--- We need our own implementation of `Dict.lens` because of our own
--- implementation of `Lens.Upsert`. 
+-- We need our own implementation of `Dict.lens` because 
+-- `Lens.Try3.Dict` imports `Lens.Try3.Lens`, and that 
+-- module is the one we're rewriting. 
 
 dictLens : comparable -> Lens.Upsert (Dict comparable val) val
 dictLens key =
