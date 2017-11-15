@@ -44,9 +44,9 @@ classic lens whole inputValues comment =
 -- when the whole already contains the part.
 humble_set_part_can_be_gotten
   (Tagged {get, set}) whole {original, new}  =
-  describe "when a part is present, set overwrites it"
-    [ notEqual original new                           "sensible test values"  
-    , equal  (get          whole)    (Just original)  "appropriate `whole`"
+  describe "when a part is present, `set` overwrites it"
+    [ 
+      equal  (get          whole)    (Just original)  "appropriate `whole`"
     , equal_ (get (set new whole))   (Just new)
     ]
 
@@ -69,9 +69,9 @@ humble_does_not_create
     ]
 
 -- Laws are separated into present/missing cases because some types
--- will have more than one for an part to be missing
+-- will have more than one way for a part to be missing
     
-humblePartPresent lens whole inputValues = 
+humblePartPresent lens whole ({original, new} as inputValues) = 
   describe "part present"
     [ humble_set_part_can_be_gotten
         lens whole inputValues
@@ -81,6 +81,9 @@ humblePartPresent lens whole inputValues =
 
     , set_changes_only_the_given_part  -- Note we can reuse lens law
         lens whole inputValues
+
+    -- check for test-writer mistakes
+    , notEqual original new           "equal values would be a weak test case"  
     ]
 
 humblePartMissing lens whole inputValues why = 
