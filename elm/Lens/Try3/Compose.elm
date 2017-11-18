@@ -14,18 +14,18 @@ classicToHumble (Tagged lens) =
 upsertToHumble : Lens.Upsert big small -> Lens.Humble big small
 upsertToHumble (Tagged lens) =
   let
-    set_ small big =
+    set small big =
       lens.set (Just small) big
   in
-    Lens.humble lens.get (H.guardedSet lens.get set_)
+    Lens.humble lens.get (H.guardedSet lens.get set)
       
 oneCaseToHumble : Lens.OneCase big small -> Lens.Humble big small
 oneCaseToHumble (Tagged lens) =
   let
-    set_ small _ =
+    set small _ =
       lens.set small
   in
-    Lens.humble lens.get (H.guardedSet lens.get set_ )
+    Lens.humble lens.get (H.guardedSet lens.get set )
 
 
 {-          Composition               -}

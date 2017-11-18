@@ -1,4 +1,4 @@
-module Lens.Try3.Exercises.ComposeTest exposing (..)
+module Lens.Try3.Exercises.ComposeSolutionTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
@@ -7,18 +7,15 @@ import Dict
 import Array
 
 import Lens.Try3.Lens as Lens
-import Lens.Try3.Exercises.Compose as Compose
+import Lens.Try3.Exercises.ComposeSolution as Compose
 
 import Lens.Try3.Array as Array
 import Lens.Try3.Dict as Dict
 import Lens.Try3.Tuple2 as Tuple2
 
-oopsie = "Elm doesn't like files that contain no definitions"
-
 
 {-                 Conversions       -}
 
-{-
 classic_humble : Test
 classic_humble =
   let
@@ -31,9 +28,7 @@ classic_humble =
       , present lens   (original, "")
       -- The lens laws for a missing element do not apply.
       ]
--}
 
-{-
 upsert_humble : Test
 upsert_humble =
   let
@@ -50,11 +45,9 @@ upsert_humble =
       , missing lens  (Dict.singleton "---" original)   "wrong key"
       , missing lens   Dict.empty                       "empty"
       ]
--}
          
 {-                 Combinations       -}
 
-{-
 compose_humble_with_humble : Test
 compose_humble_with_humble =
   let
@@ -77,10 +70,8 @@ compose_humble_with_humble =
           , missing lens  (a [              ])        "missing"
           ]
       ]
--}
 
 
-{-
 compose_upsert_with_classic : Test
 compose_upsert_with_classic =
   let
@@ -101,9 +92,7 @@ compose_upsert_with_classic =
           , missing lens  Dict.empty                  "missing"
           ]
       ]
--}
 
-{-
 compose_classic_with_upsert : Test 
 compose_classic_with_upsert =
   let
@@ -128,4 +117,3 @@ compose_classic_with_upsert =
                })
             (maybeCombinations 1 2 3)
       ]
--}

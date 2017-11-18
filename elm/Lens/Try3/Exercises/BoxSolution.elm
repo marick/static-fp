@@ -60,14 +60,14 @@ oneCaseAndOneCase (Tagged a2b) (Tagged b2c) =
 oneCaseToHumble : Lens.OneCase big small -> Lens.Humble big small
 oneCaseToHumble (Tagged lens) =
   let
-    set_ small big =
+    set small big =
       case lens.get big of
         Nothing ->
           big
         Just _ ->
           lens.set small
   in
-    Lens.humble lens.get set_
+    Lens.humble lens.get set
 
 -- Problem 3
 

@@ -74,14 +74,14 @@ upsert : (big -> Maybe small)
       -> Upsert big small
 upsert get upserter remove =
   let
-    set_ maybe = 
+    set maybe = 
       case maybe of
         Nothing ->
           remove
         Just val -> 
           upserter val
   in
-    upsert2 get set_
+    upsert2 get set
 
 upsert2 : (big -> Maybe small)
         -> (Maybe small -> big -> big)
