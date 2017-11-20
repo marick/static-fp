@@ -77,10 +77,10 @@ humbleAndHumble (Tagged a2b) (Tagged b2c) =
 -----------------
 
 composeGets : (a -> b) -> (b -> c) -> (a -> c)
-composeGets getB getC =
-  getB >> getC
+composeGets aGetB aGetC =
+  aGetB >> aGetC
 
 composeSets : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c -> a -> a)
-composeSets getB setB setA c a =
-  setA (getB a |> setB c) a
+composeSets aGetB bSetC aSetB c a =
+  aSetB (aGetB a |> bSetC c) a
 
