@@ -129,3 +129,18 @@ compose_classic_with_upsert =
             (maybeCombinations 1 2 3)
       ]
 -}
+
+
+{-
+compose_classic_with_classic : Test 
+compose_classic_with_classic =
+  let
+    lens = Compose.classicAndClassic Tuple2.first Tuple2.second
+    (original, legal) = classicLawSupport
+  in
+    describe "lens plus lens"
+      [ upt   lens (("",        3), "")
+                   (("",       -3), "")
+      , legal lens (("", original), "")
+      ]
+-}

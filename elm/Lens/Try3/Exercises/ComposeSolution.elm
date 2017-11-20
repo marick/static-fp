@@ -54,8 +54,23 @@ upsertAndClassic a2b b2c =
 classicAndUpsert : Classic a b -> Upsert b c -> Upsert a c
 classicAndUpsert (Tagged a2b) (Tagged b2c) =
   let
+    get =
+      a2b.get >> b2c.get
+      
     set small big =
       a2b.set (a2b.get big |> b2c.set small) big
   in
-    Lens.upsert2 (a2b.get >> b2c.get) set
+    Lens.upsert2 get set
   
+classicAndClassic : Classic a b -> Classic b c -> Classic a c
+classicAndClassic (Tagged a2b) (Tagged b2c) =
+  let
+    get =
+      a2b.get >> b2c.get
+      
+    set small big =
+      a2b.set (a2b.get big |> b2c.set small) big
+  in
+    Lens.classic get set
+  
+      
