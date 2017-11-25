@@ -7,8 +7,12 @@ import Lens.Try3.Laws as Laws
 import Lens.Try3.Lens as Lens
 import List.Extra as List
 
-upt lens whole expected =
-  equal_ (Lens.update lens negate whole) expected
+-- "update test (with ....)"
+uptWith f lens whole expected = 
+  equal_ (Lens.update lens f whole) expected
+
+-- "update test, uses `negate` by default"
+upt = uptWith negate
 
 classicLawSupport =
   let 
