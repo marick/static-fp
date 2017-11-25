@@ -1,4 +1,4 @@
-module Lens.Try3.Exercises.BoxTest exposing (..)
+module Lens.Try3.Exercises.BoxSolutionTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
@@ -10,14 +10,11 @@ import Lens.Try3.Compose as Lens
 import Lens.Try3.Tuple2 as Tuple2
 import Lens.Try3.Result as Result
 
-import Lens.Try3.Exercises.Box as Box
+import Lens.Try3.Exercises.BoxSolution as Box
   exposing (Box(..), Contents(..))
-
-whyThis = "Because Elm wants something defined in each module"
 
 -- Exercise 2
 
-{-
 chainedCases : Test
 chainedCases =
   let
@@ -34,11 +31,9 @@ chainedCases =
         [ legal lens   (Creamy >> Contents)      "round trips work"
         ]
       ]
--}
 
 -- Exercise 3
 
-{-
 oneCaseTohumble : Test
 oneCaseTohumble =
   let
@@ -52,12 +47,11 @@ oneCaseTohumble =
       , present lens (Creamy original)
       , missing lens (Chunky original)   "different case"
       ]
--}
       
 
 -- Exercise 4
 
-{-
+
 oneCaseAndClassic : Test
 oneCaseAndClassic =
   let
@@ -71,5 +65,4 @@ oneCaseAndClassic =
       , present lens (Ok (original, ""))
       , missing lens (Err original)   "different case"
       ]
--}
       
