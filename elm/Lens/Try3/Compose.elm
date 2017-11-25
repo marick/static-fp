@@ -73,6 +73,11 @@ humbleAndHumble (Tagged a2b) (Tagged b2c) =
   in
     Lens.humble get set
 
+oneCaseAndClassic : Lens.OneCase a b -> Lens.Classic b c -> Lens.Humble a c
+oneCaseAndClassic a2b b2c =
+  humbleAndHumble
+    (oneCaseToHumble a2b)
+    (classicToHumble b2c)
 
 -----------------
 

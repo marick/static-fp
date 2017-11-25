@@ -10,6 +10,7 @@ import Lens.Try3.Compose as Lens
 import Lens.Try3.Tuple2 as Tuple2
 import Lens.Try3.Dict as Dict
 import Lens.Try3.Array as Array
+import Lens.Try3.Result as Result
 
 compose_classic_with_classic : Test 
 compose_classic_with_classic =
@@ -118,3 +119,19 @@ compose_upsert_with_classic =
           ]
       ]
   
+
+compose_onecase_and_classic : Test
+compose_onecase_and_classic =
+  let
+    lens = Lens.oneCaseAndClassic Result.ok Tuple2.first
+    (original, present, missing) = humbleLawSupport
+  in
+    describe "one-case and classic"
+      [ upt lens  (Ok  (3, ""))    (Ok  (-3, ""))
+      , upt lens  (Err (3, ""))    (Err ( 3, ""))
+
+      , present lens (Ok (original, ""))
+      , missing lens (Err original)   "different case"
+      ]
+      
+      
