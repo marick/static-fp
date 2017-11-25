@@ -21,3 +21,20 @@ solid =
           Nothing
   in
     Lens.oneCase get Solid
+
+
+linearGradient : Lens.OneCase Fill (Color, Color, Float)
+linearGradient =
+  let 
+    get big =
+      case big of
+        LinearGradient c1 c2 f ->
+          Just (c1, c2, f)
+        _ ->
+          Nothing
+
+    set (c1, c2, f) =
+      LinearGradient c1 c2 f
+  in
+    Lens.oneCase get set
+      
