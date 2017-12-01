@@ -153,7 +153,7 @@ oneCase : (big -> Maybe small)
         -> OneCase big small
 oneCase get set =
   let
-    update_ f big =
+    update f big =
       case get big of
         Nothing ->
           big
@@ -163,7 +163,7 @@ oneCase get set =
     Tagged
     { get = get
     , set = set
-    , update = update_
+    , update = update
     }
 
 {-                 Util                        -}
