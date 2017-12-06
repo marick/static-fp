@@ -2,7 +2,6 @@ module Lens.Try3.Exercises.BoxSolution exposing (..)
 
 import Lens.Try3.Lens as Lens
 import Lens.Try3.Compose as Compose
-import Lens.Try3.Maybe as Maybe
 import Lens.Try3.Tuple2 as Tuple2
 import Tagged exposing (Tagged(..))
 

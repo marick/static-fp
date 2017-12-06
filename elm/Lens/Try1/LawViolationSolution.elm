@@ -4,6 +4,7 @@ import Lens.Try1.Lens as Lens
 
 type Sum a = Sum a a 
   
+lens1 : Lens.Classic (Sum a) a
 lens1 =
   let
     get (Sum first _) =
@@ -14,6 +15,7 @@ lens1 =
     Lens.classic get set
 
 
+lens2 : Lens.Classic (Sum a) a
 lens2 =
   let
     get (Sum first _) =
@@ -23,6 +25,7 @@ lens2 =
   in
     Lens.classic get set
        
+lens3 : Lens.Classic (Sum Int) Int
 lens3 =
   let
     get (Sum first _) =
