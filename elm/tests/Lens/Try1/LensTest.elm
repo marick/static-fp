@@ -97,7 +97,7 @@ recordPlusRecordObeysLaws =
 
     a = { b = { c = "OLD" } }
   in
-    lensLaws "compose 2 lenses" a2c a "NEW" "overwritten"
+    lensLaws "compose record lenses" a2c a "NEW" "overwritten"
 
 {- This doesn't compile
       
@@ -108,7 +108,7 @@ dictPlusLensObeysLaws =
 
     a = Dict.singleton "b" (1, "OLD") 
   in
-    describe "dict + lens" 
+    describe "compose dict and tuple lenses" 
       [ lensLaws "Just"    a2c a (Just "NEW")  (Just "overwritten")
       , lensLaws "Nothing" a2c a  Nothing      (Just "overwritten")
       ] 
