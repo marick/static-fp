@@ -89,3 +89,21 @@ composeSets : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c -> a -> a)
 composeSets aGetB bSetC aSetB c a =
   aSetB (aGetB a |> bSetC c) a
 
+-----------------
+-- Identities are used in the chapter on monoids.
+
+classicIdentity : Lens.Classic big big
+classicIdentity =
+  let
+    set newBig _ = newBig
+  in
+    Lens.classic identity set
+
+
+humbleIdentity : Lens.Humble big big
+humbleIdentity =
+  let
+    set newBig _ = newBig
+  in
+    Lens.humble (identity >> Just) set
+      
