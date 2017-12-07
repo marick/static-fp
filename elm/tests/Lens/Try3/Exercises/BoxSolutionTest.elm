@@ -13,13 +13,13 @@ import Lens.Try3.Result as Result
 import Lens.Try3.Exercises.BoxSolution as Box
   exposing (Box(..), Contents(..))
 
--- Exercise 2
+-- Exercise 3
 
 chainedCases : Test
 chainedCases =
   let
     lens = Box.oneCaseAndOneCase Box.contents Box.creamy
-    legal = Laws.onePart
+    legal = Laws.oneCase
   in
     describe "oneCase + oneCase"
       [ describe "update"
@@ -32,7 +32,7 @@ chainedCases =
         ]
       ]
 
--- Exercise 3
+-- Exercise 4
 
 oneCaseTohumble : Test
 oneCaseTohumble =
@@ -49,7 +49,7 @@ oneCaseTohumble =
       ]
       
 
--- Exercise 4
+-- Exercise 5
 
 
 oneCaseAndClassic : Test

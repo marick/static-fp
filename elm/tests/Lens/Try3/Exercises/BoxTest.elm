@@ -15,14 +15,14 @@ import Lens.Try3.Exercises.Box as Box
 
 whyThis = "Because Elm wants something defined in each module"
 
--- Exercise 2
+-- Exercise 3
 
 {-
 chainedCases : Test
 chainedCases =
   let
     lens = Box.oneCaseAndOneCase Box.contents Box.creamy
-    legal = Laws.onePart
+    legal = Laws.oneCase
   in
     describe "oneCase + oneCase"
       [ describe "update"
@@ -36,7 +36,7 @@ chainedCases =
       ]
 -}
 
--- Exercise 3
+-- Exercise 4
 
 {-
 oneCaseTohumble : Test
@@ -55,7 +55,7 @@ oneCaseTohumble =
 -}
       
 
--- Exercise 4
+-- Exercise 5
 
 {-
 oneCaseAndClassic : Test

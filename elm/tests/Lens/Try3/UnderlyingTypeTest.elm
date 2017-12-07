@@ -144,7 +144,7 @@ oneCaseUpdate =
 oneCaseLaws : Test
 oneCaseLaws =
   let
-    legal = Laws.onePart
+    legal = Laws.oneCase
   in
     describe "oneCase lenses obey the oneCase lens laws"
       [ legal Result.ok   Ok      "ok lens"
