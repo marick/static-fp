@@ -1,4 +1,8 @@
-module Lens.Motivation.Restructured.Animal exposing (..)
+module Lens.Motivation.Restructured.Animal exposing
+  ( Animal
+  , Id
+  , named
+  )
 
 import Array exposing (Array)
 import Lens.Try3.Lens as Lens
@@ -10,3 +14,8 @@ type alias Animal =
   , name : String
   }
 
+named : String -> Id -> Animal
+named name id =
+  { id = id
+  , name = name
+  }

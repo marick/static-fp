@@ -27,10 +27,7 @@ init =
   }
   
 startingAnimal : Animal
-startingAnimal =
-  { id = 3838
-  , name = "Genesis"
-  }
+startingAnimal = Animal.named "Genesis" 3838
 
 ---
   

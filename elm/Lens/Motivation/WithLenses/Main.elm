@@ -27,13 +27,10 @@ init =
   { animals = 
       Dict.singleton startingAnimal.id startingAnimal
   }
-  
+
 startingAnimal : Animal
 startingAnimal =
-  { id = 3838
-  , name = "Genesis"
-  , tags = Array.fromList ["mare"]
-  }
+  Animal.named "Genesis" 3838 |> Animal.addTag "mare"
 
 ---
   
