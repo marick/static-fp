@@ -12,6 +12,10 @@ infixl 0 ..>>
 (.^>>) = Compose.classicAndUpsert
 infixl 0 .^>>
 
+(.?>>) : Lens.Classic a b -> Lens.Humble b c -> Lens.Humble a c
+(.?>>) = Compose.classicAndHumble
+infixl 0 .?>>
+
 (^.>>) : Lens.Upsert a b -> Lens.Classic b c -> Lens.Humble a c
 (^.>>) = Compose.upsertAndClassic
 infixl 0 ^.>>
@@ -19,6 +23,10 @@ infixl 0 ^.>>
 (??>>) : Lens.Humble a b -> Lens.Humble b c -> Lens.Humble a c
 (??>>) = Compose.humbleAndHumble
 infixl 0 ??>>
+
+(?.>>) : Lens.Humble a b -> Lens.Classic b c -> Lens.Humble a c
+(?.>>) = Compose.humbleAndClassic
+infixl 0 ?.>>
 
 (|.>>) : Lens.OneCase a b -> Lens.Classic b c -> Lens.Humble a c
 (|.>>) = Compose.oneCaseAndClassic
