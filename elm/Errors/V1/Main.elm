@@ -1,7 +1,8 @@
 module Errors.V1.Main exposing (..)
 
 import Errors.V1.Basics exposing (..)
-import Errors.V1.Model as Model exposing (Msg(..), Model)
+import Errors.V1.Msg exposing (Msg(..))
+import Errors.V1.Model as Model exposing (Model)
 import Errors.V1.View as View 
 
 import Lens.Try3.Lens as Lens

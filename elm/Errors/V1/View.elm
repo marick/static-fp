@@ -1,6 +1,7 @@
 module Errors.V1.View exposing (view)
 
-import Errors.V1.Model exposing (Msg(..), Model)
+import Errors.V1.Msg exposing (Msg(..))
+import Errors.V1.Model exposing (Model)
 import Errors.V1.Word exposing (Word)
 
 import Html exposing (..)

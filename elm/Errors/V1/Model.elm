@@ -1,10 +1,10 @@
 module Errors.V1.Model exposing
-  ( Msg(..)
-  , Model
+  ( Model
   , init
 
   , clickCount
   , beloved
+  , word
   , wordCount
   )
 
@@ -18,9 +18,6 @@ import Lens.Try3.Dict as Dict
 import Lens.Try3.Array as Array
 
 
-type Msg
-  = EmphasizeWord String Int
-
 {- Model -}
     
 type alias Model =
@@ -30,7 +27,7 @@ type alias Model =
   }
 
   
-init : (Model, Cmd Msg)
+init : (Model, Cmd msg)
 init =
   ( { words = Dict.singleton "Dawn" (Array.fromList Word.all)
     , beloved = "Dawn"
@@ -53,6 +50,10 @@ beloved =
 words : Lens.Classic Model (Dict String (Array Word))
 words =
   Lens.classic .words (\words model -> { model | words = words })
+
+word : String -> Int -> Lens.Humble Model Word
+word who index =
+  words .?>> Dict.humbleLens who ??>> Array.lens index
 
 wordCount : String -> Int -> Lens.Humble Model Int
 wordCount who index =
