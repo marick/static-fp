@@ -3,6 +3,7 @@ module Lens.Try3.Lens exposing (..)
 
 import Tagged exposing (Tagged(..))
 import Lens.Try3.Helpers as H
+import Maybe.Extra as Maybe
 
 {- By radically widening the types, we can have `get`, `set`, and
    `update` that work with different kinds of lenses.
@@ -29,12 +30,10 @@ update (Tagged lens) =
 type alias GenericMaybe big small setter updater =
   Generic (big -> Maybe small) setter updater 
     
-hasJust : Tagged tag (GenericMaybe big small setter updater)
+exists : Tagged tag (GenericMaybe big small setter updater)
        -> big -> Bool
-hasJust (Tagged lens) whole = 
-  case lens.get whole of
-    Nothing -> False
-    _ -> True
+exists (Tagged lens) whole =
+  lens.get whole |> Maybe.isJust
   
     
 
