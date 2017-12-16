@@ -12,18 +12,18 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   model
     |> Lens.update Model.clickCount increment 
-    |> emphasizeWord msg 
+    |> emphasizeWord msg
+    |> noCmd
 
-emphasizeWord : Msg -> Model -> (Model, Cmd Msg)
+emphasizeWord : Msg -> Model -> Model
 emphasizeWord (EmphasizeWord person index) model =
   case Lens.exists (Model.word person index) model of
     False ->
-      noCmd model
+      model
     True ->
       model
         |> Lens.set Model.beloved person
         |> Lens.update (Model.wordCount person index) increment
-        |> noCmd
 
 noCmd : Model -> (Model, Cmd Msg)
 noCmd model = (model, Cmd.none)
