@@ -26,17 +26,18 @@ update : Tagged tag (Generic getter setter updater) -> updater
 update (Tagged lens) =
   lens.update
 
+
+{- Handling Maybe -}
+
 -- A generic type for all lenses whose getters return `Maybe`.
 type alias GenericMaybe big small setter updater =
   Generic (big -> Maybe small) setter updater 
-    
+
 exists : Tagged tag (GenericMaybe big small setter updater)
        -> big -> Bool
 exists (Tagged lens) whole =
   lens.get whole |> Maybe.isJust
   
-    
-
 {-                  Classic Lenses             -}
 
 type ClassicTag = ClassicTag IsUnused
@@ -136,6 +137,19 @@ humble get set =
   , update = H.guardedUpdate get set
   }
 
+setM : Humble big small -> small -> big -> Maybe big
+setM (Tagged lens) small big =
+  case lens.get big of
+    Nothing -> Nothing
+    Just _ -> Just <| lens.set small big
+    
+
+updateM : Humble big small -> (small -> small) -> big -> Maybe big
+updateM (Tagged lens) f big =
+  case lens.get big of
+    Nothing -> Nothing
+    Just small -> Just <| lens.set (f small) big
+    
 
 {-                  OneCase Lenses               -}
 
