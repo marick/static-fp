@@ -1,4 +1,4 @@
-module Errors.V1.Main exposing (..)
+module Errors.V1.Main3 exposing (..)
 
 import Errors.V1.Basics exposing (..)
 import Errors.V1.Msg exposing (Msg(..))
@@ -10,14 +10,15 @@ import Html
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case msg of 
-    EmphasizeWord person index -> 
+  case msg of
+    EmphasizeWord person index ->
       model
-        |> Lens.update Model.clickCount increment
-        |> Lens.set Model.beloved person
-        |> Lens.update (Model.wordCount person index) increment
+        |> Lens.update Model.clickCount increment 
+        |> Lens.updateM (Model.wordCount person index) increment
+        |> Maybe.map (Lens.set Model.beloved person)
+        |> Maybe.withDefault model
         |> noCmd
-  
+
 noCmd : Model -> (Model, Cmd Msg)
 noCmd model = (model, Cmd.none)
 
@@ -29,3 +30,4 @@ main =
     , update = update
     , subscriptions = always Sub.none
     }
+

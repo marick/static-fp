@@ -10,13 +10,15 @@ import Html
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  model
-    |> Lens.update Model.clickCount increment 
-    |> emphasizeWord msg
-    |> noCmd
+  case msg of
+    EmphasizeWord person index ->
+      model
+        |> Lens.update Model.clickCount increment 
+        |> maybeEmphasizeWord person index
+        |> noCmd
 
-emphasizeWord : Msg -> Model -> Model
-emphasizeWord (EmphasizeWord person index) model =
+maybeEmphasizeWord : String -> Int -> Model -> Model
+maybeEmphasizeWord person index model =
   case Lens.exists (Model.word person index) model of
     False ->
       model
