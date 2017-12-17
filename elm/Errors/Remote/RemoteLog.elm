@@ -1,10 +1,10 @@
-module Errors.V2.RemoteLog exposing (..)
+module Errors.Remote.RemoteLog exposing (..)
 
 import Http
 import Json.Encode as Encode
 import Json.Decode as Decode
-import Errors.V2.Msg exposing (Msg(..))
-import Errors.V1.Model exposing (Model)
+import Errors.Remote.Msg exposing (Msg(..))
+import Errors.Simple.Model exposing (Model)
 
 destination : String
 destination = "http://logger.outsidefp.com"

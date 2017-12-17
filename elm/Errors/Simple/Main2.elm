@@ -1,9 +1,9 @@
-module Errors.V1.Main2 exposing (..)
+module Errors.Simple.Main2 exposing (..)
 
-import Errors.V1.Basics exposing (..)
-import Errors.V1.Msg exposing (Msg(..))
-import Errors.V1.Model as Model exposing (Model)
-import Errors.V1.View as View 
+import Errors.Simple.Basics exposing (..)
+import Errors.Simple.Msg exposing (Msg(..))
+import Errors.Simple.Model as Model exposing (Model)
+import Errors.Simple.View as View 
 
 import Lens.Try3.Lens as Lens
 import Html

@@ -1,8 +1,8 @@
-module Errors.V2.View exposing (view)
+module Errors.Simple.View exposing (view)
 
-import Errors.V2.Msg exposing (Msg(..))
-import Errors.V1.Model exposing (Model)
-import Errors.V1.Word exposing (Word)
+import Errors.Simple.Msg exposing (Msg(..))
+import Errors.Simple.Model exposing (Model)
+import Errors.Simple.Word exposing (Word)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)

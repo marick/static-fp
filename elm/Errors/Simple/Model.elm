@@ -1,4 +1,4 @@
-module Errors.V1.Model exposing
+module Errors.Simple.Model exposing
   ( Model
   , init
 
@@ -8,7 +8,7 @@ module Errors.V1.Model exposing
   , wordCount
   )
 
-import Errors.V1.Word as Word exposing (Word)
+import Errors.Simple.Word as Word exposing (Word)
 
 import Lens.Try3.Lens as Lens 
 import Lens.Try3.Compose.Operators exposing (..)

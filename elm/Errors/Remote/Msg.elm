@@ -1,4 +1,4 @@
-module Errors.V2.Msg exposing (Msg(..))
+module Errors.Remote.Msg exposing (Msg(..))
 
 import Http
 
