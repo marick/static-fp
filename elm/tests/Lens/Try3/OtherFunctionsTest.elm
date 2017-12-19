@@ -18,22 +18,22 @@ import Lens.Try3.Result as Result
 d = Dict.singleton
              
 
-hasJust : Test
-hasJust =
+exists : Test
+exists =
   let
-    try lens whole expected = 
+    exists lens whole expected = 
       equal (Lens.hasJust lens whole) expected (toString whole)
   in
-    describe "hasJust"
+    describe "exists"
       [ describe "upsert lens" 
-          [ try (Dict.lens "key")    Dict.empty      False
-          , try (Dict.lens "key")    (d "---" 3)     False
-          , try (Dict.lens "key")    (d "key" 3)     True
+          [ exists (Dict.lens "key")    Dict.empty      False
+          , exists (Dict.lens "key")    (d "---" 3)     False
+          , exists (Dict.lens "key")    (d "key" 3)     True
           ]
       , describe "humble lens"
-          [ try (Dict.humbleLens "key")    Dict.empty      False
-          , try (Dict.humbleLens "key")    (d "---" 3)     False
-          , try (Dict.humbleLens "key")    (d "key" 3)     True
+          [ exists (Dict.humbleLens "key")    Dict.empty      False
+          , exists (Dict.humbleLens "key")    (d "---" 3)     False
+          , exists (Dict.humbleLens "key")    (d "key" 3)     True
           ]
       ]
     
@@ -41,19 +41,19 @@ hasJust =
 getWithDefault : Test
 getWithDefault =
   let
-    try lens whole expected = 
-      equal (Lens.getWithDefault lens 8888 whole) expected (toString whole)
+    get lens whole expected = 
+      equal (Lens.getWithDefault lens "default" whole) expected (toString whole)
   in
     describe "getWithDefault"
       [ describe "upsert lens" 
-          [ try (Dict.lens "key")    Dict.empty      (Just 8888)
-          , try (Dict.lens "key")    (d "---" 3)     (Just 8888)
-          , try (Dict.lens "key")    (d "key" 3)     (Just 3)
+          [ get (Dict.lens "key")    Dict.empty         (Just "default")
+          , get (Dict.lens "key")    (d "---" "orig")   (Just "default")
+          , get (Dict.lens "key")    (d "key" "orig")   (Just "orig")
           ]
       , describe "humble lens"
-          [ try (Dict.lens "key")    Dict.empty      (Just 8888)
-          , try (Dict.lens "key")    (d "---" 3)     (Just 8888)
-          , try (Dict.lens "key")    (d "key" 3)     (Just 3)
+          [ get (Dict.lens "key")    Dict.empty         (Just "default")
+          , get (Dict.lens "key")    (d "---" "orig")   (Just "default")
+          , get (Dict.lens "key")    (d "key" "orig")   (Just "orig")
           ]
       ]
     
