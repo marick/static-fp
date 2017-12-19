@@ -4,7 +4,6 @@ import Http
 import Json.Encode as Encode
 import Json.Decode as Decode
 import Errors.Remote.Msg exposing (Msg(..))
-import Errors.Simple.Model exposing (Model)
 
 destination : String
 destination = "http://logger.outsidefp.com"
@@ -31,14 +30,6 @@ jsonify msg =
       
 
 
-finish : Msg -> Model -> Maybe Model -> (Model, Cmd Msg)
-finish msg originalModel maybeFinal =
-  case maybeFinal of
-    Just finalModel ->
-      ( finalModel , Cmd.none )
-    Nothing ->
-      ( originalModel , cmd msg )
-    
 cmd : Msg -> Cmd Msg
 cmd msg =
   let

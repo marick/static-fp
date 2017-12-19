@@ -17,7 +17,7 @@ update msg model =
         |> Lens.update Model.clickCount increment 
         |> Lens.updateM (Model.wordCount person index) increment
         |> Maybe.map (Lens.set Model.beloved person)
-        |> Log.finish msg model 
+        |> finish msg model 
 
     LogResponse (Ok _) ->
       noCmd model
@@ -28,6 +28,16 @@ update msg model =
       in
         noCmd model
 
+finish : Msg -> Model -> Maybe Model -> (Model, Cmd Msg)
+finish msg originalModel maybeFinal =
+  case maybeFinal of
+    Just finalModel ->
+      ( finalModel , Cmd.none )
+    Nothing ->
+      ( originalModel , Log.cmd msg )
+    
+
+          
 noCmd : Model -> (Model, Cmd Msg)
 noCmd model = (model, Cmd.none)
 
