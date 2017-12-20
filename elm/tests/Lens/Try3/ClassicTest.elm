@@ -3,8 +3,6 @@ module Lens.Try3.ClassicTest exposing (..)
 import Test exposing (..)
 import TestBuilders exposing (..)
 import Lens.Try3.Util as Util exposing (negateVia)
-import Dict
-import Array
 import Tagged exposing (Tagged(..))
 
 import Lens.Try3.Lens as Lens
@@ -13,10 +11,6 @@ import Lens.Try3.Compose as Compose
 import Lens.Try3.Tuple2 as Tuple2
 import Lens.Try3.Tuple3 as Tuple3
 import Lens.Try3.Tuple4 as Tuple4
-import Lens.Try3.Dict as Dict
-import Lens.Try3.Array as Array
-import Lens.Try3.Result as Result
-import Lens.Try3.Maybe as Maybe
 
 
 {-
