@@ -14,6 +14,8 @@ uptWith f lens whole expected =
 -- "update test, uses `negate` by default"
 upt = uptWith negate
 
+negateVia = upt
+
 classicLawSupport =
   let 
     original = "OLD"

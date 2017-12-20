@@ -20,56 +20,6 @@ import Lens.Try3.Maybe as Maybe
 
 
 
-{-         Types used to construct CLASSIC lenses        -}
-
--- Records are classic lenses
-
-type alias Record a =
-  { part : a
-  }
-
-record = Lens.classic .part (\part whole -> { whole | part = part })
-
-
-classicUpdate : Test
-classicUpdate =
-  describe "update for various common base types (classic lenses)"
-    [ upt record         {part = 3}        {part = -3}
-        
-    , upt Tuple2.first   (3, "")           (-3, "")
-    , upt Tuple2.second  ("", 3)           ("", -3)
-      
-    , upt Tuple3.first   (3, "", "")       (-3, "", "")
-    , upt Tuple3.second  ("", 3, "")       ("", -3, "")
-    , upt Tuple3.third   ("", "", 3)       ("", "", -3)
-      
-    , upt Tuple4.first   (3, "", "", "")   (-3, "", "", "")
-    , upt Tuple4.second  ("", 3, "", "")   ("", -3, "", "")
-    , upt Tuple4.third   ("", "", 3, "")   ("", "", -3, "")
-    , upt Tuple4.fourth  ("", "", "", 3)   ("", "", "", -3)
-    ]
-  
-classicLaws : Test
-classicLaws =
-  let
-    (original, legal) = classicLawSupport
-  in
-    describe "classic lens laws for various base types"
-      [ legal record         {part = original}       
-
-      , legal Tuple2.first   (original, "")          
-      , legal Tuple2.second  ("", original)          
-
-      , legal Tuple3.first   (original, "", "")      
-      , legal Tuple3.second  ("", original, "")      
-      , legal Tuple3.third   ("", "", original)      
-
-      , legal Tuple4.first   (original, "", "", "")  
-      , legal Tuple4.second  ("", original, "", "")  
-      , legal Tuple4.third   ("", "", original, "")  
-      , legal Tuple4.fourth  ("", "", "", original)  
-      ]
-
       
 {-         Types used to construct UPSERT lenses        -}
 

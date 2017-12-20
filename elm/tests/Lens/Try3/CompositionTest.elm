@@ -12,19 +12,6 @@ import Lens.Try3.Dict as Dict
 import Lens.Try3.Array as Array
 import Lens.Try3.Result as Result
 
-compose_classic_with_classic : Test 
-compose_classic_with_classic =
-  let
-    lens = Lens.classicAndClassic Tuple2.first Tuple2.second
-    (original, legal) = classicLawSupport
-  in
-    describe "lens plus lens"
-      [ upt   lens (("",        3), "")
-                   (("",       -3), "")
-      , legal lens (("", original), "")
-      ]
-
-
 compose_classic_with_upsert : Test 
 compose_classic_with_upsert =
   let
