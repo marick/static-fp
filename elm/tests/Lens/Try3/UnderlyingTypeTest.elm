@@ -21,27 +21,6 @@ import Lens.Try3.Maybe as Maybe
 
 
       
-{-         Types used to construct UPSERT lenses        -}
-
-upsertUpdate : Test
-upsertUpdate =
-  describe "update for various common base types (upsert lenses)"
-    [ upt (Dict.lens "key") (Dict.singleton "key" 3) (Dict.singleton "key" -3)
-    , upt (Dict.lens "key") (Dict.singleton "k  " 3) (Dict.singleton "k  "  3)
-    , upt (Dict.lens "key")  Dict.empty               Dict.empty
-    ]
-
-laws : Test
-laws =
-  describe "classic laws apply to Dict lenses" <|
-    List.map 
-      (Util.upsertLensObeysClassicLaws
-         { lens = Dict.lens "key"
-         , focusMissing = Dict.empty
-         , makeFocus = Dict.singleton "key"
-         })
-      (Util.maybeCombinations "OLD" "overwritten" "NEW")
-
 
 {-         Types used to construct HUMBLE lenses        -}
 

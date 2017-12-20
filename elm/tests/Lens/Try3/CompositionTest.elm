@@ -12,31 +12,6 @@ import Lens.Try3.Dict as Dict
 import Lens.Try3.Array as Array
 import Lens.Try3.Result as Result
 
-compose_classic_with_upsert : Test 
-compose_classic_with_upsert =
-  let
-    lens = Lens.classicAndUpsert Tuple2.first (Dict.lens "key")
-  in
-    describe "lens plus upsert"
-      [ describe "update"
-          [ upt   lens ( (Dict.singleton "key"  3), "")
-                       ( (Dict.singleton "key" -3), "")
-          , upt   lens ( (Dict.singleton "---"  3), "")
-                       ( (Dict.singleton "---"  3), "")
-          , upt   lens (  Dict.empty,               "")
-                       (  Dict.empty,               "")
-          ]
-      , describe "laws" <|
-          List.map 
-            (upsertLensObeysClassicLaws
-               { lens = lens
-               , focusMissing = (Dict.empty, "")
-               , makeFocus = 
-                   \original -> (Dict.singleton "key" original, "")
-               })
-            (maybeCombinations 1 2 3)
-      ]
-
 compose_humble_with_humble : Test
 compose_humble_with_humble =
   let
