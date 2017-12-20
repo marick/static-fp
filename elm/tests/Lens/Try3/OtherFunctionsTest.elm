@@ -22,7 +22,7 @@ exists : Test
 exists =
   let
     exists lens whole expected = 
-      equal (Lens.hasJust lens whole) expected (toString whole)
+      equal (Lens.exists lens whole) expected (toString whole)
   in
     describe "exists"
       [ describe "upsert lens" 
