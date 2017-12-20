@@ -23,6 +23,18 @@ just actual expected comment =
   equal actual (Just expected) comment
 just_ actual expected =
   just actual expected (toString expected)
+
+ok actual expected comment =
+  equal actual (Ok expected) comment
+ok_ actual expected =
+  just actual expected (toString expected)
+
+err actual expected comment =
+  equal actual (Err expected) comment
+err_ actual expected =
+  just actual expected (toString expected)
+
+    
       
 unchanged f original comment =
   equal (f original) original comment
