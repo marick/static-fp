@@ -68,4 +68,21 @@ humbleLawSupport =
 
       
 
+errorLawSupport =
+  let 
+    original = '1'
+    parts =
+      { original = original
+      , overwritten = '-'
+      , new = '2'
+      }
+    present lens whole =
+      Laws.errorPartPresent lens whole parts
+    missing lens whole why = 
+      Laws.errorPartMissing lens whole parts why
+  in
+    (original, present, missing)
+
+      
+
 

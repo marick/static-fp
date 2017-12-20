@@ -153,3 +153,37 @@ oneCaseLaws =
       , legal Maybe.just  Just    "just lens"
       ]
 
+
+
+{-         Types used to construct Error lenses        -}
+
+errorUpdate : Test
+errorUpdate =
+  let
+    -- at0 = Array.errorLens 0
+    -- at1 = Array.errorLens 1
+
+    dictLens = Dict.errorLens "key"
+    d = Dict.singleton 
+  in
+    describe "update for various common base types (error lenses)"
+      [ upt dictLens (d "key" 3)   (d "key" -3)
+      , upt dictLens (d "---" 3)   (d "---"  3)
+      , upt dictLens Dict.empty    Dict.empty
+
+      -- , upt at0 (Array.fromList [3]) (Array.fromList [-3])
+      -- , upt at1 (Array.fromList [3]) (Array.fromList [ 3])
+      -- , upt at1  Array.empty          Array.empty
+      ]
+
+errorLaws : Test
+errorLaws =
+  let
+    (original, present, missing) = errorLawSupport
+  in
+    describe "error lenses obey the error lens laws"
+      [ present (Dict.errorLens "key")   (Dict.singleton "key" original)
+      , missing (Dict.errorLens "key")   (Dict.singleton "---" original)  "no key"
+      , missing (Dict.errorLens "key")    Dict.empty                      "empty"
+      ]
+      

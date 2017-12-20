@@ -179,6 +179,31 @@ oneCase get set =
     , update = update
     }
 
+{-                  Error Lenses               -}
+
+type ErrorTag = ErrorTag IsUnused
+type alias Error err big small =
+  Tagged ErrorTag
+    { get : big -> Result err small
+    , set : small -> big -> big
+    , update : (small -> small) -> big -> big
+    }
+
+error : (big -> Result err small) -> (small -> big -> big) -> Error err big small
+error get set =
+  let
+    update f big =
+      case get big of
+        Err _ ->
+          big
+        Ok small ->
+          set (f small) big
+  in
+    Tagged { get = get, set = set, update = update }
+  
+
+
+    
 {-                 Util                        -}
 
 type IsUnused = IsUnused IsUnused

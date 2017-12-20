@@ -3,6 +3,7 @@ module Lens.Try3.Laws exposing (..)
 import Tagged exposing (Tagged(..))
 import Test exposing (..)
 import TestBuilders exposing (..)
+import Result.Extra as Result
 
 {-         Laws for the CLASSIC and UPSERT Lens.          -}
 
@@ -92,7 +93,7 @@ humblePartMissing lens whole inputValues why =
         lens whole inputValues
     ]
 
----- OneCase laws
+
 
 {-         Laws for the OneCase Lens.          -}
 
@@ -117,3 +118,57 @@ oneCase lens constructor comment =
       [ one_case_gotten_part_can_be_set_back lens (constructor arbitrary) arbitrary
       , one_case_set_part_can_be_gotten_back lens (constructor arbitrary) arbitrary
       ]
+
+
+{-         Laws for the ERROR Lens.          -}
+
+-- These lenses are the same as those for the humble lens, except for
+-- the use of `Result` instead of `Maybe`.
+
+error_set_part_can_be_gotten
+  (Tagged {get, set}) whole {original, new}  =
+  describe "when a part is present, `set` overwrites it"
+    [ 
+      equal  (get          whole)    (Ok original)  "appropriate `whole`"
+    , equal_ (get (set new whole))   (Ok new)
+    ]
+
+error_setting_part_with_same_value_leaves_whole_unchanged
+  (Tagged {get, set}) whole {original} =
+  describe "retrieving a part, then setting it back"
+    [ equal  (get          whole)     (Ok original)  "`whole` contains original"
+    , equal_ (set original whole)     whole
+    ]
+
+error_does_not_create (Tagged {get, set}) whole {new} = 
+  describe "when a part is missing, `set` does nothing"
+    [ is    (get          whole)    Result.isErr    "see: part is missing"
+    , is    (get (set new whole))   Result.isErr    "`get` still gets nothing"
+    , equal      (set new whole)    whole           "nothing else changed"
+    ]
+
+-- Laws are separated into present/missing cases because some types
+-- will have more than one way for a part to be missing
+    
+errorPartPresent lens whole ({original, new} as inputValues) = 
+  describe "part present"
+    [ error_set_part_can_be_gotten
+        lens whole inputValues
+
+    , error_setting_part_with_same_value_leaves_whole_unchanged
+        lens whole inputValues
+
+    , set_changes_only_the_given_part  -- Note we can reuse lens law
+        lens whole inputValues
+
+    -- check for test-writer mistakes
+    , notEqual original new           "equal values would be a weak test case"  
+    ]
+
+errorPartMissing lens whole inputValues why = 
+  describe ("part not present: " ++ why)
+    [ error_does_not_create 
+        lens whole inputValues
+    ]
+
+      
