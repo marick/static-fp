@@ -6,6 +6,12 @@ import TestBuilders exposing (..)
 import Lens.Try3.Laws as Laws
 import Lens.Try3.Lens as Lens
 import List.Extra as List
+import Dict
+import Array
+
+
+dict = Dict.singleton      
+array = Array.fromList 
 
 -- "update test (with ....)"
 uptWith f lens whole expected = 

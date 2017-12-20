@@ -93,8 +93,9 @@ lawValues =
     (original, legal)
     
 {-
-         Check that `update` works correctly for each type
-         (overkill, really)
+         Check that `update` works correctly for each type.
+         (Overkill, really, since every type uses the same `update` code,
+         which depends only on the correctness of `get` and `set`.)
  -}
 
 update : Test

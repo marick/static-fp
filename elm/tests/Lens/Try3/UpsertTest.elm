@@ -2,7 +2,7 @@ module Lens.Try3.UpsertTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Lens.Try3.Util as Util exposing (negateVia)
+import Lens.Try3.Util as Util exposing (negateVia, dict)
 import Dict
 import List.Extra as List
 
@@ -38,7 +38,6 @@ tryCombination lens wholeMaker oneCombination =
   in
     ClassicTest.laws lens whole oneCombination (toString oneCombination)
 
-dict = Dict.singleton      
 
 {-
         The various predefined types obey the LAWS
