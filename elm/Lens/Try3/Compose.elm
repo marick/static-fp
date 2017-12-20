@@ -28,6 +28,24 @@ oneCaseToHumble (Tagged lens) =
     Lens.humble lens.get (H.guardedSet lens.get set )
 
 
+humbleToError : (big -> err)
+              -> Lens.Humble big small
+              -> Lens.Error err big small
+humbleToError errMaker (Tagged lens) =
+  let 
+    get big =
+      case lens.get big of
+        Just x -> Ok x
+        Nothing -> Err <| errMaker big
+  in
+    Tagged
+      { get = get
+      , set = lens.set
+      , update = lens.update
+      }
+
+      
+
 {-          Composition               -}
 
       

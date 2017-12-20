@@ -60,3 +60,19 @@ oneCase_humble =
       , missing lens (Err original)   "different case"
       ]
         
+
+humble_error : Test
+humble_error =
+  let
+    lens = Lens.humbleToError (toString >> Err) (Dict.humbleLens "key")
+    (original, present, missing) = errorLawSupport
+  in
+    describe "humble to error lens"
+      [ upt lens  (Dict.singleton "key" 3)  (Dict.singleton "key" -3)
+      , upt lens  (Dict.singleton "---" 3)  (Dict.singleton "---" 3)
+      , upt lens   Dict.empty                Dict.empty
+
+      , present (Dict.errorLens "key")   (Dict.singleton "key" original)
+      , missing (Dict.errorLens "key")   (Dict.singleton "---" original)  "no key"
+      , missing (Dict.errorLens "key")    Dict.empty                      "empty"
+      ]
