@@ -1,5 +1,6 @@
 module Lens.Try3.Array exposing
   ( lens
+  , errorLens
   )
 
 import Lens.Try3.Lens as Lens
