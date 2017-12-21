@@ -22,38 +22,6 @@ import Lens.Try3.Maybe as Maybe
 
       
 
-{-         Types used to construct HUMBLE lenses        -}
-
-humbleUpdate : Test
-humbleUpdate =
-  let
-    at0 = Array.lens 0
-    at1 = Array.lens 1
-
-    dictLens = Dict.humbleLens "key"
-    d = Dict.singleton 
-  in
-    describe "update for various common base types (humble lenses)"
-      [ upt at0 (Array.fromList [3]) (Array.fromList [-3])
-      , upt at1 (Array.fromList [3]) (Array.fromList [ 3])
-      , upt at1  Array.empty          Array.empty
-        
-      , upt dictLens (d "key" 3)   (d "key" -3)
-      , upt dictLens (d "---" 3)   (d "---"  3)
-      , upt dictLens Dict.empty    Dict.empty
-      ]
-
-      
-humbleLaws : Test
-humbleLaws =
-  let
-    (original, present, missing) = humbleLawSupport
-  in
-    describe "humble lenses obey the humble lens laws"
-      [ present (Array.lens 1)   (Array.fromList [' ', original])
-      , missing (Array.lens 1)   (Array.fromList [' '          ])   "short"
-      ]
-
 {-         Types used to construct OneCase lenses        -}
 
 oneCaseUpdate : Test
@@ -84,35 +52,4 @@ oneCaseLaws =
 
 
 
-{-         Types used to construct Error lenses        -}
-
-errorUpdate : Test
-errorUpdate =
-  let
-    -- at0 = Array.errorLens 0
-    -- at1 = Array.errorLens 1
-
-    dictLens = Dict.errorLens "key"
-    d = Dict.singleton 
-  in
-    describe "update for various common base types (error lenses)"
-      [ upt dictLens (d "key" 3)   (d "key" -3)
-      , upt dictLens (d "---" 3)   (d "---"  3)
-      , upt dictLens Dict.empty    Dict.empty
-
-      -- , upt at0 (Array.fromList [3]) (Array.fromList [-3])
-      -- , upt at1 (Array.fromList [3]) (Array.fromList [ 3])
-      -- , upt at1  Array.empty          Array.empty
-      ]
-
-errorLaws : Test
-errorLaws =
-  let
-    (original, present, missing) = errorLawSupport
-  in
-    describe "error lenses obey the error lens laws"
-      [ present (Dict.errorLens "key")   (Dict.singleton "key" original)
-      , missing (Dict.errorLens "key")   (Dict.singleton "---" original)  "no key"
-      , missing (Dict.errorLens "key")    Dict.empty                      "empty"
-      ]
       
