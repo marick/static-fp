@@ -290,3 +290,31 @@ getWithDefault =
       , get (Dict.humbleLens "key")    (dict "---" "orig")   (Just "default")
       , get (Dict.humbleLens "key")    (dict "key" "orig")   (Just "orig")
       ]
+      
+setM : Test
+setM =
+  let
+    setM = 
+      Lens.setM (Dict.humbleLens "key")
+  in
+    describe "setM"
+      [ equal  (setM 88 <| Dict.empty)    Nothing      "empty"
+      , equal  (setM 88 <| dict "---" 0)  Nothing      "bad key"
+      , equal_ (setM 88 <| dict "key" 0) (Just <| dict "key" 88)  
+      ]
+
+updateM : Test
+updateM =
+  let
+    lens =
+      Dict.humbleLens "key"
+    negateVia lens = 
+      Lens.updateM lens Basics.negate 
+  in
+    describe "updateM"
+      [ equal  (negateVia lens <| Dict.empty)    Nothing      "empty"
+      , equal  (negateVia lens <| dict "---" 8)  Nothing      "bad key"
+      , equal_ (negateVia lens <| dict "key" 8) (Just <| dict "key" -8)  
+      ]
+
+      
