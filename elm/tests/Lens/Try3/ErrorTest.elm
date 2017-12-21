@@ -8,7 +8,7 @@ import Lens.Try3.ClassicTest as ClassicTest
 
 import Lens.Try3.Lens as Lens
 import Lens.Try3.Compose as Compose
-import Result.Extra as Result
+import Result.Extra as Result exposing (isErr)
 import Dict
 import Array
 import Lens.Try3.Dict as Dict
@@ -60,10 +60,10 @@ get_set (Tagged {get, set}) whole {original} =
 no_upsert (Tagged {get, set}) whole {new} = 
   describe "when a part is missing, `set` does nothing"
     [ -- describe required context
-      is    (get          whole)      Result.isErr   "part must be misssing"
+      is    (get          whole)      isErr    "part must be misssing"
         
-    , is    (get (set new whole))     Result.isErr   "`set` does not add anything"
-    , equal      (set new whole)      whole          "nothing else changed"
+    , is    (get (set new whole))     isErr     "`set` does not add anything"
+    , equal      (set new whole)      whole     "nothing else changed"
     ]
 
 
@@ -130,145 +130,91 @@ update =
       , negateVia dictLens Dict.empty       Dict.empty
       ]
   
+{-
+     Functions beyond the stock get/set/update
+-}
+
+setR : Test
+setR =
+  let
+    setR = 
+      Lens.setR (Dict.errorLens "key")
+  in
+    describe "setR"
+      [ is     (setR 88 <| Dict.empty)       isErr          "empty"
+      , is     (setR 88 <| dict "---" 0)     isErr          "bad key"
+      , equal_ (setR 88 <| dict "key" 0)     (Ok <| dict "key" 88)  
+      ]
+
+updateR : Test
+updateR =
+  let
+    lens =
+      Dict.errorLens "key"
+    negateVia lens = 
+      Lens.updateR lens negate 
+  in
+    describe "updateM"
+      [ is     (negateVia lens <| Dict.empty)    isErr      "empty"
+      , is     (negateVia lens <| dict "---" 8)  isErr      "bad key"
+      , equal_ (negateVia lens <| dict "key" 8) (Ok <| dict "key" -8)  
+      ]
+
+
       
 {-
       Converting other lenses into this type of lens
  -}
 
-        
+from_humble : Test
+from_humble =
+  let
+    lens = Compose.humbleToError toString (Dict.humbleLens "key")
+    (original, present, missing) = lawValues
+    get = Lens.get lens 
+  in
+    describe "upsert to humble lens"
+      [ describe "get" 
+          [ equal_   (get (dict "key" 3))   (Ok 3)
+          , equal_   (get (dict "---" 3))   (Err <| toString (dict "---" 3))
+          ]
+      , describe "update"
+          [ negateVia    lens   (dict "key"  3)
+                                (dict "key" -3)
+          , negateVia    lens    Dict.empty
+                                 Dict.empty
+          ]
+      , describe "laws"
+          [ present lens  (dict "key" original)
+          , missing lens  (dict "---" original)   "wrong key"
+          , missing lens   Dict.empty             "empty"
+          ]
+      ]
 
 {- 
       Composing lenses to PRODUCE this type of lens
 -}
 
--- error_and_error : Test 
--- error_and_error =
---   let
---     lens = Compose.errorAndError (Array.lens 0) (Array.lens 1)
---     (original, present, missing) = lawValues
+error_and_error : Test 
+error_and_error =
+  let
+    lens = Compose.errorAndError (Array.errorLens 0) (Array.errorLens 1)
+    (original, present, missing) = lawValues
 
---     a2 = List.map array >> array
---   in
---     describe "error + error"
---       [ describe "update"
---           [ negateVia lens   (a2 [[0, 3]])   (a2 [[0, -3]])
---           , negateVia lens   (a2 [[0   ]])   (a2 [[0    ]])
---           , negateVia lens   (a2 [[    ]])   (a2 [[     ]])
---           ]
---       , describe "laws"
---           [ present lens  (a2 [[' ', original]])
---           , missing lens  (a2 [[' '          ]])       "short"
---           , missing lens  (a2 [              ])        "missing"
---           ]
---       ]
+    a2 = List.map array >> array
+  in
+    describe "error and error"
+      [ describe "update"
+          [ negateVia lens   (a2 [[0, 3]])   (a2 [[0, -3]])
+          , negateVia lens   (a2 [[0   ]])   (a2 [[0    ]])
+          , negateVia lens   (a2 [[    ]])   (a2 [[     ]])
+          ]
+      , describe "laws"
+          [ present lens  (a2 [[' ', original]])
+          , missing lens  (a2 [[' '          ]])       "short"
+          , missing lens  (a2 [              ])        "missing"
+          ]
+      ]
 
--- classic_and_humble : Test
--- classic_and_humble =
---   let
---     lens = Compose.classicAndHumble Tuple2.second (Array.lens 1)
---     (original, present, missing) = lawValues
-
---     nested oneElt =
---       ( array [] , array oneElt )
---   in
---     describe "classic + humble"
---       [ describe "update"
---         [ negateVia lens   (nested [5, 3])   (nested [5, -3])
---         , negateVia lens   (nested [    ])   (nested [     ])
---         , negateVia lens   (nested [3   ])   (nested [3    ])
---           ]
---       , describe "laws"
---         [ present lens  (nested ['a', original])
---         , missing lens  (nested ['a'          ])    "no second element"
---         ]
---       ]
-
--- upsert_and_classic : Test
--- upsert_and_classic =
---   let
---     lens = Compose.upsertAndClassic (Dict.lens "key") (Tuple2.first)
---     (original, present, missing) = lawValues
---   in
---     describe "upsert and classic"
---       [ describe "update"
---           [ negateVia lens   (dict "key" (3, ""))   (dict "key" (-3, ""))
---           , negateVia lens   (dict "---" (3, ""))   (dict "---" ( 3, ""))
---           , negateVia lens   Dict.empty             Dict.empty
---           ]
---       , describe "laws"
---           [ present lens  (dict "key" (original, ""))
---           , missing lens  (dict "---" (original, ""))    "wrong key"
---           , missing lens  Dict.empty                     "missing"
---           ]
---       ]
-
-
--- onecase_and_classic : Test
--- onecase_and_classic =
---   let
---     lens = Compose.oneCaseAndClassic Result.ok Tuple2.first
---     (original, present, missing) = lawValues
---   in
---     describe "one-case and classic"
---       [ negateVia lens  (Ok  (3, ""))    (Ok  (-3, ""))
---       , negateVia lens  (Err (3, ""))    (Err ( 3, ""))
-
---       , present lens (Ok (original, ""))
---       , missing lens (Err original)   "different case"
---       ]
       
-      
-{- Functions beyond the stock get/set/update -}
-
-
--- exists : Test
--- exists =
---   let
---     exists lens whole expected = 
---       equal (Lens.exists lens whole) expected (toString whole)
---   in
---     describe "exists"
---       [ exists (Dict.humbleLens "key")    Dict.empty       False
---       , exists (Dict.humbleLens "key")    (dict "---" 3)   False
---       , exists (Dict.humbleLens "key")    (dict "key" 3)   True
---       ]
-
--- getWithDefault : Test
--- getWithDefault =
---   let
---     get lens whole expected = 
---       equal (Lens.getWithDefault lens "default" whole) expected (toString whole)
---   in
---     describe "getWithDefault"
---       [ get (Dict.humbleLens "key")    Dict.empty            (Just "default")
---       , get (Dict.humbleLens "key")    (dict "---" "orig")   (Just "default")
---       , get (Dict.humbleLens "key")    (dict "key" "orig")   (Just "orig")
---       ]
-      
--- setM : Test
--- setM =
---   let
---     setM = 
---       Lens.setM (Dict.humbleLens "key")
---   in
---     describe "setM"
---       [ equal  (setM 88 <| Dict.empty)    Nothing      "empty"
---       , equal  (setM 88 <| dict "---" 0)  Nothing      "bad key"
---       , equal_ (setM 88 <| dict "key" 0) (Just <| dict "key" 88)  
---       ]
-
--- updateM : Test
--- updateM =
---   let
---     lens =
---       Dict.humbleLens "key"
---     negateVia lens = 
---       Lens.updateM lens Basics.negate 
---   in
---     describe "updateM"
---       [ equal  (negateVia lens <| Dict.empty)    Nothing      "empty"
---       , equal  (negateVia lens <| dict "---" 8)  Nothing      "bad key"
---       , equal_ (negateVia lens <| dict "key" 8) (Just <| dict "key" -8)  
---       ]
-
       

@@ -201,6 +201,18 @@ error get set =
   in
     Tagged { get = get, set = set, update = update }
   
+setR : Error err big small -> small -> big -> Result err big
+setR (Tagged lens) small big =
+  case lens.get big of
+    Ok _ -> Ok <| lens.set small big
+    Err err -> Err err
+  
+updateR : Error err big small -> (small -> small) -> big -> Result err big
+updateR (Tagged lens) f big =
+  case lens.get big of
+    Ok small -> Ok <| lens.set (f small) big
+    Err err -> Err err
+
 
 
     

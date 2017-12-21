@@ -104,6 +104,24 @@ oneCaseAndClassic a2b b2c =
 
 -----------------
 
+errorAndError : Lens.Error err a b -> Lens.Error err b c -> Lens.Error err a c
+errorAndError (Tagged a2b) (Tagged b2c) =
+  let 
+    get a =
+      case a2b.get a of
+        Ok b -> b2c.get b
+        Err e -> Err e
+                  
+    set c a =
+      case a2b.get a of
+        Ok b ->
+          a2b.set (b2c.set c b) a
+        Err _ -> a
+  in
+    Lens.error get set
+
+-----------------
+
 composeGets : (a -> b) -> (b -> c) -> (a -> c)
 composeGets aGetB aGetC =
   aGetB >> aGetC
@@ -111,6 +129,9 @@ composeGets aGetB aGetC =
 composeSets : (a -> b) -> (c -> b -> b) -> (b -> a -> a) -> (c -> a -> a)
 composeSets aGetB bSetC aSetB c a =
   aSetB (aGetB a |> bSetC c) a
+
+
+    
 
 -----------------
 -- Identities are used in the chapter on monoids.
