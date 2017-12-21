@@ -27,7 +27,7 @@ import Lens.Try3.Tuple2 as Tuple2
 -- will have more than one way for a part to be missing
     
 presentLaws lens whole ({original, new} as inputValues) = 
-  describe "humble: `get whole` would fail"
+  describe "`get whole` would succeed"
     [ -- describe required context
       notEqual original new           "equal values would be a weak test case"  
      
@@ -37,7 +37,7 @@ presentLaws lens whole ({original, new} as inputValues) =
     ]
 
 missingLaws lens whole inputValues why = 
-  describe ("humble: `get whole` would fail: " ++ why)
+  describe ("`get whole` would fail: " ++ why)
     [ no_upsert lens whole inputValues
     ]
 

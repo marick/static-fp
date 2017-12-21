@@ -32,7 +32,7 @@ ok_ actual expected =
 err actual expected comment =
   equal actual (Err expected) comment
 err_ actual expected =
-  just actual expected (toString expected)
+  err actual expected (toString expected)
 
     
       
