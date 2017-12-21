@@ -78,47 +78,13 @@ update =
       , negateVia dictLens (dict "---" 3) (dict "---"  3)
       , negateVia dictLens  Dict.empty     Dict.empty
       ]
-  
 
-{-
-      Converting other lenses into this type of lens
- -}
 
--- None
 
-{- 
-      Composing lenses to PRODUCE this type of lens
--}
-
-classic_and_upsert : Test 
-classic_and_upsert =
-  let
-    lens = Compose.classicAndUpsert Tuple2.first (Dict.lens "key")
-  in
-    describe "classic and upsert"
-      [ describe "update"
-          [ negateVia lens    ( (Dict.singleton "key"  3), "")
-                              ( (Dict.singleton "key" -3), "")
-              
-          , negateVia lens    ( (Dict.singleton "---"  3), "")
-                              ( (Dict.singleton "---"  3), "")
-         
-          , negateVia lens    (  Dict.empty,               "")
-                              (  Dict.empty,               "")
-          ]
-      , describe "laws apply" <|
-          let
-            wholeMaker original =
-              case original of
-                Nothing -> (Dict.empty,   "")
-                Just v ->  (dict "key" v, "")
-            combinations =
-              partCombinations 1 2 3
-          in
-            List.map (tryCombination lens wholeMaker) combinations
-      ]
           
-{- Functions beyond the stock get/set/update -}
+{-
+     Functions beyond the stock get/set/update
+-}
 
 exists : Test
 exists =
@@ -162,3 +128,42 @@ updateWithDefault =
       ]
     
           
+      
+
+{-
+      Converting other lenses into this type of lens
+ -}
+
+-- None
+
+{- 
+      Composing lenses to PRODUCE this type of lens
+-}
+
+classic_and_upsert : Test 
+classic_and_upsert =
+  let
+    lens = Compose.classicAndUpsert Tuple2.first (Dict.lens "key")
+  in
+    describe "classic and upsert"
+      [ describe "update"
+          [ negateVia lens    ( (Dict.singleton "key"  3), "")
+                              ( (Dict.singleton "key" -3), "")
+              
+          , negateVia lens    ( (Dict.singleton "---"  3), "")
+                              ( (Dict.singleton "---"  3), "")
+         
+          , negateVia lens    (  Dict.empty,               "")
+                              (  Dict.empty,               "")
+          ]
+      , describe "laws apply" <|
+          let
+            wholeMaker original =
+              case original of
+                Nothing -> (Dict.empty,   "")
+                Just v ->  (dict "key" v, "")
+            combinations =
+              partCombinations 1 2 3
+          in
+            List.map (tryCombination lens wholeMaker) combinations
+      ]
