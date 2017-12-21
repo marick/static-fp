@@ -18,60 +18,7 @@ import Lens.Try3.Result as Result
 d = Dict.singleton
              
 
-exists : Test
-exists =
-  let
-    exists lens whole expected = 
-      equal (Lens.exists lens whole) expected (toString whole)
-  in
-    describe "exists"
-      [ describe "upsert lens" 
-          [ exists (Dict.lens "key")    Dict.empty      False
-          , exists (Dict.lens "key")    (d "---" 3)     False
-          , exists (Dict.lens "key")    (d "key" 3)     True
-          ]
-      , describe "humble lens"
-          [ exists (Dict.humbleLens "key")    Dict.empty      False
-          , exists (Dict.humbleLens "key")    (d "---" 3)     False
-          , exists (Dict.humbleLens "key")    (d "key" 3)     True
-          ]
-      ]
-    
           
-getWithDefault : Test
-getWithDefault =
-  let
-    get lens whole expected = 
-      equal (Lens.getWithDefault lens "default" whole) expected (toString whole)
-  in
-    describe "getWithDefault"
-      [ describe "upsert lens" 
-          [ get (Dict.lens "key")    Dict.empty         (Just "default")
-          , get (Dict.lens "key")    (d "---" "orig")   (Just "default")
-          , get (Dict.lens "key")    (d "key" "orig")   (Just "orig")
-          ]
-      , describe "humble lens"
-          [ get (Dict.lens "key")    Dict.empty         (Just "default")
-          , get (Dict.lens "key")    (d "---" "orig")   (Just "default")
-          , get (Dict.lens "key")    (d "key" "orig")   (Just "orig")
-          ]
-      ]
-    
-          
-updateWithDefault : Test
-updateWithDefault =
-  let
-    try lens whole expected = 
-      equal (Lens.updateWithDefault lens 8888 negate whole) expected (toString whole)
-  in
-    describe "updateWithDefault"
-      [ describe "upsert lens" 
-          [ try (Dict.lens "key")    Dict.empty      (d "key" -8888)
-          , try (Dict.lens "key")    (d "---" 3)     (d "---" 3 |> Dict.insert "key" -8888)
-          , try (Dict.lens "key")    (d "key" 3)     (d "key" -3)
-          ]
-      ]
-    
           
 
 

@@ -118,3 +118,47 @@ classic_and_upsert =
             List.map (tryCombination lens wholeMaker) combinations
       ]
           
+{- Functions beyond the stock get/set/update -}
+
+exists : Test
+exists =
+  let
+    exists lens whole expected = 
+      equal (Lens.exists lens whole) expected (toString whole)
+  in
+    describe "exists"
+      [ exists (Dict.lens "key")    Dict.empty         False
+      , exists (Dict.lens "key")    (dict "---" 3)     False
+      , exists (Dict.lens "key")    (dict "key" 3)     True
+      ]
+
+getWithDefault : Test
+getWithDefault =
+  let
+    get lens whole expected = 
+      equal (Lens.getWithDefault lens "default" whole) expected (toString whole)
+  in
+    describe "getWithDefault"
+      [ get (Dict.lens "key")    Dict.empty            (Just "default")
+      , get (Dict.lens "key")    (dict "---" "orig")   (Just "default")
+      , get (Dict.lens "key")    (dict "key" "orig")   (Just "orig")
+      ]
+    
+updateWithDefault : Test
+updateWithDefault =
+  let
+    negateVia lens whole expected = 
+      equal (Lens.updateWithDefault lens 8888 negate whole) expected (toString whole)
+  in
+    describe "updateWithDefault"
+      [ negateVia (Dict.lens "key")    Dict.empty
+                                      (dict "key" -8888)
+          
+      , negateVia (Dict.lens "key")    (dict "---" 3)
+                                       (dict "---" 3 |> Dict.insert "key" -8888)
+                                   
+      , negateVia (Dict.lens "key")    (dict "key" 3)
+                                       (dict "key" -3)
+      ]
+    
+          

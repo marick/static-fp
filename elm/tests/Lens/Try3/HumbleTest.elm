@@ -14,8 +14,6 @@ import Array
 import Lens.Try3.Dict as Dict
 import Lens.Try3.Array as Array
 import Lens.Try3.Result as Result
-
-
 import Lens.Try3.Tuple2 as Tuple2
 
 
@@ -140,7 +138,50 @@ update =
       Converting other lenses into this type of lens
  -}
 
--- None
+from_classic : Test
+from_classic =
+  let
+    lens = Compose.classicToHumble Tuple2.first
+    (original, present, missing) = lawValues
+  in
+    describe "classic to humble lens"
+      [ negateVia  lens   ( 3,       "")
+                          (-3,       "")
+          
+      , present lens (original, "")
+      ]
+
+from_upsert : Test
+from_upsert =
+  let
+    lens = Compose.upsertToHumble (Dict.lens "key")
+    (original, present, missing) = lawValues
+  in
+    describe "upsert to humble lens"
+      [ negateVia    lens   (dict "key"  3)
+                            (dict "key" -3)
+      , negateVia    lens    Dict.empty
+                             Dict.empty
+
+      , present lens  (dict "key" original)
+      , missing lens  (dict "---" original)   "wrong key"
+      , missing lens   Dict.empty             "empty"
+      ]
+
+from_oneCase : Test
+from_oneCase =
+  let
+    lens = Compose.oneCaseToHumble Result.ok
+    (original, present, missing) = lawValues
+  in
+    describe "one-part to humble lens"
+      [ negateVia lens   (Ok 3)  (Ok  -3)
+      , negateVia lens  (Err 3)  (Err  3)
+
+      , present lens (Ok original)
+      , missing lens (Err original)   "different case"
+      ]
+        
 
 {- 
       Composing lenses to PRODUCE this type of lens
@@ -223,4 +264,29 @@ onecase_and_classic =
       ]
       
       
-      
+{- Functions beyond the stock get/set/update -}
+
+
+exists : Test
+exists =
+  let
+    exists lens whole expected = 
+      equal (Lens.exists lens whole) expected (toString whole)
+  in
+    describe "exists"
+      [ exists (Dict.humbleLens "key")    Dict.empty       False
+      , exists (Dict.humbleLens "key")    (dict "---" 3)   False
+      , exists (Dict.humbleLens "key")    (dict "key" 3)   True
+      ]
+
+getWithDefault : Test
+getWithDefault =
+  let
+    get lens whole expected = 
+      equal (Lens.getWithDefault lens "default" whole) expected (toString whole)
+  in
+    describe "getWithDefault"
+      [ get (Dict.humbleLens "key")    Dict.empty            (Just "default")
+      , get (Dict.humbleLens "key")    (dict "---" "orig")   (Just "default")
+      , get (Dict.humbleLens "key")    (dict "key" "orig")   (Just "orig")
+      ]
