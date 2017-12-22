@@ -2,12 +2,12 @@ module Lens.Try3.Exercises.UpsertUpdateTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Lens.Try3.Util as Util exposing (upt)
+import Lens.Try3.Util as Util exposing (negateVia)
 import Dict exposing (Dict)
 
 -- CHANGE THE LINE BELOW TO TEST YOUR SOLUTION
 import Lens.Try3.Exercises.UpsertUpdateSolution as Lens
-import Lens.Try3.Laws as Laws
+import Lens.Try3.UpsertTest as Upsert
 
 
 
@@ -24,25 +24,30 @@ dictLens key =
 update : Test
 update =
   describe "update for various common base types (upsert lenses)"
-    [ upt (dictLens "key") (Dict.singleton "key"  3)
-                           (Dict.singleton "key" -3)
+    [ negateVia (dictLens "key") (Dict.singleton "key"  3)
+                                 (Dict.singleton "key" -3)
 
-    , upt (dictLens "key") (Dict.singleton "---"  3)
-                           (Dict.singleton "---"  3)
+    , negateVia (dictLens "key") (Dict.singleton "---"  3)
+                                 (Dict.singleton "---"  3)
 
-    , upt (dictLens "key")  Dict.empty
-                            Dict.empty
+    , negateVia (dictLens "key")  Dict.empty
+                                  Dict.empty
     ]
 
 
-laws : Test
-laws =
-  describe "classic laws apply to Upsert lenses" <|
-    List.map 
-      (Util.upsertLensObeysClassicLaws
-         { lens = dictLens "key"
-         , focusMissing = Dict.empty
-         , makeFocus = Dict.singleton "key"
-         })
-      (Util.maybeCombinations "OLD" "overwritten" "NEW")
-  
+lawTest : Test
+lawTest =
+  let
+    lens =
+      dictLens "key"
+
+    wholeMaker original =
+      case original of
+        Nothing -> Dict.empty
+        Just v -> Dict.singleton "key" v
+
+    combinations =
+      Upsert.partCombinations "OLD" "overwritten" "NEW"
+  in
+    describe "classic laws apply to Dict lenses" <|
+      List.map (Upsert.tryCombination lens wholeMaker) combinations

@@ -55,7 +55,7 @@ set_get (Tagged {get, set}) whole part =
 lawTest : Test
 lawTest =
   let
-    legal = laws (1, 2)
+    legal = laws "arbitrary value"
   in
     describe "oneCase lenses obey the oneCase lens laws"
       [ legal Result.ok   Ok      "ok lens"

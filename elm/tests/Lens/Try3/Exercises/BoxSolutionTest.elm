@@ -2,8 +2,9 @@ module Lens.Try3.Exercises.BoxSolutionTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Lens.Try3.Util exposing (..)
-import Lens.Try3.Laws as Laws
+import Lens.Try3.Util exposing (negateVia)
+import Lens.Try3.OneCaseTest as OneCase
+import Lens.Try3.HumbleTest as Humble
 
 import Lens.Try3.Lens as Lens
 import Lens.Try3.Compose as Lens
@@ -19,30 +20,30 @@ chainedCases : Test
 chainedCases =
   let
     lens = Box.oneCaseAndOneCase Box.contents Box.creamy
-    legal = Laws.oneCase
+    legal = OneCase.laws "arbitraryValue"
   in
     describe "oneCase + oneCase"
       [ describe "update"
-          [ upt lens (Contents (Creamy 3))   (Contents (Creamy -3))
-          , upt lens (Contents (Chunky 3))   (Contents (Chunky  3))
-          , upt lens Empty                   Empty
+          [ negateVia lens (Contents (Creamy 3))   (Contents (Creamy -3))
+          , negateVia lens (Contents (Chunky 3))   (Contents (Chunky  3))
+          , negateVia lens Empty                   Empty
           ]
       , describe "laws"
-        [ legal lens   (Creamy >> Contents)      "round trips work"
-        ]
+          [ legal lens   (Creamy >> Contents)      "round trips work"
+          ]
       ]
 
 -- Exercise 4
 
-oneCaseTohumble : Test
-oneCaseTohumble =
+oneCaseToHumble : Test
+oneCaseToHumble =
   let
     lens = Box.oneCaseToHumble Box.creamy
-    (original, present, missing) = humbleLawSupport
+    (original, present, missing) = Humble.lawValues
   in
     describe "one-case lens to humble lens"
-      [ upt lens  (Creamy 3)  (Creamy  -3)
-      , upt lens  (Chunky 3)  (Chunky   3)
+      [ negateVia lens  (Creamy 3)  (Creamy  -3)
+      , negateVia lens  (Chunky 3)  (Chunky   3)
 
       , present lens (Creamy original)
       , missing lens (Chunky original)   "different case"
@@ -56,11 +57,11 @@ oneCaseAndClassic : Test
 oneCaseAndClassic =
   let
     lens = Box.oneCaseAndClassic Result.ok Tuple2.first
-    (original, present, missing) = humbleLawSupport
+    (original, present, missing) = Humble.lawValues
   in
     describe "one-case and classic"
-      [ upt lens  (Ok  (3, ""))    (Ok  (-3, ""))
-      , upt lens  (Err (3, ""))    (Err ( 3, ""))
+      [ negateVia lens  (Ok  (3, ""))    (Ok  (-3, ""))
+      , negateVia lens  (Err (3, ""))    (Err ( 3, ""))
 
       , present lens (Ok (original, ""))
       , missing lens (Err original)   "different case"
