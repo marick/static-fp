@@ -9,6 +9,7 @@ import Html.Attributes exposing (..)
 import Html.Events as Event
 import Array
 import Dict
+import String.Extra as String
 
 wrapper : List (Html Msg) -> Html Msg
 wrapper contents = 
@@ -27,6 +28,7 @@ view model =
   wrapper
     [ belovedDisplay model
     , buttons
+    , clickCountDisplay model.clickCount
     ]
 
 belovedDisplay : Model -> Html Msg    
@@ -42,6 +44,15 @@ belovedDisplay model =
       , ul [] <| List.map oneWord words
       ]
 
+clickCountDisplay : Int -> Html Msg      
+clickCountDisplay count =
+  p []
+    [ text <|
+        "You've clicked " ++
+        (String.pluralize "time" "times" count) ++
+        "."
+    ]
+          
 oneWord : Word -> Html Msg
 oneWord word = 
   let 
