@@ -1,9 +1,10 @@
-module Errors.Lens.RemoteLog exposing (..)
+module Errors.Alarmist.RemoteLog exposing (..)
 
 import Http
 import Json.Encode as Encode
 import Json.Decode as Decode
 import Errors.Remote.Msg exposing (Msg(..))
+import Lens.Try3.TEA.UpdateComposite as Whole exposing (Whole)
 
 destination : String
 destination = "http://logger.outsidefp.com"
@@ -28,10 +29,10 @@ jsonify msg =
         ]
 
 
-cmd : Msg -> Cmd Msg
-cmd msg =
+cmd : Whole String Msg model -> String -> Cmd Msg
+cmd whole msg =
   let
-    payload = jsonify msg |> Http.jsonBody
+    payload = jsonify whole.msg |> Http.jsonBody
   in
     Decode.succeed "ok" -- Logging is "fire and forget"
       |> Http.post destination payload

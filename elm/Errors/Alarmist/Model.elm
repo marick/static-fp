@@ -1,4 +1,4 @@
-module Errors.Lens.Model exposing
+module Errors.Alarmist.Model exposing
   ( Model
   , init
 
