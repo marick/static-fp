@@ -28,21 +28,22 @@ oneCaseToHumble (Tagged lens) =
     Lens.humble lens.get (H.guardedSet lens.get set )
 
 
-humbleToAlarmist : (big -> err)
-              -> Lens.Humble big small
-              -> Lens.Alarmist err big small
-humbleToAlarmist errMaker (Tagged lens) =
-  let 
-    get big =
-      case lens.get big of
-        Just x -> Ok x
-        Nothing -> Err <| errMaker big
-  in
-    Tagged
-      { get = get
-      , set = lens.set
-      , update = lens.update
-      }
+x = Debug.log "======== TODO: " "humbleToAlarmist"
+-- humbleToAlarmist : (big -> err)
+--               -> Lens.Humble big small
+--               -> Lens.Alarmist err big small
+-- humbleToAlarmist errMaker (Tagged lens) =
+--   let 
+--     get big =
+--       case lens.get big of
+--         Just x -> Ok x
+--         Nothing -> Err <| errMaker big
+--   in
+--     Tagged
+--       { get = get
+--       , set = lens.set
+--       , update = lens.update
+--       }
 
       
 
@@ -104,21 +105,22 @@ oneCaseAndClassic a2b b2c =
 
 -----------------
 
-alarmistAndAlarmist : Lens.Alarmist err a b -> Lens.Alarmist err b c -> Lens.Alarmist err a c
-alarmistAndAlarmist (Tagged a2b) (Tagged b2c) =
-  let 
-    get a =
-      case a2b.get a of
-        Ok b -> b2c.get b
-        Err e -> Err e
+y = Debug.log "======== TODO: " "alarmist and alarmist"
+-- alarmistAndAlarmist : Lens.Alarmist err a b -> Lens.Alarmist err b c -> Lens.Alarmist err a c
+-- alarmistAndAlarmist (Tagged a2b) (Tagged b2c) =
+--   let 
+--     get a =
+--       case a2b.get a of
+--         Ok b -> b2c.get b
+--         Err e -> Err e
                   
-    set c a =
-      case a2b.get a of
-        Ok b ->
-          a2b.set (b2c.set c b) a
-        Err _ -> a
-  in
-    Lens.alarmist get set
+--     set c a =
+--       case a2b.get a of
+--         Ok b ->
+--           a2b.set (b2c.set c b) a
+--         Err _ -> a
+--   in
+--     Lens.alarmist get set
 
 -----------------
 

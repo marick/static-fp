@@ -185,7 +185,8 @@ oneCase get set =
 type AlarmistTag = AlarmistTag IsUnused
 type alias Alarmist err big small =
   Tagged AlarmistTag
-    { get : big -> Result err small
+    { name : String
+    , get : big -> Result err small
     , set : small -> big -> big
     , update : (small -> small) -> big -> big
     }
@@ -200,7 +201,7 @@ alarmist get set =
         Ok small ->
           set (f small) big
   in
-    Tagged { get = get, set = set, update = update }
+    Tagged { name = "temp",  get = get, set = set, update = update }
   
 setR : Alarmist err big small -> small -> big -> Result err big
 setR (Tagged lens) small big =
@@ -214,6 +215,10 @@ updateR (Tagged lens) f big =
     Ok small -> Ok <| lens.set (f small) big
     Err err -> Err err
 
+
+pathComponentName : a -> String
+pathComponentName x =
+  "`" ++ toString x ++ "`"
 
 
     
