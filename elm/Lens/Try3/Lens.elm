@@ -8,21 +8,22 @@ import Maybe.Extra as Maybe
 {- By radically widening the types, we can have `get`, `set`, and
    `update` that work with different kinds of lenses.
 -}
-type alias Generic getter setter updater =
-  { get : getter
-  , set : setter
-  , update : updater
+type alias Generic r getter setter updater =
+  { r
+    | get : getter
+    , set : setter
+    , update : updater
   }
 
-get : Tagged tag (Generic getter setter updater) -> getter
+get : Tagged tag (Generic r getter setter updater) -> getter
 get (Tagged lens) =
   lens.get
 
-set : Tagged tag (Generic getter setter updater) -> setter
+set : Tagged tag (Generic r getter setter updater) -> setter
 set (Tagged lens) =
   lens.set
 
-update : Tagged tag (Generic getter setter updater) -> updater
+update : Tagged tag (Generic r getter setter updater) -> updater
 update (Tagged lens) =
   lens.update
 
@@ -30,10 +31,10 @@ update (Tagged lens) =
 {- Handling Maybe -}
 
 -- A generic type for all lenses whose getters return `Maybe`.
-type alias GenericMaybe big small setter updater =
-  Generic (big -> Maybe small) setter updater 
+type alias GenericMaybe r big small setter updater =
+  Generic r (big -> Maybe small) setter updater 
 
-exists : Tagged tag (GenericMaybe big small setter updater)
+exists : Tagged tag (GenericMaybe r big small setter updater)
        -> big -> Bool
 exists (Tagged lens) whole =
   lens.get whole |> Maybe.isJust
@@ -96,7 +97,7 @@ upsert2 get set =
     , update = update
     }
 
-getWithDefault : Tagged tag (GenericMaybe big small setter updater)
+getWithDefault : Tagged tag (GenericMaybe r big small setter updater)
                -> small -> big -> Maybe small    
 getWithDefault (Tagged lens) default big =
   case lens.get big of
