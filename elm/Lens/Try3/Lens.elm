@@ -2,7 +2,6 @@ module Lens.Try3.Lens exposing (..)
 
 
 import Tagged exposing (Tagged(..))
-import Lens.Try3.Helpers as H
 import Maybe.Extra as Maybe
 
 {- By radically widening the types, we can have `get`, `set`, and
@@ -89,7 +88,7 @@ upsert2 : (big -> Maybe small)
         -> Upsert big small
 upsert2 get set =           
   let
-    update f = H.guardedUpdate get set (f >> Just)
+    update f = guardedUpdate get set (f >> Just)
   in
     Tagged
     { get = get
@@ -135,7 +134,7 @@ humble get set =
   Tagged
   { get = get
   , set = set
-  , update = H.guardedUpdate get set
+  , update = guardedUpdate get set
   }
 
 setM : Humble big small -> small -> big -> Maybe big
@@ -223,5 +222,19 @@ pathComponentName x =
 
     
 {-                 Util                        -}
+
+
+{- Upsert and Humble lenses construct their `update` functions the same way. -}
+guardedUpdate : (big -> Maybe small)
+              -> (transformed -> big -> big)
+              -> (small -> transformed) -> big -> big
+guardedUpdate get set f big =
+  case get big of
+    Nothing ->
+      big
+    Just small ->
+      set (f small) big
+
+
 
 type IsUnused = IsUnused IsUnused

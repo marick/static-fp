@@ -3,7 +3,6 @@ module Lens.Try3.Compose exposing (..)
 
 import Tagged exposing (Tagged(..))
 import Lens.Try3.Lens as Lens
-import Lens.Try3.Helpers as H
 
 {-          Conversions               -}
 
@@ -17,7 +16,7 @@ upsertToHumble (Tagged lens) =
     set small big =
       lens.set (Just small) big
   in
-    Lens.humble lens.get (H.guardedSet lens.get set)
+    Lens.humble lens.get (guardedSet lens.get set)
       
 oneCaseToHumble : Lens.OneCase big small -> Lens.Humble big small
 oneCaseToHumble (Tagged lens) =
@@ -25,7 +24,7 @@ oneCaseToHumble (Tagged lens) =
     set small _ =
       lens.set small
   in
-    Lens.humble lens.get (H.guardedSet lens.get set )
+    Lens.humble lens.get (guardedSet lens.get set )
 
 
 x = Debug.log "======== TODO: " "humbleToAlarmist"
@@ -153,3 +152,19 @@ humbleIdentity =
   in
     Lens.humble (identity >> Just) set
       
+
+
+{-                 Util                        -}
+
+
+{- Upsert and Humble lenses compose their `set` functions the same way. -}
+      
+guardedSet : (big -> Maybe small)
+           -> (small -> big -> big)
+           -> (small -> big -> big)
+guardedSet guard set small big = 
+  case guard big of
+    Nothing ->
+      big
+    Just _ ->
+      set small big
