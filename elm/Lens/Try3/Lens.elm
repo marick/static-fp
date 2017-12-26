@@ -179,18 +179,18 @@ oneCase get set =
     , update = update
     }
 
-{-                  Error Lenses               -}
+{-                  Alarmist Lenses               -}
 
-type ErrorTag = ErrorTag IsUnused
-type alias Error err big small =
-  Tagged ErrorTag
+type AlarmistTag = AlarmistTag IsUnused
+type alias Alarmist err big small =
+  Tagged AlarmistTag
     { get : big -> Result err small
     , set : small -> big -> big
     , update : (small -> small) -> big -> big
     }
 
-error : (big -> Result err small) -> (small -> big -> big) -> Error err big small
-error get set =
+alarmist : (big -> Result err small) -> (small -> big -> big) -> Alarmist err big small
+alarmist get set =
   let
     update f big =
       case get big of
@@ -201,13 +201,13 @@ error get set =
   in
     Tagged { get = get, set = set, update = update }
   
-setR : Error err big small -> small -> big -> Result err big
+setR : Alarmist err big small -> small -> big -> Result err big
 setR (Tagged lens) small big =
   case lens.get big of
     Ok _ -> Ok <| lens.set small big
     Err err -> Err err
   
-updateR : Error err big small -> (small -> small) -> big -> Result err big
+updateR : Alarmist err big small -> (small -> small) -> big -> Result err big
 updateR (Tagged lens) f big =
   case lens.get big of
     Ok small -> Ok <| lens.set (f small) big

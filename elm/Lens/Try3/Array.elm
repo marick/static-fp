@@ -1,6 +1,6 @@
 module Lens.Try3.Array exposing
   ( lens
-  , errorLens
+  , alarmistLens
   )
 
 import Lens.Try3.Lens as Lens
@@ -11,12 +11,12 @@ lens : Int -> Lens.Humble (Array val) val
 lens index =
   Lens.humble (Array.get index) (Array.set index)
 
-errorLens : Int -> Lens.Error String (Array val) val
-errorLens index =
+alarmistLens : Int -> Lens.Alarmist String (Array val) val
+alarmistLens index =
   let
     msg _ =
       "The Array has no element " ++ toString index ++ "."
   in
-    lens index |> Compose.humbleToError msg
+    lens index |> Compose.humbleToAlarmist msg
 
 

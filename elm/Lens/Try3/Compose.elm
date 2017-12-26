@@ -28,10 +28,10 @@ oneCaseToHumble (Tagged lens) =
     Lens.humble lens.get (H.guardedSet lens.get set )
 
 
-humbleToError : (big -> err)
+humbleToAlarmist : (big -> err)
               -> Lens.Humble big small
-              -> Lens.Error err big small
-humbleToError errMaker (Tagged lens) =
+              -> Lens.Alarmist err big small
+humbleToAlarmist errMaker (Tagged lens) =
   let 
     get big =
       case lens.get big of
@@ -104,8 +104,8 @@ oneCaseAndClassic a2b b2c =
 
 -----------------
 
-errorAndError : Lens.Error err a b -> Lens.Error err b c -> Lens.Error err a c
-errorAndError (Tagged a2b) (Tagged b2c) =
+alarmistAndAlarmist : Lens.Alarmist err a b -> Lens.Alarmist err b c -> Lens.Alarmist err a c
+alarmistAndAlarmist (Tagged a2b) (Tagged b2c) =
   let 
     get a =
       case a2b.get a of
@@ -118,7 +118,7 @@ errorAndError (Tagged a2b) (Tagged b2c) =
           a2b.set (b2c.set c b) a
         Err _ -> a
   in
-    Lens.error get set
+    Lens.alarmist get set
 
 -----------------
 

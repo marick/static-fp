@@ -51,10 +51,10 @@ words : Lens.Classic Model (Dict String (Array Word))
 words =
   Lens.classic .words (\words model -> { model | words = words })
 
-word : String -> Int -> Lens.Humble Model Word
+word : String -> Int -> Lens.Error Model Word
 word who index =
-  words .?>> Dict.humbleLens who ??>> Array.lens index
+  words .!>> Dict.errorLens who !!>> Array.errorLens index
 
 wordCount : String -> Int -> Lens.Humble Model Int
 wordCount who index =
-  words .?>> Dict.humbleLens who ??>> Array.lens index ?.>> Word.count
+  word who index !!>> Word.count

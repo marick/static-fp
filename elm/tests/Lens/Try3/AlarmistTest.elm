@@ -1,4 +1,4 @@
-module Lens.Try3.ErrorTest exposing (..)
+module Lens.Try3.AlarmistTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
@@ -76,16 +76,16 @@ laws =
   let
     (original, present, missing) = lawValues
   in
-    describe "error lenses obey the error lens laws"
+    describe "alarmist lenses obey the alarmist lens laws"
       [ describe "array lens"
-          [ present (Array.errorLens 1)   (array [' ', original])
-          , missing (Array.errorLens 1)   (array [' '          ])   "array too short"
+          [ present (Array.alarmistLens 1)   (array [' ', original])
+          , missing (Array.alarmistLens 1)   (array [' '          ])   "array too short"
           ]
 
       , describe "dict lens"
-          [ present (Dict.errorLens "key") (dict "key" original)
-          , missing (Dict.errorLens "key") (dict "---" original)  "no such key"
-          , missing (Dict.errorLens "key")  Dict.empty            "empty dict"
+          [ present (Dict.alarmistLens "key") (dict "key" original)
+          , missing (Dict.alarmistLens "key") (dict "---" original)  "no such key"
+          , missing (Dict.alarmistLens "key")  Dict.empty            "empty dict"
           ]
       ]
 
@@ -115,12 +115,12 @@ lawValues =
 update : Test
 update =
   let
-    at0 = Array.errorLens 0
-    at1 = Array.errorLens 1
+    at0 = Array.alarmistLens 0
+    at1 = Array.alarmistLens 1
 
-    dictLens = Dict.errorLens "key"
+    dictLens = Dict.alarmistLens "key"
   in
-    describe "update for various common base types (error lenses)"
+    describe "update for various common base types (alarmist lenses)"
       [ negateVia at0   (array [3])    (array [-3])
       , negateVia at1   (array [3])    (array [ 3])
       , negateVia at1   Array.empty    Array.empty
@@ -138,7 +138,7 @@ setR : Test
 setR =
   let
     setR = 
-      Lens.setR (Dict.errorLens "key")
+      Lens.setR (Dict.alarmistLens "key")
   in
     describe "setR"
       [ is     (setR 88 <| Dict.empty)       isErr          "empty"
@@ -150,7 +150,7 @@ updateR : Test
 updateR =
   let
     lens =
-      Dict.errorLens "key"
+      Dict.alarmistLens "key"
     negateVia lens = 
       Lens.updateR lens negate 
   in
@@ -169,7 +169,7 @@ updateR =
 from_humble : Test
 from_humble =
   let
-    lens = Compose.humbleToError toString (Dict.humbleLens "key")
+    lens = Compose.humbleToAlarmist toString (Dict.humbleLens "key")
     (original, present, missing) = lawValues
     get = Lens.get lens 
   in
@@ -195,15 +195,15 @@ from_humble =
       Composing lenses to PRODUCE this type of lens
 -}
 
-error_and_error : Test 
-error_and_error =
+alarmist_and_alarmist : Test 
+alarmist_and_alarmist =
   let
-    lens = Compose.errorAndError (Array.errorLens 0) (Array.errorLens 1)
+    lens = Compose.alarmistAndAlarmist (Array.alarmistLens 0) (Array.alarmistLens 1)
     (original, present, missing) = lawValues
 
     a2 = List.map array >> array
   in
-    describe "error and error"
+    describe "alarmist and alarmist"
       [ describe "update"
           [ negateVia lens   (a2 [[0, 3]])   (a2 [[0, -3]])
           , negateVia lens   (a2 [[0   ]])   (a2 [[0    ]])

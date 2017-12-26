@@ -57,4 +57,4 @@ word who index =
 
 wordCount : String -> Int -> Lens.Humble Model Int
 wordCount who index =
-  words .?>> Dict.humbleLens who ??>> Array.lens index ?.>> Word.count
+  word who index ?.>> Word.count

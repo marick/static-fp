@@ -1,7 +1,7 @@
 module Lens.Try3.Dict exposing
   ( lens
   , humbleLens
-  , errorLens
+  , alarmistLens
   )
 
 import Lens.Try3.Lens as Lens
@@ -20,10 +20,10 @@ humbleLens key =
   lens key |> Compose.upsertToHumble
 
     
-errorLens : comparable -> Lens.Error String (Dict comparable val) val
-errorLens key =
+alarmistLens : comparable -> Lens.Alarmist String (Dict comparable val) val
+alarmistLens key =
   let
     msg _ =
       "The Dict has no `" ++ toString key ++ "` key."
   in
-    humbleLens key |> Compose.humbleToError msg
+    humbleLens key |> Compose.humbleToAlarmist msg
