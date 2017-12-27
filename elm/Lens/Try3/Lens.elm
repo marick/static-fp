@@ -181,38 +181,55 @@ oneCase get set =
 
 {-                  Alarmist Lenses               -}
 
+type alias AlarmistResult ok = Result (List String) ok
+
 type AlarmistTag = AlarmistTag IsUnused
-type alias Alarmist err big small =
+type alias Alarmist big small =
   Tagged AlarmistTag
     { name : String
-    , get : big -> Result err small
-    , set : small -> big -> big
-    , update : (small -> small) -> big -> big
+    , get : big -> AlarmistResult small
+    , set : small -> big -> AlarmistResult big
+    , update : (small -> small) -> big -> AlarmistResult big
     }
 
-alarmist : (big -> Result err small) -> (small -> big -> big) -> Alarmist err big small
-alarmist get set =
+alarmist : tag -> (big -> Maybe small) -> (small -> big -> big)
+         -> Alarmist big small
+alarmist tag baseGet baseSet =
   let
+    name = pathComponentName tag
+
+    get big =
+      case baseGet big of
+        Nothing -> Err [name]
+        Just small -> Ok small
+
+    set small big =
+      case get big of
+        Err e -> Err e
+        Ok _ -> Ok <| baseSet small big
+      
     update f big =
       case get big of
-        Err _ ->
-          big
-        Ok small ->
-          set (f small) big
+        Err e -> Err e
+        Ok small -> Ok <| baseSet (f small) big
   in
-    Tagged { name = "temp",  get = get, set = set, update = update }
+    Tagged { name = pathComponentName tag
+           , get = get
+           , set = set
+           , update = update
+           }
   
-setR : Alarmist err big small -> small -> big -> Result err big
-setR (Tagged lens) small big =
-  case lens.get big of
-    Ok _ -> Ok <| lens.set small big
-    Err err -> Err err
+-- setR : Alarmist err big small -> small -> big -> Result err big
+-- setR (Tagged lens) small big =
+--   case lens.get big of
+--     Ok _ -> Ok <| lens.set small big
+--     Err err -> Err err
   
-updateR : Alarmist err big small -> (small -> small) -> big -> Result err big
-updateR (Tagged lens) f big =
-  case lens.get big of
-    Ok small -> Ok <| lens.set (f small) big
-    Err err -> Err err
+-- updateR : Alarmist err big small -> (small -> small) -> big -> Result err big
+-- updateR (Tagged lens) f big =
+--   case lens.get big of
+--     Ok small -> Ok <| lens.set (f small) big
+--     Err err -> Err err
 
 
 pathComponentName : a -> String

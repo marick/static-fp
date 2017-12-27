@@ -1,7 +1,7 @@
 module Lens.Try3.Dict exposing
   ( lens
   , humbleLens
-  -- , alarmistLens
+  , alarmistLens
   )
 
 import Lens.Try3.Lens as Lens
@@ -14,17 +14,10 @@ lens : comparable -> Lens.Upsert (Dict comparable val) val
 lens key =
   Lens.upsert (Dict.get key) (Dict.insert key) (Dict.remove key)
 
--- Todo: should probably create this directly for efficiency    
 humbleLens : comparable -> Lens.Humble (Dict comparable val) val
 humbleLens key =
   lens key |> Compose.upsertToHumble
 
-    
-x = Debug.log "======== TODO: " "dict alarmistlens"
--- alarmistLens : comparable -> Lens.Alarmist String (Dict comparable val) val
--- alarmistLens key =
---   let
---     msg _ =
---       "The Dict has no `" ++ toString key ++ "` key."
---   in
---     humbleLens key |> Compose.humbleToAlarmist msg
+alarmistLens : comparable -> Lens.Alarmist (Dict comparable val) val
+alarmistLens key =
+  Lens.alarmist key (Dict.get key) (Dict.insert key)

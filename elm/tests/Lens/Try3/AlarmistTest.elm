@@ -4,11 +4,10 @@ import Test exposing (..)
 import TestBuilders exposing (..)
 import Lens.Try3.Util as Util exposing (negateVia, dict, array)
 import Tagged exposing (Tagged(..))
-import Lens.Try3.ClassicTest as ClassicTest
 
 import Lens.Try3.Lens as Lens
 import Lens.Try3.Compose as Compose
-import Result.Extra as Result exposing (isErr)
+
 import Dict
 import Array
 import Lens.Try3.Dict as Dict
@@ -17,147 +16,219 @@ import Lens.Try3.Result as Result
 import Lens.Try3.Tuple2 as Tuple2
 
 
-
-
 {- 
      The laws for this lens type 
  -}
 
--- presentLaws lens whole ({original, new} as inputValues) = 
---   describe "`get whole` would succeed"
---     [ -- describe required context
---       notEqual original new           "equal values would be a weak test case"  
-     
---     ,             set_get lens whole inputValues
---     ,             get_set lens whole inputValues
---     , ClassicTest.set_set lens whole inputValues
---     ]
+-- Even where the laws have the same meaning as for the classic lens, the type
+-- signatures are too different to reuse them. The exception is that the Classic
+-- `set_set` lens can be reused.
 
-missingLaws lens whole inputValues why = 
-  describe ("`get whole` would fail: " ++ why)
-    [ no_upsert lens whole inputValues
-    ]
+{- 
 
--- These laws are the same as those for the humble lens, except for
--- the use of `Result` instead of `Maybe`.
-      
+
 set_get (Tagged {get, set}) whole {original, new} =
   describe "when a part is present, `set` overwrites it"
     [ -- describe required context
-      equal  (get          whole)    (Ok original)  "part must be present"
+      equal  (get          whole)    (Just original)  "part must be present"
 
-    , equal_ (get (set new whole))   (Ok new)
+    , equal_ (get (set new whole))   (Just new)
     ]
 
 get_set (Tagged {get, set}) whole {original} =
   describe "retrieving a part, then setting it back"
     [ -- describe required context
-      equal  (get          whole)     (Ok original)  "part must be present"
+      equal  (get          whole)     (Just original)  "part must be present"
         
-    , equal_ (set original whole)     (Ok whole)
+    , equal_ (set original whole)     whole
     ]
 
 no_upsert (Tagged {get, set}) whole {new} = 
   describe "when a part is missing, `set` does nothing"
     [ -- describe required context
-      is    (get          whole)      isErr    "part must be misssing"
+      equal (get          whole)      Nothing     "part must be misssing"
         
-    , is    (get (set new whole))     isErr     "`set` does not add anything"
+    , equal (get (set new whole))     Nothing     "`set` does not add anything"
+    , equal      (set new whole)      whole       "nothing else changed"
+    ]
+-}
+
+-- Laws are separated into present/missing cases because some types
+-- will have more than one way for a part to be missing
+
+{- 
+    
+makeLawTest_present lens whole ({original, new} as inputValues) = 
+  describe "`get whole` would succeed"
+    [ -- describe required context
+      notEqual original new           "equal values would be a weak test case"  
+     
+    ,             set_get lens whole inputValues
+    ,             get_set lens whole inputValues
+    , ClassicTest.set_set lens whole inputValues
     ]
 
+makeLawTest_missing lens whole inputValues why = 
+  describe ("`get whole` would fail: " ++ why)
+    [ no_upsert lens whole inputValues
+    ]
+-}
+
+-- Constant values to use for various law tests.
+-- Their values are irrelevant, thus making them
+-- decent standins for variables in lens laws.
+defaultParts = 
+  { original = 'a'
+  , overwritten = '-'
+  , new = '2'
+  }
+original = defaultParts.original  
+
+
+-- The most common way to use law tests
+
+{- 
+
+present lens whole =
+  makeLawTest_present lens whole defaultParts
+    
+missing lens whole why = 
+  makeLawTest_missing lens whole defaultParts why
+-}
 
 {-
      The various predefined types obey the LAWS
  -}
 
--- laws : Test
--- laws =
---   let
---     (original, present, missing) = lawValues
---   in
---     describe "alarmist lenses obey the alarmist lens laws"
---       [ describe "array lens"
---           [ present (Array.alarmistLens 1)   (array [' ', original])
---           , missing (Array.alarmistLens 1)   (array [' '          ])   "array too short"
---           ]
+{- 
+laws : Test
+laws =
+  describe "alarmist lenses obey the alarmist lens laws"
+    [ describe "array lens"
+        [ present (Array.lens 1)   (array [' ', original])
+        , missing (Array.lens 1)   (array [' '          ])   "array too short"
+        ]
 
---       , describe "dict lens"
---           [ present (Dict.alarmistLens "key") (dict "key" original)
---           , missing (Dict.alarmistLens "key") (dict "---" original)  "no such key"
---           , missing (Dict.alarmistLens "key")  Dict.empty            "empty dict"
---           ]
---       ]
-
--- lawValues =
---   let 
---     original = '1'
---     parts =
---       { original = original
---       , overwritten = '-'
---       , new = '2'
---       }
---     present lens whole =
---       presentLaws lens whole parts
---     missing lens whole why = 
---       missingLaws lens whole parts why
---   in
---     (original, present, missing)
-
-
-      
+    , describe "dict lens"
+      [ present (Dict.alarmistLens "key") (dict "key" original)
+      , missing (Dict.alarmistLens "key") (dict "---" original)  "no such key"
+      , missing (Dict.alarmistLens "key")  Dict.empty            "empty dict"
+      ]
+    ]
+ -}
+    
 {-
          Check that `update` works correctly for each type.
          (Overkill, really, since every type uses the same `update` code,
          which depends only on the correctness of `get` and `set`.)
  -}
 
--- update : Test
--- update =
---   let
---     at0 = Array.alarmistLens 0
---     at1 = Array.alarmistLens 1
+{- 
+update : Test
+update =
+  let
+    at0 = Array.lens 0
+    at1 = Array.lens 1
 
---     dictLens = Dict.alarmistLens "key"
---   in
---     describe "update for various common base types (alarmist lenses)"
---       [ negateVia at0   (array [3])    (array [-3])
---       , negateVia at1   (array [3])    (array [ 3])
---       , negateVia at1   Array.empty    Array.empty
+    dictLens = Dict.alarmistLens "key"
+  in
+    describe "update for various common base types (alarmist lenses)"
+      [ negateVia at0   (array [3])    (array [-3])
+      , negateVia at1   (array [3])    (array [ 3])
+      , negateVia at1   Array.empty    Array.empty
         
---       , negateVia dictLens (dict "key" 3)   (dict "key" -3)
---       , negateVia dictLens (dict "---" 3)   (dict "---"  3)
---       , negateVia dictLens Dict.empty       Dict.empty
---       ]
-  
-{-
-     Functions beyond the stock get/set/update
+      , negateVia dictLens (dict "key" 3)   (dict "key" -3)
+      , negateVia dictLens (dict "---" 3)   (dict "---"  3)
+      , negateVia dictLens Dict.empty       Dict.empty
+      ]
+ -}
+
+{- 
+    set and update produce error lists
 -}
 
--- setR : Test
--- setR =
---   let
---     setR = 
---       Lens.setR (Dict.alarmistLens "key")
---   in
---     describe "setR"
---       [ is     (setR 88 <| Dict.empty)       isErr          "empty"
---       , is     (setR 88 <| dict "---" 0)     isErr          "bad key"
---       , equal_ (setR 88 <| dict "key" 0)     (Ok <| dict "key" 88)  
---       ]
+set_failure : Test
+set_failure =
+  let
+    lens = Dict.alarmistLens "key"
+  in
+    describe "set produces error lists"
+      [ equal_ (Lens.set lens 33 Dict.empty) (Err ["`\"key\"`"])
+      ]
 
--- updateR : Test
--- updateR =
---   let
---     lens =
---       Dict.alarmistLens "key"
---     negateVia lens = 
---       Lens.updateR lens negate 
---   in
---     describe "updateM"
---       [ is     (negateVia lens <| Dict.empty)    isErr      "empty"
---       , is     (negateVia lens <| dict "---" 8)  isErr      "bad key"
---       , equal_ (negateVia lens <| dict "key" 8) (Ok <| dict "key" -8)  
---       ]
+update_failure : Test
+update_failure =
+  let
+    lens = Array.alarmistLens 3
+  in
+    describe "update produces error lists"
+      [ equal_ (Lens.set lens 33 Array.empty) (Err ["`3`"])
+      ]
+
+{-
+    Functions beyond the stock get/set/update
+ -}
+
+
+{- 
+exists : Test
+exists =
+  let
+    exists lens whole expected = 
+      equal (Lens.exists lens whole) expected (toString whole)
+  in
+    describe "exists"
+      [ exists (Dict.alarmistLens "key")    Dict.empty       False
+      , exists (Dict.alarmistLens "key")    (dict "---" 3)   False
+      , exists (Dict.alarmistLens "key")    (dict "key" 3)   True
+      ]
+ -}
+
+{- 
+getWithDefault : Test
+getWithDefault =
+  let
+    get lens whole expected = 
+      equal (Lens.getWithDefault lens "default" whole) expected (toString whole)
+  in
+    describe "getWithDefault"
+      [ get (Dict.alarmistLens "key")    Dict.empty            (Just "default")
+      , get (Dict.alarmistLens "key")    (dict "---" "orig")   (Just "default")
+      , get (Dict.alarmistLens "key")    (dict "key" "orig")   (Just "orig")
+      ]
+ -}
+      
+{- 
+setM : Test
+setM =
+  let
+    setM = 
+      Lens.setM (Dict.alarmistLens "key")
+  in
+    describe "setM"
+      [ equal  (setM 88 <| Dict.empty)    Nothing      "empty"
+      , equal  (setM 88 <| dict "---" 0)  Nothing      "bad key"
+      , equal_ (setM 88 <| dict "key" 0) (Just <| dict "key" 88)  
+      ]
+ -}
+
+{- 
+updateM : Test
+updateM =
+  let
+    lens =
+      Dict.alarmistLens "key"
+    negateVia lens = 
+      Lens.updateM lens Basics.negate 
+  in
+    describe "updateM"
+      [ equal  (negateVia lens <| Dict.empty)    Nothing      "empty"
+      , equal  (negateVia lens <| dict "---" 8)  Nothing      "bad key"
+      , equal_ (negateVia lens <| dict "key" 8) (Just <| dict "key" -8)  
+      ]
+ -}
+
+      
 
 
       
@@ -165,55 +236,8 @@ no_upsert (Tagged {get, set}) whole {new} =
       Converting other lenses into this type of lens
  -}
 
--- from_humble : Test
--- from_humble =
---   let
---     lens = Compose.humbleToAlarmist toString (Dict.humbleLens "key")
---     (original, present, missing) = lawValues
---     get = Lens.get lens 
---   in
---     describe "upsert to humble lens"
---       [ describe "get" 
---           [ equal_   (get (dict "key" 3))   (Ok 3)
---           , equal_   (get (dict "---" 3))   (Err <| toString (dict "---" 3))
---           ]
---       , describe "update"
---           [ negateVia    lens   (dict "key"  3)
---                                 (dict "key" -3)
---           , negateVia    lens    Dict.empty
---                                  Dict.empty
---           ]
---       , describe "laws"
---           [ present lens  (dict "key" original)
---           , missing lens  (dict "---" original)   "wrong key"
---           , missing lens   Dict.empty             "empty"
---           ]
---       ]
 
 {- 
       Composing lenses to PRODUCE this type of lens
 -}
 
--- alarmist_and_alarmist : Test 
--- alarmist_and_alarmist =
---   let
---     lens = Compose.alarmistAndAlarmist (Array.alarmistLens 0) (Array.alarmistLens 1)
---     (original, present, missing) = lawValues
-
---     a2 = List.map array >> array
---   in
---     describe "alarmist and alarmist"
---       [ describe "update"
---           [ negateVia lens   (a2 [[0, 3]])   (a2 [[0, -3]])
---           , negateVia lens   (a2 [[0   ]])   (a2 [[0    ]])
---           , negateVia lens   (a2 [[    ]])   (a2 [[     ]])
---           ]
---       , describe "laws"
---           [ present lens  (a2 [[' ', original]])
---           , missing lens  (a2 [[' '          ]])       "short"
---           , missing lens  (a2 [              ])        "missing"
---           ]
---       ]
-
-      
-      
