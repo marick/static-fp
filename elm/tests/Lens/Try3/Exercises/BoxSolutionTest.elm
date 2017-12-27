@@ -20,7 +20,7 @@ chainedCases : Test
 chainedCases =
   let
     lens = Box.oneCaseAndOneCase Box.contents Box.creamy
-    legal = OneCase.laws "arbitraryValue"
+    legal = OneCase.legal
   in
     describe "oneCase + oneCase"
       [ describe "update"
@@ -39,7 +39,9 @@ oneCaseToHumble : Test
 oneCaseToHumble =
   let
     lens = Box.oneCaseToHumble Box.creamy
-    (original, present, missing) = Humble.lawValues
+    original = Humble.original
+    present = Humble.present
+    missing = Humble.missing
   in
     describe "one-case lens to humble lens"
       [ negateVia lens  (Creamy 3)  (Creamy  -3)
@@ -57,7 +59,9 @@ oneCaseAndClassic : Test
 oneCaseAndClassic =
   let
     lens = Box.oneCaseAndClassic Result.ok Tuple2.first
-    (original, present, missing) = Humble.lawValues
+    original = Humble.original
+    present = Humble.present
+    missing = Humble.missing
   in
     describe "one-case and classic"
       [ negateVia lens  (Ok  (3, ""))    (Ok  (-3, ""))

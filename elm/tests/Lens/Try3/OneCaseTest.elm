@@ -20,16 +20,6 @@ import Lens.Try3.Maybe as Maybe
      The laws for this lens type 
  -}
 
-laws arbitraryWrappedValue lens constructor comment =
-  describe comment
-    [ get_set lens (constructor arbitraryWrappedValue) arbitraryWrappedValue
-    , set_get lens (constructor arbitraryWrappedValue) arbitraryWrappedValue
-    ]
-
-
--- Even where the laws have the same meaning as for the classic lens, the type
--- signatures are too different to reuse them.
-
 get_set (Tagged {get, set}) whole part =
   describe "retrieving a part, then setting it back"
     [ -- describe required context
@@ -47,6 +37,16 @@ set_get (Tagged {get, set}) whole part =
     ]
 
 
+makeLawTest arbitraryWrappedValue lens constructor comment =
+  describe comment
+    [ get_set lens (constructor arbitraryWrappedValue) arbitraryWrappedValue
+    , set_get lens (constructor arbitraryWrappedValue) arbitraryWrappedValue
+    ]
+
+-- The most common way to use law tests
+legal =
+  makeLawTest "arbitrary value"
+
 
 {-
      The various predefined types obey the LAWS
@@ -54,15 +54,12 @@ set_get (Tagged {get, set}) whole part =
 
 lawTest : Test
 lawTest =
-  let
-    legal = laws "arbitrary value"
-  in
-    describe "oneCase lenses obey the oneCase lens laws"
-      [ legal Result.ok   Ok      "ok lens"
-      , legal Result.err  Err     "err lens"
-
-      , legal Maybe.just  Just    "just lens"
-      ]
+  describe "oneCase lenses obey the oneCase lens laws"
+    [ legal Result.ok   Ok      "ok lens"
+    , legal Result.err  Err     "err lens"
+      
+    , legal Maybe.just  Just    "just lens"
+    ]
 
     
 {-

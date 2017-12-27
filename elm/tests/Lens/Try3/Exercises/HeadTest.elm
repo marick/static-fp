@@ -20,10 +20,9 @@ update =
 laws : Test
 laws =
   let
-    ( original  -- value to start with, if focus is present
-    , present   -- laws that apply when `get` returns a `Just`
-    , missing   -- laws that apply when `get` returns `Nothing`
-    ) = Humble.lawValues
+    original = Humble.original -- value to start with, if focus is present
+    present = Humble.present  -- laws that apply when `get` returns a `Just`
+    missing = Humble.missing  -- laws that apply when `get` returns `Nothing`
   in
     describe "laws"
       [ present Head.lens   [original]

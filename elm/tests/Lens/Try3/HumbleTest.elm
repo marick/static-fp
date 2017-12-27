@@ -23,27 +23,9 @@ import Lens.Try3.Tuple2 as Tuple2
      The laws for this lens type 
  -}
 
--- Laws are separated into present/missing cases because some types
--- will have more than one way for a part to be missing
-    
-presentLaws lens whole ({original, new} as inputValues) = 
-  describe "`get whole` would succeed"
-    [ -- describe required context
-      notEqual original new           "equal values would be a weak test case"  
-     
-    ,             set_get lens whole inputValues
-    ,             get_set lens whole inputValues
-    , ClassicTest.set_set lens whole inputValues
-    ]
-
-missingLaws lens whole inputValues why = 
-  describe ("`get whole` would fail: " ++ why)
-    [ no_upsert lens whole inputValues
-    ]
-
-
 -- Even where the laws have the same meaning as for the classic lens, the type
--- signatures are too different to reuse them.
+-- signatures are too different to reuse them. The exception is that the Classic
+-- `set_set` lens can be reused.
 
 set_get (Tagged {get, set}) whole {original, new} =
   describe "when a part is present, `set` overwrites it"
@@ -70,7 +52,40 @@ no_upsert (Tagged {get, set}) whole {new} =
     , equal      (set new whole)      whole       "nothing else changed"
     ]
 
+-- Laws are separated into present/missing cases because some types
+-- will have more than one way for a part to be missing
+    
+makeLawTest_present lens whole ({original, new} as inputValues) = 
+  describe "`get whole` would succeed"
+    [ -- describe required context
+      notEqual original new           "equal values would be a weak test case"  
+     
+    ,             set_get lens whole inputValues
+    ,             get_set lens whole inputValues
+    , ClassicTest.set_set lens whole inputValues
+    ]
 
+makeLawTest_missing lens whole inputValues why = 
+  describe ("`get whole` would fail: " ++ why)
+    [ no_upsert lens whole inputValues
+    ]
+
+-- Constant values to use for various law tests.
+-- Their values are irrelevant, thus making them
+-- decent standins for variables in lens laws.
+defaultParts = 
+  { original = 'a'
+  , overwritten = '-'
+  , new = '2'
+  }
+original = defaultParts.original  
+
+-- The most common way to use law tests
+present lens whole =
+  makeLawTest_present lens whole defaultParts
+    
+missing lens whole why = 
+  makeLawTest_missing lens whole defaultParts why
 
 {-
      The various predefined types obey the LAWS
@@ -78,36 +93,18 @@ no_upsert (Tagged {get, set}) whole {new} =
 
 laws : Test
 laws =
-  let
-    (original, present, missing) = lawValues
-  in
-    describe "humble lenses obey the humble lens laws"
-      [ describe "array lens"
-          [ present (Array.lens 1)   (array [' ', original])
-          , missing (Array.lens 1)   (array [' '          ])   "array too short"
-          ]
+  describe "humble lenses obey the humble lens laws"
+    [ describe "array lens"
+        [ present (Array.lens 1)   (array [' ', original])
+        , missing (Array.lens 1)   (array [' '          ])   "array too short"
+        ]
 
-      , describe "dict lens"
-          [ present (Dict.humbleLens "key") (dict "key" original)
-          , missing (Dict.humbleLens "key") (dict "---" original)  "no such key"
-          , missing (Dict.humbleLens "key")  Dict.empty            "empty dict"
-          ]
+    , describe "dict lens"
+      [ present (Dict.humbleLens "key") (dict "key" original)
+      , missing (Dict.humbleLens "key") (dict "---" original)  "no such key"
+      , missing (Dict.humbleLens "key")  Dict.empty            "empty dict"
       ]
-
-lawValues =
-  let 
-    original = '1'
-    parts =
-      { original = original
-      , overwritten = '-'
-      , new = '2'
-      }
-    present lens whole =
-      presentLaws lens whole parts
-    missing lens whole why = 
-      missingLaws lens whole parts why
-  in
-    (original, present, missing)
+    ]
     
 {-
          Check that `update` works correctly for each type.
@@ -201,7 +198,6 @@ from_classic : Test
 from_classic =
   let
     lens = Compose.classicToHumble Tuple2.first
-    (original, present, missing) = lawValues
   in
     describe "classic to humble lens"
       [ negateVia  lens   ( 3,       "")
@@ -214,7 +210,6 @@ from_upsert : Test
 from_upsert =
   let
     lens = Compose.upsertToHumble (Dict.lens "key")
-    (original, present, missing) = lawValues
   in
     describe "upsert to humble lens"
       [ negateVia    lens   (dict "key"  3)
@@ -231,7 +226,6 @@ from_oneCase : Test
 from_oneCase =
   let
     lens = Compose.oneCaseToHumble Result.ok
-    (original, present, missing) = lawValues
   in
     describe "one-part to humble lens"
       [ negateVia lens   (Ok 3)  (Ok  -3)
@@ -250,7 +244,6 @@ humble_and_humble : Test
 humble_and_humble =
   let
     lens = Compose.humbleAndHumble (Array.lens 0) (Array.lens 1)
-    (original, present, missing) = lawValues
 
     a2 = List.map array >> array
   in
@@ -271,7 +264,6 @@ classic_and_humble : Test
 classic_and_humble =
   let
     lens = Compose.classicAndHumble Tuple2.second (Array.lens 1)
-    (original, present, missing) = lawValues
 
     nested oneElt =
       ( array [] , array oneElt )
@@ -292,7 +284,6 @@ upsert_and_classic : Test
 upsert_and_classic =
   let
     lens = Compose.upsertAndClassic (Dict.lens "key") (Tuple2.first)
-    (original, present, missing) = lawValues
   in
     describe "upsert and classic"
       [ describe "update"
@@ -312,7 +303,6 @@ onecase_and_classic : Test
 onecase_and_classic =
   let
     lens = Compose.oneCaseAndClassic Result.ok Tuple2.first
-    (original, present, missing) = lawValues
   in
     describe "one-case and classic"
       [ negateVia lens  (Ok  (3, ""))    (Ok  (-3, ""))

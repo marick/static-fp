@@ -36,7 +36,7 @@ tryCombination lens wholeMaker oneCombination =
   let
     whole = wholeMaker oneCombination.original
   in
-    ClassicTest.laws lens whole oneCombination (toString oneCombination)
+    ClassicTest.makeLawTest lens whole oneCombination (toString oneCombination)
 
 
 {-

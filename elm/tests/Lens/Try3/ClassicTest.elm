@@ -28,13 +28,6 @@ record = Lens.classic .part (\part whole -> { whole | part = part })
      The laws for this lens type 
  -}
 
-laws lens whole inputValues comment = 
-  describe comment
-    [ set_get lens whole inputValues
-    , get_set lens whole 
-    , set_set lens whole inputValues
-    ]
-
 set_get (Tagged {get, set}) whole {new} =
   equal (get (set new whole)) new
     "value set can then be gotten"
@@ -51,46 +44,50 @@ set_set (Tagged {set}) whole {overwritten, new} =
     equal inTwoSteps   inOneStep
       "set changes only the given part (no counter, etc.)"
 
+makeLawTest lens whole parts comment = 
+  describe comment
+    [ set_get lens whole parts
+    , get_set lens whole 
+    , set_set lens whole parts
+    ]
+
+-- Constant values to use for various law tests.
+-- Their values are irrelevant, thus making them
+-- decent standins for variables in lens laws.
+-- In special cases, `makeLawTest` will be used
+-- with different parts
+defaultParts =
+  { original = "old"
+  , new = "NEW"
+  , overwritten = "overwritten"
+  }
+original = defaultParts.original
+
+-- The most common use of `makeLawTest`:  
+legal lens whole =
+  makeLawTest lens whole defaultParts (toString whole)
 
 {-
      The various predefined types obey the LAWS
  -}
-
          
-lawTest : Test
-lawTest =
-  let
-    (original, legal) = lawValues
-  in
-    describe "laws checked for various classic lenses"
-      [ legal record         {part = original}       
-
-      , legal Tuple2.first   (original, "")          
-      , legal Tuple2.second  ("", original)          
-
-      , legal Tuple3.first   (original, "", "")      
-      , legal Tuple3.second  ("", original, "")      
-      , legal Tuple3.third   ("", "", original)      
-
-      , legal Tuple4.first   (original, "", "", "")  
-      , legal Tuple4.second  ("", original, "", "")  
-      , legal Tuple4.third   ("", "", original, "")  
-      , legal Tuple4.fourth  ("", "", "", original)  
-      ]
-
-
-lawValues =
-  let 
-    original = "OLD"
-    parts =
-      { original = original
-      , new = "NEW"
-      , overwritten = "overwritten"
-      }
-    legal lens whole =
-      laws lens whole parts (toString whole)
-  in
-    (original, legal)
+laws : Test
+laws =
+  describe "laws checked for various classic lenses"
+    [ legal record         {part = original}       
+        
+    , legal Tuple2.first   (original, "")          
+    , legal Tuple2.second  ("", original)          
+      
+    , legal Tuple3.first   (original, "", "")      
+    , legal Tuple3.second  ("", original, "")      
+    , legal Tuple3.third   ("", "", original)      
+      
+    , legal Tuple4.first   (original, "", "", "")  
+    , legal Tuple4.second  ("", original, "", "")  
+    , legal Tuple4.third   ("", "", original, "")  
+    , legal Tuple4.fourth  ("", "", "", original)  
+    ]
     
 {-
          Check that `update` works correctly for each type.
@@ -132,7 +129,6 @@ classic_and_classic : Test
 classic_and_classic =
   let
     lens = Compose.classicAndClassic Tuple2.first Tuple2.second
-    (original, legal) = lawValues
   in
     describe "classic ..>> classic"
       [ negateVia lens (("",        3), "")
