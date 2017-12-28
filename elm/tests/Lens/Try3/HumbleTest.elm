@@ -55,19 +55,19 @@ no_upsert (Tagged {get, set}) whole {new} =
 -- Laws are separated into present/missing cases because some types
 -- will have more than one way for a part to be missing
     
-makeLawTest_present lens whole ({original, new} as inputValues) = 
+makeLawTest_present lens whole ({original, new} as parts) = 
   describe "`get whole` would succeed"
     [ -- describe required context
       notEqual original new           "equal values would be a weak test case"  
      
-    ,             set_get lens whole inputValues
-    ,             get_set lens whole inputValues
-    , ClassicTest.set_set lens whole inputValues
+    ,             set_get lens whole parts
+    ,             get_set lens whole parts
+    , ClassicTest.set_set lens whole parts
     ]
 
-makeLawTest_missing lens whole inputValues why = 
+makeLawTest_missing lens whole parts why = 
   describe ("`get whole` would fail: " ++ why)
-    [ no_upsert lens whole inputValues
+    [ no_upsert lens whole parts
     ]
 
 -- Constant values to use for various law tests.
