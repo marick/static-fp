@@ -3,6 +3,7 @@ module Lens.Try3.Lens exposing (..)
 
 import Tagged exposing (Tagged(..))
 import Maybe.Extra as Maybe
+import Result.Extra as Result
 
 {- By radically widening the types, we can have `get`, `set`, and
    `update` that work with different kinds of lenses.
@@ -224,6 +225,11 @@ pathComponentName : a -> String
 pathComponentName x =
   "`" ++ toString x ++ "`"
 
+-- `exists` only works with lenses that produce a `Maybe`, 
+-- so we have a different name.
+pathExists : Alarmist big small -> big -> Bool
+pathExists (Tagged lens) whole =
+  lens.get whole |> Result.isOk
 
     
 {-                 Util                        -}

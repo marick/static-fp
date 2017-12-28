@@ -2,7 +2,7 @@ module Lens.Try3.AlarmistTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Lens.Try3.Util as Util exposing (negateVia, dict, array)
+import Lens.Try3.Util as Util exposing (dict, array)
 import Tagged exposing (Tagged(..))
 
 import Lens.Try3.Lens as Lens
@@ -141,29 +141,27 @@ dict_laws =
     
 {-
          Check that `update` works correctly for each type.
-         (Overkill, really, since every type uses the same `update` code,
-         which depends only on the correctness of `get` and `set`.)
  -}
 
-{- 
 update : Test
 update =
   let
-    at0 = Array.lens 0
-    at1 = Array.lens 1
+    at0 = Array.alarmistLens 0
+    at1 = Array.alarmistLens 1
 
     dictLens = Dict.alarmistLens "key"
+
+    negateVia lens = Lens.update lens negate -- can't use Util.negateVia
   in
     describe "update for various common base types (alarmist lenses)"
-      [ negateVia at0   (array [3])    (array [-3])
-      , negateVia at1   (array [3])    (array [ 3])
-      , negateVia at1   Array.empty    Array.empty
+      [ equal_ (negateVia at0 <| array [3])     (Ok <| array [-3])
+      , is_    (negateVia at0 <| Array.empty)   Result.isErr
+      , is_    (negateVia at1 <| array [3])     Result.isErr
         
-      , negateVia dictLens (dict "key" 3)   (dict "key" -3)
-      , negateVia dictLens (dict "---" 3)   (dict "---"  3)
-      , negateVia dictLens Dict.empty       Dict.empty
+      , equal_ (negateVia dictLens <| dict "key" 3)   (Ok <| dict "key" -3)
+      , is_    (negateVia dictLens <| dict "---" 3)   Result.isErr
+      , is_    (negateVia dictLens <| Dict.empty)     Result.isErr
       ]
- -}
 
 {- 
     set and update produce error lists
@@ -195,68 +193,18 @@ update_failure =
     Functions beyond the stock get/set/update
  -}
 
-
-{- 
-exists : Test
-exists =
+-- `exists` isn't type-compatible, so we have a different one.
+pathExists : Test
+pathExists =
   let
     exists lens whole expected = 
-      equal (Lens.exists lens whole) expected (toString whole)
+      equal (Lens.pathExists lens whole) expected (toString whole)
   in
     describe "exists"
       [ exists (Dict.alarmistLens "key")    Dict.empty       False
       , exists (Dict.alarmistLens "key")    (dict "---" 3)   False
       , exists (Dict.alarmistLens "key")    (dict "key" 3)   True
       ]
- -}
-
-{- 
-getWithDefault : Test
-getWithDefault =
-  let
-    get lens whole expected = 
-      equal (Lens.getWithDefault lens "default" whole) expected (toString whole)
-  in
-    describe "getWithDefault"
-      [ get (Dict.alarmistLens "key")    Dict.empty            (Just "default")
-      , get (Dict.alarmistLens "key")    (dict "---" "orig")   (Just "default")
-      , get (Dict.alarmistLens "key")    (dict "key" "orig")   (Just "orig")
-      ]
- -}
-      
-{- 
-setM : Test
-setM =
-  let
-    setM = 
-      Lens.setM (Dict.alarmistLens "key")
-  in
-    describe "setM"
-      [ equal  (setM 88 <| Dict.empty)    Nothing      "empty"
-      , equal  (setM 88 <| dict "---" 0)  Nothing      "bad key"
-      , equal_ (setM 88 <| dict "key" 0) (Just <| dict "key" 88)  
-      ]
- -}
-
-{- 
-updateM : Test
-updateM =
-  let
-    lens =
-      Dict.alarmistLens "key"
-    negateVia lens = 
-      Lens.updateM lens Basics.negate 
-  in
-    describe "updateM"
-      [ equal  (negateVia lens <| Dict.empty)    Nothing      "empty"
-      , equal  (negateVia lens <| dict "---" 8)  Nothing      "bad key"
-      , equal_ (negateVia lens <| dict "key" 8) (Just <| dict "key" -8)  
-      ]
- -}
-
-      
-
-
       
 {-
       Converting other lenses into this type of lens
