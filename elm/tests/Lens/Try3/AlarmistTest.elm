@@ -151,18 +151,22 @@ set_failure : Test
 set_failure =
   let
     lens = Dict.alarmistLens "key"
+    whole = dict "not key" 3
+    expected = { whole = whole , path = ["`\"key\"`"] }
   in
     describe "set produces error lists"
-      [ equal_ (Lens.set lens 33 Dict.empty) (Err ["`\"key\"`"])
+      [ equal_ (Lens.set lens 33 whole) (Err expected)
       ]
 
 update_failure : Test
 update_failure =
   let
     lens = Array.alarmistLens 3
+    whole = Array.empty
+    expected = { whole = whole, path = ["`3`"] }
   in
     describe "update produces error lists"
-      [ equal_ (Lens.set lens 33 Array.empty) (Err ["`3`"])
+      [ equal_ (Lens.set lens 33 whole) (Err expected)
       ]
 
 {-
