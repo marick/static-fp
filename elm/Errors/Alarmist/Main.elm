@@ -5,9 +5,9 @@ import Errors.Remote.Msg exposing (Msg(..))
 import Errors.Alarmist.Model as Model exposing (Model)
 import Errors.Remote.View as View
 import Errors.Alarmist.RemoteLog as Log
-import Lens.Try3.TEA.UpdateComposite as Whole exposing (Whole)
+import Lens.Try4.TEA.UpdateComposite as Whole exposing (Whole)
 
-import Lens.Try3.Lens as Lens
+import Lens.Try4.Lens as Lens
 import Html
 
 update : Msg -> Model -> (Model, Cmd Msg)

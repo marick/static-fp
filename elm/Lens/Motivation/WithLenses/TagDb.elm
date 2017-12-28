@@ -8,7 +8,7 @@ module Lens.Motivation.WithLenses.TagDb exposing
 import Lens.Motivation.WithLenses.TestAccess.TagDb as Support
 
 import Lens.Motivation.WithLenses.Animal as Animal
-import Lens.Try3.Lens as Lens
+import Lens.Try4.Lens as Lens
 import Dict exposing (Dict)
 import Array exposing (Array)
 

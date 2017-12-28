@@ -1,7 +1,7 @@
 module Errors.Simple.Word exposing (..)
 
 import Errors.Simple.Basics exposing (increment)
-import Lens.Try3.Lens as Lens 
+import Lens.Try4.Lens as Lens 
 
 {- Word -}
 

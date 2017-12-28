@@ -1,9 +1,9 @@
 module Lens.Motivation.Restructured.TestAccess.TagDb exposing (..)
 
 import Lens.Motivation.Restructured.Animal as Animal
-import Lens.Try3.Lens as Lens
-import Lens.Try3.Compose as Compose
-import Lens.Try3.Dict as Dict
+import Lens.Try4.Lens as Lens
+import Lens.Try4.Compose as Compose
+import Lens.Try4.Dict as Dict
 import Dict exposing (Dict)
 import Dict exposing (Dict)
 import Array exposing (Array)

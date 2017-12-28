@@ -6,7 +6,7 @@ import Errors.Simple.Model as Model exposing (Model)
 import Errors.Remote.View as View
 import Errors.Remote.RemoteLog as Log
 
-import Lens.Try3.Lens as Lens
+import Lens.Try4.Lens as Lens
 import Html
 
 update : Msg -> Model -> (Model, Cmd Msg)

@@ -3,7 +3,7 @@ module Lens.Motivation.WithLenses.Main exposing (..)
 import Lens.Motivation.WithLenses.Model as Model exposing (Model)
 import Lens.Motivation.WithLenses.Animal as Animal exposing (Animal)
 import Lens.Motivation.WithLenses.TagDb as TagDb exposing (TagDb)
-import Lens.Try3.Lens as Lens
+import Lens.Try4.Lens as Lens
 import Dict
 import Array
 

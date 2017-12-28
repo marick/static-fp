@@ -4,7 +4,7 @@ import Http
 import Json.Encode as Encode
 import Json.Decode as Decode
 import Errors.Remote.Msg exposing (Msg(..))
-import Lens.Try3.TEA.UpdateComposite as Whole exposing (Whole)
+import Lens.Try4.TEA.UpdateComposite as Whole exposing (Whole)
 
 destination : String
 destination = "http://logger.outsidefp.com"

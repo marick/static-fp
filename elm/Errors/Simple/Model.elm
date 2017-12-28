@@ -10,12 +10,12 @@ module Errors.Simple.Model exposing
 
 import Errors.Simple.Word as Word exposing (Word)
 
-import Lens.Try3.Lens as Lens 
-import Lens.Try3.Compose.Operators exposing (..)
+import Lens.Try4.Lens as Lens 
+import Lens.Try4.Compose.Operators exposing (..)
 import Dict exposing (Dict)
 import Array exposing (Array)
-import Lens.Try3.Dict as Dict
-import Lens.Try3.Array as Array
+import Lens.Try4.Dict as Dict
+import Lens.Try4.Array as Array
 
 
 {- Model -}

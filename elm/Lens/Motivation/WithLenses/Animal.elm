@@ -7,7 +7,7 @@ module Lens.Motivation.WithLenses.Animal exposing
   )
 
 import Array exposing (Array)
-import Lens.Try3.Lens as Lens
+import Lens.Try4.Lens as Lens
 
 type alias Id = Int
 type alias Tags = Array String
