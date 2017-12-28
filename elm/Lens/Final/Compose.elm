@@ -27,11 +27,11 @@ oneCaseToHumble (Tagged lens) =
     Lens.humble lens.get (guardedSet lens.get set )
 
 
-x = Debug.log "======== TODO: " "humbleToAlarmist"
--- humbleToAlarmist : (big -> err)
+x = Debug.log "======== TODO: " "humbleToPath"
+-- humbleToPath : (big -> err)
 --               -> Lens.Humble big small
---               -> Lens.Alarmist err big small
--- humbleToAlarmist errMaker (Tagged lens) =
+--               -> Lens.Path err big small
+-- humbleToPath errMaker (Tagged lens) =
 --   let 
 --     get big =
 --       case lens.get big of
@@ -104,9 +104,9 @@ oneCaseAndClassic a2b b2c =
 
 -----------------
 
-y = Debug.log "======== TODO: " "alarmist and alarmist"
--- alarmistAndAlarmist : Lens.Alarmist err a b -> Lens.Alarmist err b c -> Lens.Alarmist err a c
--- alarmistAndAlarmist (Tagged a2b) (Tagged b2c) =
+y = Debug.log "======== TODO: " "path and path"
+-- pathAndPath : Lens.Path err a b -> Lens.Path err b c -> Lens.Path err a c
+-- pathAndPath (Tagged a2b) (Tagged b2c) =
 --   let 
 --     get a =
 --       case a2b.get a of
@@ -119,7 +119,7 @@ y = Debug.log "======== TODO: " "alarmist and alarmist"
 --           a2b.set (b2c.set c b) a
 --         Err _ -> a
 --   in
---     Lens.alarmist get set
+--     Lens.path get set
 
 -----------------
 

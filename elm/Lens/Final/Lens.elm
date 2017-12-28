@@ -180,23 +180,23 @@ oneCase get set =
     , update = update
     }
 
-{-                  Alarmist Lenses               -}
+{-                  Path Lenses               -}
 
-type alias AlarmistResult whole ok =
+type alias PathResult whole ok =
   Result { whole : whole, path : (List String) } ok
 
-type AlarmistTag = AlarmistTag IsUnused
-type alias Alarmist big small =
-  Tagged AlarmistTag
+type PathTag = PathTag IsUnused
+type alias Path big small =
+  Tagged PathTag
     { name : String
-    , get : big -> AlarmistResult big small
-    , set : small -> big -> AlarmistResult big big
-    , update : (small -> small) -> big -> AlarmistResult big big
+    , get : big -> PathResult big small
+    , set : small -> big -> PathResult big big
+    , update : (small -> small) -> big -> PathResult big big
     }
 
-alarmist : tag -> (big -> Maybe small) -> (small -> big -> big)
-         -> Alarmist big small
-alarmist tag baseGet baseSet =
+path : tag -> (big -> Maybe small) -> (small -> big -> big)
+         -> Path big small
+path tag baseGet baseSet =
   let
     name = pathComponentName tag
 
@@ -227,7 +227,7 @@ pathComponentName x =
 
 -- `exists` only works with lenses that produce a `Maybe`, 
 -- so we have a different name.
-pathExists : Alarmist big small -> big -> Bool
+pathExists : Path big small -> big -> Bool
 pathExists (Tagged lens) whole =
   lens.get whole |> Result.isOk
 

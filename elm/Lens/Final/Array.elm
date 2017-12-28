@@ -1,6 +1,6 @@
 module Lens.Final.Array exposing
   ( lens
-  , alarmistLens
+  , pathLens
   )
 
 import Lens.Final.Lens as Lens
@@ -11,8 +11,8 @@ lens : Int -> Lens.Humble (Array val) val
 lens index =
   Lens.humble (Array.get index) (Array.set index)
 
-alarmistLens : Int -> Lens.Alarmist (Array val) val
-alarmistLens index =
-  Lens.alarmist index (Array.get index) (Array.set index)
+pathLens : Int -> Lens.Path (Array val) val
+pathLens index =
+  Lens.path index (Array.get index) (Array.set index)
 
 

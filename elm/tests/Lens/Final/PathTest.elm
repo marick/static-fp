@@ -1,4 +1,4 @@
-module Lens.Final.AlarmistTest exposing (..)
+module Lens.Final.PathTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
@@ -117,10 +117,10 @@ missing lens whole why =
 array_laws : Test
 array_laws =
   let
-    lens = Array.alarmistLens 1
+    lens = Array.pathLens 1
     underlyingSetter = Array.set 1
   in
-    describe "array lenses obey the alarmist lens laws"
+    describe "array lenses obey the path lens laws"
       [ present lens underlyingSetter (array [3, original])
 
       , missing lens                  Array.empty   "too short"
@@ -129,10 +129,10 @@ array_laws =
 dict_laws : Test
 dict_laws = 
   let
-    lens = Dict.alarmistLens "key"
+    lens = Dict.pathLens "key"
     underlyingSetter = Dict.insert "key"
   in
-    describe "dict lenses obey the alarmist lens laws"
+    describe "dict lenses obey the path lens laws"
       [ present lens underlyingSetter (dict "key" original)
 
       , missing lens                  (dict "---" original)  "missing key"
@@ -146,14 +146,14 @@ dict_laws =
 update : Test
 update =
   let
-    at0 = Array.alarmistLens 0
-    at1 = Array.alarmistLens 1
+    at0 = Array.pathLens 0
+    at1 = Array.pathLens 1
 
-    dictLens = Dict.alarmistLens "key"
+    dictLens = Dict.pathLens "key"
 
     negateVia lens = Lens.update lens negate -- can't use Util.negateVia
   in
-    describe "update for various common base types (alarmist lenses)"
+    describe "update for various common base types (path lenses)"
       [ equal_ (negateVia at0 <| array [3])     (Ok <| array [-3])
       , is_    (negateVia at0 <| Array.empty)   Result.isErr
       , is_    (negateVia at1 <| array [3])     Result.isErr
@@ -170,7 +170,7 @@ update =
 set_failure : Test
 set_failure =
   let
-    lens = Dict.alarmistLens "key"
+    lens = Dict.pathLens "key"
     whole = dict "not key" 3
     expected = { whole = whole , path = ["`\"key\"`"] }
   in
@@ -181,7 +181,7 @@ set_failure =
 update_failure : Test
 update_failure =
   let
-    lens = Array.alarmistLens 3
+    lens = Array.pathLens 3
     whole = Array.empty
     expected = { whole = whole, path = ["`3`"] }
   in
@@ -201,9 +201,9 @@ pathExists =
       equal (Lens.pathExists lens whole) expected (toString whole)
   in
     describe "exists"
-      [ exists (Dict.alarmistLens "key")    Dict.empty       False
-      , exists (Dict.alarmistLens "key")    (dict "---" 3)   False
-      , exists (Dict.alarmistLens "key")    (dict "key" 3)   True
+      [ exists (Dict.pathLens "key")    Dict.empty       False
+      , exists (Dict.pathLens "key")    (dict "---" 3)   False
+      , exists (Dict.pathLens "key")    (dict "key" 3)   True
       ]
       
 {-

@@ -1,7 +1,7 @@
 module Lens.Final.Dict exposing
   ( lens
   , humbleLens
-  , alarmistLens
+  , pathLens
   )
 
 import Lens.Final.Lens as Lens
@@ -18,6 +18,6 @@ humbleLens : comparable -> Lens.Humble (Dict comparable val) val
 humbleLens key =
   lens key |> Compose.upsertToHumble
 
-alarmistLens : comparable -> Lens.Alarmist (Dict comparable val) val
-alarmistLens key =
-  Lens.alarmist key (Dict.get key) (Dict.insert key)
+pathLens : comparable -> Lens.Path (Dict comparable val) val
+pathLens key =
+  Lens.path key (Dict.get key) (Dict.insert key)
