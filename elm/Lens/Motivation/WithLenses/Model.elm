@@ -2,9 +2,9 @@ module Lens.Motivation.WithLenses.Model exposing (..)
 
 import Lens.Motivation.WithLenses.Animal as Animal exposing (Animal)
 import Lens.Motivation.WithLenses.TagDb as TagDb exposing (TagDb)
-import Lens.Try4.Lens as Lens 
-import Lens.Try4.Compose as Compose
-import Lens.Try4.Dict as Dict
+import Lens.Final.Lens as Lens 
+import Lens.Final.Compose as Compose
+import Lens.Final.Dict as Dict
 import Dict exposing (Dict)
 
 

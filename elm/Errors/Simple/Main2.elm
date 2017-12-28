@@ -5,7 +5,7 @@ import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model as Model exposing (Model)
 import Errors.Simple.View as View 
 
-import Lens.Try4.Lens as Lens
+import Lens.Final.Lens as Lens
 import Html
 
 update : Msg -> Model -> (Model, Cmd Msg)

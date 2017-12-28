@@ -2,8 +2,8 @@ module Lens.Motivation.WithLenses.TagDbTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
-import Lens.Try4.Util exposing (..)
-import Lens.Try4.Lens as Lens
+import Lens.Final.Util exposing (..)
+import Lens.Final.Lens as Lens
 import Dict
 import Array
 
