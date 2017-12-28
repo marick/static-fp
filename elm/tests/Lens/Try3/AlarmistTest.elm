@@ -7,6 +7,7 @@ import Tagged exposing (Tagged(..))
 
 import Lens.Try3.Lens as Lens
 import Lens.Try3.Compose as Compose
+import Result.Extra as Result
 
 import Dict
 import Array
@@ -42,16 +43,15 @@ get_set (Tagged {get, set}) whole {original} =
         
     , equal_ (set original whole)     whole
     ]
+-}
 
 no_upsert (Tagged {get, set}) whole {new} = 
-  describe "when a part is missing, `set` does nothing"
+  describe "when a part is missing, `set` fails"
     [ -- describe required context
-      equal (get          whole)      Nothing     "part must be misssing"
+      is (get     whole)   Result.isErr    "part must be misssing"
         
-    , equal (get (set new whole))     Nothing     "`set` does not add anything"
-    , equal      (set new whole)      whole       "nothing else changed"
+    , is (set new whole)  Result.isErr       "`set` does not add anything"
     ]
--}
 
 -- Laws are separated into present/missing cases because some types
 -- will have more than one way for a part to be missing
@@ -99,6 +99,18 @@ missing lens whole why =
 {-
      The various predefined types obey the LAWS
  -}
+
+
+array_laws : Test
+array_laws =
+  let
+    lens = Array.alarmistLens 1
+    underlyingSetter = Array.set 1
+  in
+    describe "array lenses obey the alarmist lens laws"
+      [ no_upsert lens Array.empty defaultParts 
+      ]
+
 
 {- 
 laws : Test
