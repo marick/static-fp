@@ -17,6 +17,9 @@ import Lens.Final.Result as Result
 import Lens.Final.Tuple2 as Tuple2
 
 
+-- can't use Util.negateVia because of occasional need to test with `isErr`
+negatory lens = Lens.update lens negate 
+
 {- 
      The laws for this lens type 
  -}
@@ -150,17 +153,15 @@ update =
     at1 = Array.pathLens 1
 
     dictLens = Dict.pathLens "key"
-
-    negateVia lens = Lens.update lens negate -- can't use Util.negateVia
   in
     describe "update for various common base types (path lenses)"
-      [ equal_ (negateVia at0 <| array [3])     (Ok <| array [-3])
-      , is_    (negateVia at0 <| Array.empty)   Result.isErr
-      , is_    (negateVia at1 <| array [3])     Result.isErr
+      [ equal_ (negatory at0 <| array [3])     (Ok <| array [-3])
+      , is_    (negatory at0 <| Array.empty)   Result.isErr
+      , is_    (negatory at1 <| array [3])     Result.isErr
         
-      , equal_ (negateVia dictLens <| dict "key" 3)   (Ok <| dict "key" -3)
-      , is_    (negateVia dictLens <| dict "---" 3)   Result.isErr
-      , is_    (negateVia dictLens <| Dict.empty)     Result.isErr
+      , equal_ (negatory dictLens <| dict "key" 3)   (Ok <| dict "key" -3)
+      , is_    (negatory dictLens <| dict "---" 3)   Result.isErr
+      , is_    (negatory dictLens <| Dict.empty)     Result.isErr
       ]
 
 {- 
@@ -210,6 +211,17 @@ pathExists =
       Converting other lenses into this type of lens
  -}
 
+classicToPath : Test
+classicToPath = 
+  let
+    lens = Compose.classicToPath "`2`" Tuple2.second
+    underlyingSetter new (first, second) = (first, new)
+  in
+    describe "classic to path"
+      [ present lens underlyingSetter    (88.8, original)
+
+      , equal_ (negatory lens (88.8, original))   (Ok (88.8, negate original))
+      ]
 
 {- 
       Composing lenses to PRODUCE this type of lens

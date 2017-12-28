@@ -188,21 +188,23 @@ type alias PathResult whole ok =
 type PathTag = PathTag IsUnused
 type alias Path big small =
   Tagged PathTag
-    { name : String
+    { path : List String
     , get : big -> PathResult big small
     , set : small -> big -> PathResult big big
     , update : (small -> small) -> big -> PathResult big big
     }
 
-path : tag -> (big -> Maybe small) -> (small -> big -> big)
-         -> Path big small
-path tag baseGet baseSet =
-  let
-    name = pathComponentName tag
 
+    
+path : showable -> (big -> Maybe small) -> (small -> big -> big)
+     -> Path big small
+path showable baseGet baseSet =
+  let
+    path = [pathComponentName showable]
+    
     get big =
       case baseGet big of
-        Nothing -> Err {whole = big, path = [name]}
+        Nothing -> Err {whole = big, path = path}
         Just small -> Ok small
 
     set small big =
@@ -215,7 +217,7 @@ path tag baseGet baseSet =
         Err e -> Err e
         Ok small -> Ok <| baseSet (f small) big
   in
-    Tagged { name = pathComponentName tag
+    Tagged { path = path
            , get = get
            , set = set
            , update = update

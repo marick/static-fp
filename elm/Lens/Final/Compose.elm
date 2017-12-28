@@ -27,24 +27,20 @@ oneCaseToHumble (Tagged lens) =
     Lens.humble lens.get (guardedSet lens.get set )
 
 
-x = Debug.log "======== TODO: " "humbleToPath"
--- humbleToPath : (big -> err)
---               -> Lens.Humble big small
---               -> Lens.Path err big small
--- humbleToPath errMaker (Tagged lens) =
---   let 
---     get big =
---       case lens.get big of
---         Just x -> Ok x
---         Nothing -> Err <| errMaker big
---   in
---     Tagged
---       { get = get
---       , set = lens.set
---       , update = lens.update
---       }
 
-      
+classicToPath : showable -> Lens.Classic big small -> Lens.Path big small
+classicToPath showable (Tagged lens) =
+  let
+    get = lens.get >> Ok
+    set small = lens.set small >> Ok
+    update f = lens.update f >> Ok
+  in
+    Tagged { path = [Lens.pathComponentName showable]
+           , get = get
+           , set = set
+           , update = update
+           }
+
 
 {-          Composition               -}
 
@@ -104,22 +100,33 @@ oneCaseAndClassic a2b b2c =
 
 -----------------
 
-y = Debug.log "======== TODO: " "path and path"
--- pathAndPath : Lens.Path err a b -> Lens.Path err b c -> Lens.Path err a c
+-- pathAndPath : Lens.Path a b -> Lens.Path b c -> Lens.Path a c
 -- pathAndPath (Tagged a2b) (Tagged b2c) =
---   let 
+--   let
+--     propagateErr oldPath =
+--       Err { whole = a, path = a2b.name :: path }
+        
 --     get a =
 --       case a2b.get a of
---         Ok b -> b2c.get b
+--         Ok b ->
+--           case b2c.get b of
+--             Ok c -> Ok c
+--             Err {path} -> propagateErr path
 --         Err e -> Err e
                   
 --     set c a =
 --       case a2b.get a of
 --         Ok b ->
---           a2b.set (b2c.set c b) a
---         Err _ -> a
+--           case b2c.set c b of
+--             Ok newB -> a2b.set newB a
+--             Err {path} -> propagateErr path
+--         Err e -> Err e
 --   in
---     Lens.path get set
+--     Tagged { path = a2b.path + b2c.path
+--            , get = get
+--            , set = set
+--            , update = update
+--            }
 
 -----------------
 
