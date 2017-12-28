@@ -21,30 +21,47 @@ import Lens.Try3.Tuple2 as Tuple2
      The laws for this lens type 
  -}
 
--- Even where the laws have the same meaning as for the classic lens, the type
--- signatures are too different to reuse them. The exception is that the Classic
--- `set_set` lens can be reused.
+set_get (Tagged {get, set}) underlyingSetter whole {original, new} =
+  let
+    afterSet = underlyingSetter new whole
+  in
+    describe "when a part is present, `set` overwrites it"
+      [ -- describe required context
+        equal  (get whole)     (Ok original)  "part must be present"
+          
+        -- describe what `set` must produce
+      , equal_ (set new whole) (Ok afterSet)
+        -- and here's the set-then-get`
+      , equal_ (get afterSet)  (Ok new)
+      ]
 
-{- 
 
-
-set_get (Tagged {get, set}) whole {original, new} =
-  describe "when a part is present, `set` overwrites it"
-    [ -- describe required context
-      equal  (get          whole)    (Just original)  "part must be present"
-
-    , equal_ (get (set new whole))   (Just new)
-    ]
 
 get_set (Tagged {get, set}) whole {original} =
   describe "retrieving a part, then setting it back"
     [ -- describe required context
-      equal  (get          whole)     (Just original)  "part must be present"
+      equal  (get          whole)     (Ok original)  "part must be present"
         
-    , equal_ (set original whole)     whole
+    , equal_ (set original whole)     (Ok whole)
     ]
--}
 
+
+set_set (Tagged {set}) underlyingSetter whole {overwritten, new} = 
+  let
+    inOneStep  = whole             |> set new
+                 
+    inTwoSteps = intermediateWhole |> set new    -- (*)
+    intermediateWhole = underlyingSetter overwritten whole
+  in
+    describe "set changes only the given part (no counter, etc.)"
+      [ -- describe required context
+        equal (set overwritten whole) (Ok intermediateWhole)
+                                      "the first of two steps produces what (*) uses"
+      , equal_ inTwoSteps inOneStep
+      ]
+      
+
+        
 no_upsert (Tagged {get, set}) whole {new} = 
   describe "when a part is missing, `set` fails"
     [ -- describe required context
@@ -56,45 +73,41 @@ no_upsert (Tagged {get, set}) whole {new} =
 -- Laws are separated into present/missing cases because some types
 -- will have more than one way for a part to be missing
 
-{- 
-    
-makeLawTest_present lens whole ({original, new} as inputValues) = 
+makeLawTest_present lens underlyingSetter whole ({original, new, overwritten} as inputValues) = 
   describe "`get whole` would succeed"
     [ -- describe required context
       notEqual original new           "equal values would be a weak test case"  
+    , notEqual original overwritten   "same for these"  
+    , notEqual new      overwritten   "and these"  
      
-    ,             set_get lens whole inputValues
-    ,             get_set lens whole inputValues
-    , ClassicTest.set_set lens whole inputValues
+    , set_get lens underlyingSetter whole inputValues
+    , get_set lens                  whole inputValues
+    , set_set lens underlyingSetter whole inputValues
     ]
 
 makeLawTest_missing lens whole inputValues why = 
   describe ("`get whole` would fail: " ++ why)
     [ no_upsert lens whole inputValues
     ]
--}
 
 -- Constant values to use for various law tests.
 -- Their values are irrelevant, thus making them
 -- decent standins for variables in lens laws.
 defaultParts = 
-  { original = 'a'
-  , overwritten = '-'
-  , new = '2'
+  { original = 1.1
+  , overwritten = 2.2
+  , new = 3.3
   }
 original = defaultParts.original  
 
 
 -- The most common way to use law tests
 
-{- 
-
-present lens whole =
-  makeLawTest_present lens whole defaultParts
+present lens underlyingSetter whole =
+  makeLawTest_present lens underlyingSetter whole defaultParts
     
 missing lens whole why = 
   makeLawTest_missing lens whole defaultParts why
--}
 
 {-
      The various predefined types obey the LAWS
@@ -108,26 +121,23 @@ array_laws =
     underlyingSetter = Array.set 1
   in
     describe "array lenses obey the alarmist lens laws"
-      [ no_upsert lens Array.empty defaultParts 
+      [ present lens underlyingSetter (array [3, original])
+
+      , missing lens                  Array.empty   "too short"
       ]
 
+dict_laws : Test
+dict_laws = 
+  let
+    lens = Dict.alarmistLens "key"
+    underlyingSetter = Dict.insert "key"
+  in
+    describe "dict lenses obey the alarmist lens laws"
+      [ present lens underlyingSetter (dict "key" original)
 
-{- 
-laws : Test
-laws =
-  describe "alarmist lenses obey the alarmist lens laws"
-    [ describe "array lens"
-        [ present (Array.lens 1)   (array [' ', original])
-        , missing (Array.lens 1)   (array [' '          ])   "array too short"
-        ]
-
-    , describe "dict lens"
-      [ present (Dict.alarmistLens "key") (dict "key" original)
-      , missing (Dict.alarmistLens "key") (dict "---" original)  "no such key"
-      , missing (Dict.alarmistLens "key")  Dict.empty            "empty dict"
+      , missing lens                  (dict "---" original)  "missing key"
+      , missing lens                  Dict.empty             "empty"
       ]
-    ]
- -}
     
 {-
          Check that `update` works correctly for each type.
