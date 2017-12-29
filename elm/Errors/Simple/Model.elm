@@ -11,7 +11,7 @@ module Errors.Simple.Model exposing
 import Errors.Simple.Word as Word exposing (Word)
 
 import Lens.Final.Lens as Lens 
-import Lens.Final.Compose.Operators exposing (..)
+import Lens.Final.Operators exposing (..)
 import Dict exposing (Dict)
 import Array exposing (Array)
 import Lens.Final.Dict as Dict

@@ -11,7 +11,8 @@ module Errors.Alarmist.Model exposing
 import Errors.Simple.Word as Word exposing (Word)
 
 import Lens.Final.Lens as Lens
-import Lens.Final.Compose.Operators exposing (..)
+import Lens.Final.Operators exposing (..)
+import Lens.Final.Compose as Compose
 import Dict exposing (Dict)
 import Array exposing (Array)
 import Lens.Final.Dict as Dict
@@ -51,10 +52,12 @@ words : Lens.Classic Model (Dict String (Array Word))
 words =
   Lens.classic .words (\words model -> { model | words = words })
 
-word : String -> Int -> Lens.Error Model Word
+word : String -> Int -> Lens.Path Model Word
 word who index =
-  words .!>> Dict.errorLens who !!>> Array.errorLens index
+  Compose.classicToPath ".words" words
+    !!>> Dict.pathLens who
+    !!>> Array.pathLens index
 
-wordCount : String -> Int -> Lens.Humble Model Int
+wordCount : String -> Int -> Lens.Path Model Int
 wordCount who index =
-  word who index !!>> Word.count
+  word who index !!>> Compose.classicToPath ".count" Word.count
