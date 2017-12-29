@@ -214,16 +214,128 @@ pathExists =
 classicToPath : Test
 classicToPath = 
   let
-    lens = Compose.classicToPath "`2`" Tuple2.second
+    lens = Compose.classicToPath "tuple-second" Tuple2.second
     underlyingSetter new (first, second) = (first, new)
+
+    extractPath (Tagged lens) = lens.path
   in
-    describe "classic to path"
+    describe "classic to path" -- note that `Err` cases are impossible.
       [ present lens underlyingSetter    (88.8, original)
 
       , equal_ (negatory lens (88.8, original))   (Ok (88.8, negate original))
+
+      , equal (extractPath lens) ["`\"tuple-second\"`"]  "stored for use in composition"
       ]
+
+humbleToPath : Test
+humbleToPath =
+  let
+    lens = Compose.humbleToPath 88 <| Dict.humbleLens "key"
+    path = ["`88`"]
+
+    get whole = equal_ (Lens.get lens whole)
+    set new whole = equal_ (Lens.set lens new whole)
+    update whole = equal_ (Lens.update lens negate whole)
+    pathExists whole expected comment =
+      equal (Lens.pathExists lens whole) expected comment
+
+  in
+    describe "humble to path"
+      [ describe "get"
+          [
+            get (dict "key" 5)   (Ok 5)
+          , get (dict "---" 4)   (Err {whole = (dict "---" 4), path = path})
+          , get Dict.empty       (Err {whole = Dict.empty, path = path})
+          ]
+      , describe "set"
+          [
+            set 55 (dict "key" 5)  (Ok <| dict "key" 55)
+          , set 55 (dict "---" 4)  (Err {whole = dict "---" 4, path = path})
+          ]
+
+      , describe "update"
+          [
+            update (dict "key" 5)  (Ok <| dict "key" -5)
+          , update (dict "---" 4)  (Err {whole = dict "---" 4, path = path})
+          ]
+      , describe "pathExists"
+          [
+            pathExists (dict "key" 5)  True    "success"
+          , pathExists (dict "---" 4)  False   "bad key"
+          ]
+
+      , (let
+           certainGet =
+             Dict.get "key" >> Maybe.withDefault 99.99
+           underlyingSetter =
+             Dict.insert "key"
+         in
+           describe "composed paths obey the path lens laws" 
+             [ present lens underlyingSetter (dict "key" original)
+               
+             , missing lens                  Dict.empty    "no key"
+             ])
+      ]
+               
 
 {- 
       Composing lenses to PRODUCE this type of lens
 -}
+
+pathAndPath : Test
+pathAndPath =
+  let
+    lens = Compose.pathAndPath (Dict.pathLens "key") (Array.pathLens 0)
+
+    get whole = equal_ (Lens.get lens whole)
+    set new whole = equal_ (Lens.set lens new whole)
+    update whole = equal_ (Lens.update lens negate whole)
+    pathExists whole expected comment =
+      equal (Lens.pathExists lens whole) expected comment
+
+    w key list = dict key (array list)
+    dictValuePath =  ["`\"key\"`"]
+    arrayValuePath = ["`\"key\"`", "`0`"]
+
+  in
+    describe "path and path"
+      [ describe "get"
+          [
+            get (w "key" [5])   (Ok 5)
+          , get (w "---" [4])   (Err {whole = w "---" [4], path = dictValuePath})
+          , get (w "key" [ ])   (Err {whole = w "key" [ ], path = arrayValuePath})
+          ]
+      , describe "set"
+          [
+            set 55 (w "key" [5])  (Ok <| w "key" [55])
+          , set 55 (w "---" [4])  (Err {whole = w "---" [4], path = dictValuePath})
+          , set 55 (w "key" [ ])  (Err {whole = w "key" [ ], path = arrayValuePath})
+          ]
+
+      , describe "update"
+          [
+            update (w "key" [5])  (Ok <| w "key" [-5])
+          , update (w "---" [4])  (Err {whole = w "---" [4], path = dictValuePath})
+          , update (w "key" [ ])  (Err {whole = w "key" [ ], path = arrayValuePath})
+          ]
+      , describe "pathExists"
+          [
+            pathExists (w "key" [5])  True    "success"
+          , pathExists (w "---" [4])  False   "bad key"
+          , pathExists (w "key" [ ])  False   "bad index"
+          ]
+
+      , (let
+           certainGet =
+             Dict.get "key" >> Maybe.withDefault Array.empty
+           underlyingSetter new whole =
+             Dict.insert "key" (Array.set 0 new <| certainGet whole) whole
+         in
+           describe "composed paths obey the path lens laws" 
+             [ present lens underlyingSetter (w "key" [original, 5])
+               
+             , missing lens                  (w "key" [           ])   "too short"
+             , missing lens                  (w "---" [original, 5])   "bad key"
+             ])
+      ]
 

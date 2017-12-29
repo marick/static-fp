@@ -3,6 +3,7 @@ module Lens.Final.Compose exposing (..)
 
 import Tagged exposing (Tagged(..))
 import Lens.Final.Lens as Lens
+import Lens.Final.PathShared as Path
 
 {-          Conversions               -}
 
@@ -35,7 +36,28 @@ classicToPath showable (Tagged lens) =
     set small = lens.set small >> Ok
     update f = lens.update f >> Ok
   in
-    Tagged { path = [Lens.pathComponentName showable]
+    Tagged { path = [Path.quote showable]
+           , get = get
+           , set = set
+           , update = update
+           }
+
+
+humbleToPath : showable -> Lens.Humble big small -> Lens.Path big small
+humbleToPath showable lens =
+  let
+    path = [Path.quote showable]
+           
+    lift lensOp big =
+      case lensOp big of
+        Nothing -> Err {whole = big, path = path}
+        Just x -> Ok x
+                  
+    get       = lift <| Lens.get lens
+    set small = lift <| Lens.setM lens small
+    update f  = lift <| Lens.updateM lens f 
+  in
+    Tagged { path = path
            , get = get
            , set = set
            , update = update
@@ -87,7 +109,6 @@ humbleAndHumble (Tagged a2b) (Tagged b2c) =
   in
     Lens.humble get set
 
--- For completeness, make some tests      
 humbleAndClassic : Lens.Humble a b -> Lens.Classic b c -> Lens.Humble a c
 humbleAndClassic a2b b2c = 
   humbleAndHumble a2b (classicToHumble b2c)
@@ -100,33 +121,38 @@ oneCaseAndClassic a2b b2c =
 
 -----------------
 
--- pathAndPath : Lens.Path a b -> Lens.Path b c -> Lens.Path a c
--- pathAndPath (Tagged a2b) (Tagged b2c) =
---   let
---     propagateErr oldPath =
---       Err { whole = a, path = a2b.name :: path }
+pathAndPath : Lens.Path a b -> Lens.Path b c -> Lens.Path a c
+pathAndPath (Tagged a2b) (Tagged b2c) =
+  let
+    propagateErr whole remainingPath =
+      Err { whole = whole, path = a2b.path ++ remainingPath }
         
---     get a =
---       case a2b.get a of
---         Ok b ->
---           case b2c.get b of
---             Ok c -> Ok c
---             Err {path} -> propagateErr path
---         Err e -> Err e
+    get a =
+      case a2b.get a of
+        Ok b ->
+          case b2c.get b of
+            Ok c -> Ok c
+            Err {path} -> propagateErr a path
+        Err e -> Err e
                   
---     set c a =
---       case a2b.get a of
---         Ok b ->
---           case b2c.set c b of
---             Ok newB -> a2b.set newB a
---             Err {path} -> propagateErr path
---         Err e -> Err e
---   in
---     Tagged { path = a2b.path + b2c.path
---            , get = get
---            , set = set
---            , update = update
---            }
+    set c a =
+      case a2b.get a of
+        Ok b ->
+          case b2c.set c b of
+            Ok newB -> a2b.set newB a
+            Err {path} -> propagateErr a path
+        Err e -> Err e
+
+    update f a =
+      case get a of
+        Ok c -> set (f c) a
+        Err e -> Err e 
+  in
+    Tagged { path = a2b.path ++ b2c.path
+           , get = get
+           , set = set
+           , update = update
+           }
 
 -----------------
 

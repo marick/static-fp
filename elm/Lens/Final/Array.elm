@@ -4,7 +4,6 @@ module Lens.Final.Array exposing
   )
 
 import Lens.Final.Lens as Lens
-import Lens.Final.Compose as Compose
 import Array exposing (Array)
 
 lens : Int -> Lens.Humble (Array val) val

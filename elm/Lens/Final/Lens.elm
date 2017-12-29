@@ -4,6 +4,7 @@ module Lens.Final.Lens exposing (..)
 import Tagged exposing (Tagged(..))
 import Maybe.Extra as Maybe
 import Result.Extra as Result
+import Lens.Final.PathShared as Path
 
 {- By radically widening the types, we can have `get`, `set`, and
    `update` that work with different kinds of lenses.
@@ -200,7 +201,7 @@ path : showable -> (big -> Maybe small) -> (small -> big -> big)
      -> Path big small
 path showable baseGet baseSet =
   let
-    path = [pathComponentName showable]
+    path = [Path.quote showable]
     
     get big =
       case baseGet big of
@@ -222,10 +223,6 @@ path showable baseGet baseSet =
            , set = set
            , update = update
            }
-
-pathComponentName : a -> String
-pathComponentName x =
-  "`" ++ toString x ++ "`"
 
 -- `exists` only works with lenses that produce a `Maybe`, 
 -- so we have a different name.
