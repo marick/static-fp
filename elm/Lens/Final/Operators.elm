@@ -32,3 +32,7 @@ infixl 0 ?.>>
 (|.>>) = Compose.oneCaseAndClassic
 infixl 0 |.>>
 
+(!!>>) : Lens.Path a b -> Lens.Path b c -> Lens.Path a c
+(!!>>) = Compose.pathAndPath
+infixl 0 !!>>
+
