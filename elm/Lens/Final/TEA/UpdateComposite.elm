@@ -1,7 +1,7 @@
 module Lens.Final.TEA.UpdateComposite exposing (..)
 
 import Lens.Final.Lens as Lens
-import Lens.Final.Compose.Operators exposing (..)
+import Lens.Final.Operators exposing (..)
 import Array exposing (Array)
 
 

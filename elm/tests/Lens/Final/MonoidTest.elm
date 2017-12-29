@@ -11,7 +11,7 @@ import Lens.Final.Array as Array
 
 import Lens.Final.Lens as Lens 
 import Lens.Final.Compose as Lens
-import Lens.Final.Compose.Operators exposing (..)
+import Lens.Final.Operators exposing (..)
 
 
 equal_lenses first second whole part comment = 

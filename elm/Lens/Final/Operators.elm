@@ -1,4 +1,4 @@
-module Lens.Final.Compose.Operators exposing (..)
+module Lens.Final.Operators exposing (..)
 
 import Lens.Final.Lens as Lens
 import Lens.Final.Compose as Compose

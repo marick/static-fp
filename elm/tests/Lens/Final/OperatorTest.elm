@@ -4,7 +4,7 @@ import Test exposing (..)
 import TestBuilders exposing (..)
 import Lens.Final.Util exposing (..)
 
-import Lens.Final.Compose.Operators exposing (..)
+import Lens.Final.Operators exposing (..)
 
 import Lens.Final.Tuple2 as Tuple2
 import Lens.Final.Dict as Dict
