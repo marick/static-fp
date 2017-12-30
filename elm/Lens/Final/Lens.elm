@@ -183,16 +183,16 @@ oneCase get set =
 
 {-                  Path Lenses               -}
 
-type alias PathResult whole ok =
-  Result { whole : whole, path : (List String) } ok
+type alias PathResult ok =
+  Result (List String) ok
 
 type PathTag = PathTag IsUnused
 type alias Path big small =
   Tagged PathTag
     { path : List String
-    , get : big -> PathResult big small
-    , set : small -> big -> PathResult big big
-    , update : (small -> small) -> big -> PathResult big big
+    , get : big -> PathResult small
+    , set : small -> big -> PathResult big
+    , update : (small -> small) -> big -> PathResult big
     }
 
 
@@ -205,7 +205,7 @@ path showable baseGet baseSet =
     
     get big =
       case baseGet big of
-        Nothing -> Err {whole = big, path = path}
+        Nothing -> Err path
         Just small -> Ok small
 
     set small big =

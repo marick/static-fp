@@ -38,8 +38,6 @@ set_get (Tagged {get, set}) underlyingSetter whole {original, new} =
       , equal_ (get afterSet)  (Ok new)
       ]
 
-
-
 get_set (Tagged {get, set}) whole {original} =
   describe "retrieving a part, then setting it back"
     [ -- describe required context
@@ -47,7 +45,6 @@ get_set (Tagged {get, set}) whole {original} =
         
     , equal_ (set original whole)     (Ok whole)
     ]
-
 
 set_set (Tagged {set}) underlyingSetter whole {overwritten, new} = 
   let
@@ -62,15 +59,13 @@ set_set (Tagged {set}) underlyingSetter whole {overwritten, new} =
                                       "the first of two steps produces what (*) uses"
       , equal_ inTwoSteps inOneStep
       ]
-      
-
         
 no_upsert (Tagged {get, set}) whole {new} = 
   describe "when a part is missing, `set` fails"
     [ -- describe required context
-      is (get     whole)   Result.isErr    "part must be misssing"
+      is (get     whole)  Result.isErr    "part must be misssing"
         
-    , is (set new whole)  Result.isErr       "`set` does not add anything"
+    , is (set new whole)  Result.isErr    "`set` does not add anything"
     ]
 
 -- Laws are separated into present/missing cases because some types
@@ -156,12 +151,12 @@ update =
   in
     describe "update for various common base types (path lenses)"
       [ equal_ (negatory at0 <| array [3])     (Ok <| array [-3])
-      , is_    (negatory at0 <| Array.empty)   Result.isErr
-      , is_    (negatory at1 <| array [3])     Result.isErr
+      , is    (negatory at0 <| Array.empty)   Result.isErr   "missing"
+      , is    (negatory at1 <| array [3])     Result.isErr   "too short"
         
       , equal_ (negatory dictLens <| dict "key" 3)   (Ok <| dict "key" -3)
-      , is_    (negatory dictLens <| dict "---" 3)   Result.isErr
-      , is_    (negatory dictLens <| Dict.empty)     Result.isErr
+      , is    (negatory dictLens <| dict "---" 3)   Result.isErr  "wrong key"
+      , is    (negatory dictLens <| Dict.empty)     Result.isErr  "empty"
       ]
 
 {- 
@@ -173,10 +168,9 @@ set_failure =
   let
     lens = Dict.pathLens "key"
     whole = dict "not key" 3
-    expected = { whole = whole , path = ["`\"key\"`"] }
   in
     describe "set produces error lists"
-      [ equal_ (Lens.set lens 33 whole) (Err expected)
+      [ equal_ (Lens.set lens 33 whole) (Err ["`\"key\"`"])
       ]
 
 update_failure : Test
@@ -184,10 +178,9 @@ update_failure =
   let
     lens = Array.pathLens 3
     whole = Array.empty
-    expected = { whole = whole, path = ["`3`"] }
   in
     describe "update produces error lists"
-      [ equal_ (Lens.set lens 33 whole) (Err expected)
+      [ equal_ (Lens.set lens 33 whole) (Err ["`3`"])
       ]
 
 {-
@@ -244,19 +237,18 @@ humbleToPath =
       [ describe "get"
           [
             get (dict "key" 5)   (Ok 5)
-          , get (dict "---" 4)   (Err {whole = (dict "---" 4), path = path})
-          , get Dict.empty       (Err {whole = Dict.empty, path = path})
+          , get (dict "---" 4)   (Err path)
           ]
       , describe "set"
           [
             set 55 (dict "key" 5)  (Ok <| dict "key" 55)
-          , set 55 (dict "---" 4)  (Err {whole = dict "---" 4, path = path})
+          , set 55 (dict "---" 4)  (Err path)
           ]
 
       , describe "update"
           [
             update (dict "key" 5)  (Ok <| dict "key" -5)
-          , update (dict "---" 4)  (Err {whole = dict "---" 4, path = path})
+          , update (dict "---" 4)  (Err path)
           ]
       , describe "pathExists"
           [
@@ -302,21 +294,20 @@ pathAndPath =
       [ describe "get"
           [
             get (w "key" [5])   (Ok 5)
-          , get (w "---" [4])   (Err {whole = w "---" [4], path = dictValuePath})
-          , get (w "key" [ ])   (Err {whole = w "key" [ ], path = arrayValuePath})
+          , get (w "---" [4])   (Err dictValuePath)
           ]
       , describe "set"
           [
             set 55 (w "key" [5])  (Ok <| w "key" [55])
-          , set 55 (w "---" [4])  (Err {whole = w "---" [4], path = dictValuePath})
-          , set 55 (w "key" [ ])  (Err {whole = w "key" [ ], path = arrayValuePath})
+          , set 55 (w "---" [4])  (Err dictValuePath)
+          , set 55 (w "key" [ ])  (Err arrayValuePath)
           ]
 
       , describe "update"
           [
             update (w "key" [5])  (Ok <| w "key" [-5])
-          , update (w "---" [4])  (Err {whole = w "---" [4], path = dictValuePath})
-          , update (w "key" [ ])  (Err {whole = w "key" [ ], path = arrayValuePath})
+          , update (w "---" [4])  (Err dictValuePath)
+          , update (w "key" [ ])  (Err arrayValuePath)
           ]
       , describe "pathExists"
           [

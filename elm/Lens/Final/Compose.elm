@@ -50,7 +50,7 @@ humbleToPath showable lens =
            
     lift lensOp big =
       case lensOp big of
-        Nothing -> Err {whole = big, path = path}
+        Nothing -> Err path
         Just x -> Ok x
                   
     get       = lift <| Lens.get lens
@@ -124,15 +124,15 @@ oneCaseAndClassic a2b b2c =
 pathAndPath : Lens.Path a b -> Lens.Path b c -> Lens.Path a c
 pathAndPath (Tagged a2b) (Tagged b2c) =
   let
-    propagateErr whole remainingPath =
-      Err { whole = whole, path = a2b.path ++ remainingPath }
+    combinedPath =
+      a2b.path ++ b2c.path
         
     get a =
       case a2b.get a of
         Ok b ->
           case b2c.get b of
             Ok c -> Ok c
-            Err {path} -> propagateErr a path
+            Err _ -> Err combinedPath
         Err e -> Err e
                   
     set c a =
@@ -140,7 +140,7 @@ pathAndPath (Tagged a2b) (Tagged b2c) =
         Ok b ->
           case b2c.set c b of
             Ok newB -> a2b.set newB a
-            Err {path} -> propagateErr a path
+            Err _ -> Err combinedPath
         Err e -> Err e
 
     update f a =
