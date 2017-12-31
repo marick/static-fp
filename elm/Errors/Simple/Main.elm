@@ -16,8 +16,8 @@ update msg model =
     Like person index -> 
       ( model
         |> Lens.update Model.clickCount increment
-        |> Lens.set Model.focusPerson person
         |> Lens.update (Model.wordCount person index) increment
+        |> Lens.set Model.focusPerson person 
       , Task.perform LastChange Date.now
       )
 

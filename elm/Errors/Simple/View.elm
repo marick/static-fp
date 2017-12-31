@@ -21,6 +21,9 @@ likeSymbol = "💖 "
 chooseSymbol : String
 chooseSymbol = "👍"
 
+errorSymbol : String
+errorSymbol = "❌"               
+               
 wrapper : List (Html Msg) -> Html Msg
 wrapper contents = 
   div
@@ -36,9 +39,8 @@ button onClick label =
 view : Model -> Html Msg      
 view model =
   wrapper
-    [ personSelector model.focusPerson <| (Dict.keys model.words) ++ ["Joe"]
+    [ personSelector model.focusPerson <| Dict.keys model.words
     , belovedDisplay model
-    , buttons
     , clickCountDisplay model.clickCount
     , dateDisplay model.lastChange
     ]
@@ -56,7 +58,8 @@ personSelector focus all =
         ]
               
   in
-    p [] (List.map one all)
+    p [] (List.map one all ++
+            [button (ChoosePerson "joe") errorSymbol])
     
 belovedDisplay : Model -> Html Msg    
 belovedDisplay model =
@@ -68,7 +71,10 @@ belovedDisplay model =
   in
     div []
       [ 
-       div [] <| List.indexedMap (oneWord model.focusPerson) words
+       div []
+         (List.indexedMap (oneWord model.focusPerson) words ++
+            [button (Like model.focusPerson 888) errorSymbol])
+            
       ]
 
 clickCountDisplay : Int -> Html Msg      
@@ -102,10 +108,3 @@ oneWord person index word =
       [ button (Like person index) chooseSymbol
       , text <| " " ++ word.text ++ ": " ++ emphasis ]
 
-buttons : Html Msg
-buttons =
-  div []
-    [ 
-      p [] [button (Like "Dawn"  100) "Try to emphasize the 100th word"]
-    , p [] [button (Like "Brian" 1)   "Pick a nonexistent person"]
-    ]
