@@ -20,28 +20,6 @@ type alias Model =
   , clickCount : Int    -- this session
   , lastChange : Maybe Date 
   }
-
-
-vocabulary : List String  
-vocabulary = ["cafuné", "chamego", "amor da minha vida", "tedioso", "tolerante"]
-
-startingWords : Dict String (Array Word)
-startingWords =
-  let
-    words wordlist =
-      wordlist |> List.map Word.new |> Array.fromList
-  in
-    Dict.fromList
-      [ ( "Dawn" , words ["cafuné", "chamego", "amor da minha vida", "tolerante"] )
-      , ( "Brian" , words ["amor da minha vida", "tedioso"] )
-      ]
-
-startingWordCounts : Dict String Int
-startingWordCounts =
-  vocabulary
-    |> List.map (\word -> (word , 1))
-    |> Dict.fromList
-
   
 init : (Model, Cmd msg)
 init =
@@ -56,7 +34,38 @@ init =
 {- Actions -}
 
 
+incrementClickCount : Model -> Model
+incrementClickCount = 
+  Lens.update clickCount increment
+
+incrementWordCount : String -> Int -> Model -> Model
+incrementWordCount person index = 
+  Lens.update (wordCount person index) increment
+
+focusOn : String -> Model -> Model
+focusOn person = 
+  Lens.set focusPerson person 
+
+noteDate : Date -> Model -> Model
+noteDate date = 
+  Lens.set lastChange (Just date)
+
+
 {- Util -}
+
+vocabulary : List String  
+vocabulary = ["cafuné", "chamego", "amor da minha vida", "tedioso", "tolerante"]
+
+startingWords : Dict String (Array Word)
+startingWords =
+  let
+    words wordlist =
+      wordlist |> List.map Word.new |> Array.fromList
+  in
+    Dict.fromList
+      [ ( "Dawn" , words ["cafuné", "chamego", "amor da minha vida", "tolerante"] )
+      , ( "Brian" , words ["amor da minha vida", "tedioso"] )
+      ]
 
 {- Lenses -}
 
@@ -80,11 +89,7 @@ clickCount : Lens.Classic Model Int
 clickCount =
   Lens.classic .clickCount (\clickCount model -> { model | clickCount = clickCount })
 
-
-
-
-
-
+-- Composed
     
 word : String -> Int -> Lens.Humble Model Word
 word who index =

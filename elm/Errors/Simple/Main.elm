@@ -1,13 +1,11 @@
 module Errors.Simple.Main exposing (..)
 
-import Errors.Simple.Basics exposing (..)
 import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model as Model exposing (Model)
 import Errors.Simple.View as View
 import Date exposing (Date)
 import Task
 
-import Lens.Final.Lens as Lens
 import Html
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -15,23 +13,23 @@ update msg model =
   case msg of 
     Like person index -> 
       ( model
-        |> Lens.update Model.clickCount increment
-        |> Lens.update (Model.wordCount person index) increment
-        |> Lens.set Model.focusPerson person 
-      , Task.perform LastChange Date.now
+        |> Model.incrementClickCount
+        |> Model.incrementWordCount person index
+        |> Model.focusOn person
+      , fetchDateCmd
       )
 
     LastChange date ->
-      ( Lens.set Model.lastChange (Just date) model
+      ( Model.noteDate date model
       , Cmd.none
       )
 
-    ChoosePerson who ->
-      ( Lens.set Model.focusPerson who model
-      , Task.perform LastChange Date.now
+    ChoosePerson person ->
+      ( model
+          |> Model.focusOn person
+          |> Model.incrementClickCount
+      , fetchDateCmd
       )
-        
-  
 
 main : Program Never Model Msg
 main =
@@ -41,3 +39,9 @@ main =
     , update = update
     , subscriptions = always Sub.none
     }
+
+fetchDateCmd : Cmd Msg
+fetchDateCmd = 
+  Task.perform LastChange Date.now
+        
+    

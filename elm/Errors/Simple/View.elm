@@ -4,7 +4,6 @@ import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model exposing (Model)
 import Errors.Simple.Word exposing (Word)
 
-import Date exposing (Date)
 import Date.Extra as Date
 
 import Html exposing (..)
@@ -24,34 +23,22 @@ chooseSymbol = "👍"
 errorSymbol : String
 errorSymbol = "❌"               
                
-wrapper : List (Html Msg) -> Html Msg
-wrapper contents = 
-  div
-    [ style [("margin", "4em")]]
-    contents
-      
-button : Msg -> String -> Html Msg
-button onClick label =       
-  Html.button
-    [ Event.onClick onClick ]
-    [strong [] [text label]]
-
 view : Model -> Html Msg      
 view model =
-  wrapper
-    [ personSelector model.focusPerson <| Dict.keys model.words
-    , belovedDisplay model
-    , clickCountDisplay model.clickCount
-    , dateDisplay model.lastChange
+  div [ style [("margin", "4em")]]
+    [ viewSelector model.focusPerson <| Dict.keys model.words
+    , viewSelected model
+    , viewStatistics model
     ]
 
-personSelector focus all =
+viewSelector : String -> List String -> Html Msg
+viewSelector focus all =
   let
     one name =
       span []
         [ case name == focus of
             True ->
-              strong [] [text focus]
+              strong [style [("font-size", "2em")]] [text focus]
             False ->
               button (ChoosePerson name) name
         , text " "
@@ -61,50 +48,65 @@ personSelector focus all =
     p [] (List.map one all ++
             [button (ChoosePerson "joe") errorSymbol])
     
-belovedDisplay : Model -> Html Msg    
-belovedDisplay model =
+viewSelected : Model -> Html Msg    
+viewSelected {focusPerson, words} =
   let
-    words =
-      Dict.get model.focusPerson model.words
+    personWords =
+      Dict.get focusPerson words
         |> Maybe.withDefault Array.empty
         |> Array.toList
+
+    showLikes count =
+      String.repeat count likeSymbol
+
+    showOne : String -> Int -> Word -> Html Msg
+    showOne person index word = 
+      div []
+        [ button (Like person index) chooseSymbol
+        , text <| " " ++ word.text ++ ": " ++ showLikes word.count
+        ]
+
+    addBadButton list = -- click on a nonexistent word
+      list ++ [button (Like focusPerson 888) errorSymbol]
   in
     div []
-      [ 
-       div []
-         (List.indexedMap (oneWord model.focusPerson) words ++
-            [button (Like model.focusPerson 888) errorSymbol])
-            
-      ]
+      (personWords
+        |> List.indexedMap (showOne focusPerson)
+        |> addBadButton
+      )
 
-clickCountDisplay : Int -> Html Msg      
-clickCountDisplay count =
-  p []
-    [ text <|
-        "You've clicked " ++
-        (String.pluralize "time" "times" count) ++
-        "."
-    ]
-          
-dateDisplay : Maybe Date -> Html Msg
-dateDisplay maybe = 
+viewStatistics : Model -> Html Msg      
+viewStatistics {clickCount, lastChange} =
   let
-    display = 
-      case maybe of
+    countDisplay = 
+      p []
+        [ text <|
+            "You've clicked " ++ 
+            (String.pluralize "time" "times" clickCount) ++
+            "."
+        ]
+
+    dateDisplay = 
+      p []
+        [ text "Last change: "
+        , text dateString
+        ]
+
+    dateString = 
+      case lastChange of
         Nothing -> "none"
         Just date -> Date.toIsoString date
   in
-    p []
-      [ text "Last change: "
-      , text display
-      ]
-      
-oneWord : String -> Int -> Word -> Html Msg
-oneWord person index word = 
-  let 
-    emphasis = String.repeat word.count likeSymbol
-  in
     div []
-      [ button (Like person index) chooseSymbol
-      , text <| " " ++ word.text ++ ": " ++ emphasis ]
+      [ countDisplay
+      , dateDisplay
+      ]
 
+{- Util -}
+    
+button : Msg -> String -> Html Msg
+button onClick label =       
+  Html.button
+    [ Event.onClick onClick ]
+    [strong [] [text label]]
+      

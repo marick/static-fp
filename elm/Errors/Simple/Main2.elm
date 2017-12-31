@@ -1,34 +1,39 @@
-module Errors.Simple.Main2 exposing (..)
+module Errors.Simple.Main exposing (..)
 
 import Errors.Simple.Basics exposing (..)
 import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model as Model exposing (Model)
-import Errors.Simple.View as View 
+import Errors.Simple.View as View
+import Date exposing (Date)
+import Task
 
 import Lens.Final.Lens as Lens
 import Html
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case msg of
-    EmphasizeWord person index ->
-      model
-        |> Lens.update Model.clickCount increment 
-        |> maybeEmphasizeWord person index
-        |> noCmd
+  case msg of 
+    Like person index -> 
+      ( model
+        |> incrementClickCount
+        |> incrementWordCount person index
+        |> Lens.set Model.focusPerson person 
+      , Task.perform LastChange Date.now
+      )
 
-maybeEmphasizeWord : String -> Int -> Model -> Model
-maybeEmphasizeWord person index model =
-  case Lens.exists (Model.word person index) model of
-    False ->
-      model
-    True ->
-      model
-        |> Lens.set Model.beloved person
-        |> Lens.update (Model.wordCount person index) increment
+    LastChange date ->
+      ( Lens.set Model.lastChange (Just date) model
+      , Cmd.none
+      )
 
-noCmd : Model -> (Model, Cmd Msg)
-noCmd model = (model, Cmd.none)
+    ChoosePerson who ->
+      ( model
+          |> Lens.set Model.focusPerson who 
+          |> Lens.update Model.clickCount increment
+      , Task.perform LastChange Date.now
+      )
+        
+  
 
 main : Program Never Model Msg
 main =
