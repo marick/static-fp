@@ -14,6 +14,13 @@ import Array
 import Dict
 import String.Extra as String
 
+
+likeSymbol : String
+likeSymbol = "💖 "
+
+chooseSymbol : String
+chooseSymbol = "👍"
+
 wrapper : List (Html Msg) -> Html Msg
 wrapper contents = 
   div
@@ -29,12 +36,28 @@ button onClick label =
 view : Model -> Html Msg      
 view model =
   wrapper
-    [ belovedDisplay model
+    [ personSelector model.focusPerson <| (Dict.keys model.words) ++ ["Joe"]
+    , belovedDisplay model
     , buttons
     , clickCountDisplay model.clickCount
     , dateDisplay model.lastChange
     ]
 
+personSelector focus all =
+  let
+    one name =
+      span []
+        [ case name == focus of
+            True ->
+              strong [] [text focus]
+            False ->
+              button (ChoosePerson name) name
+        , text " "
+        ]
+              
+  in
+    p [] (List.map one all)
+    
 belovedDisplay : Model -> Html Msg    
 belovedDisplay model =
   let
@@ -44,8 +67,8 @@ belovedDisplay model =
         |> Array.toList
   in
     div []
-      [ p [] [strong [] [text model.focusPerson]]
-      , ul [] <| List.map oneWord words
+      [ 
+       div [] <| List.indexedMap (oneWord model.focusPerson) words
       ]
 
 clickCountDisplay : Int -> Html Msg      
@@ -70,18 +93,19 @@ dateDisplay maybe =
       , text display
       ]
       
-oneWord : Word -> Html Msg
-oneWord word = 
+oneWord : String -> Int -> Word -> Html Msg
+oneWord person index word = 
   let 
-    emphasis = String.repeat word.count ("💖" ++ " ")
+    emphasis = String.repeat word.count likeSymbol
   in
-    li []
-      [ text <| word.text ++ ": " ++ emphasis ]
+    div []
+      [ button (Like person index) chooseSymbol
+      , text <| " " ++ word.text ++ ": " ++ emphasis ]
 
 buttons : Html Msg
 buttons =
   div []
-    [ p [] [button (Like "Dawn"  1)   "Emphasize 'Chamego'"]
-    , p [] [button (Like "Dawn"  100) "Try to emphasize the 100th word"]
+    [ 
+      p [] [button (Like "Dawn"  100) "Try to emphasize the 100th word"]
     , p [] [button (Like "Brian" 1)   "Pick a nonexistent person"]
     ]

@@ -18,13 +18,19 @@ update msg model =
         |> Lens.update Model.clickCount increment
         |> Lens.set Model.focusPerson person
         |> Lens.update (Model.wordCount person index) increment
-      , Task.perform LikeDate Date.now
+      , Task.perform LastChange Date.now
       )
 
-    LikeDate date ->
+    LastChange date ->
       ( Lens.set Model.lastChange (Just date) model
       , Cmd.none
       )
+
+    ChoosePerson who ->
+      ( Lens.set Model.focusPerson who model
+      , Task.perform LastChange Date.now
+      )
+        
   
 
 main : Program Never Model Msg
