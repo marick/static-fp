@@ -10,17 +10,13 @@ type alias Word =
   , text : String
   }
 
-emphasize : Word -> Word
-emphasize word =
+like : Word -> Word
+like word =
   Lens.update count increment word
 
-all : List Word    
-all =
-  let
-    start text =
-      { count = 1 , text = text }
-  in
-    List.map start ["cafuné", "chamego", "amor da minha vida"]
+new : String -> Word    
+new text =
+  { count = 1 , text = text }
 
 {- Lenses -}      
 

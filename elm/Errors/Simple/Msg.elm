@@ -1,4 +1,7 @@
 module Errors.Simple.Msg exposing (Msg(..))
 
+import Date exposing (Date)
+
 type Msg
-  = EmphasizeWord String Int
+  = Like String Int
+  | LikeDate Date

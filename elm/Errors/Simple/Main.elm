@@ -3,7 +3,9 @@ module Errors.Simple.Main exposing (..)
 import Errors.Simple.Basics exposing (..)
 import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model as Model exposing (Model)
-import Errors.Simple.View as View 
+import Errors.Simple.View as View
+import Date exposing (Date)
+import Task
 
 import Lens.Final.Lens as Lens
 import Html
@@ -11,15 +13,19 @@ import Html
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of 
-    EmphasizeWord person index -> 
-      model
+    Like person index -> 
+      ( model
         |> Lens.update Model.clickCount increment
-        |> Lens.set Model.beloved person
+        |> Lens.set Model.focusPerson person
         |> Lens.update (Model.wordCount person index) increment
-        |> noCmd
+      , Task.perform LikeDate Date.now
+      )
+
+    LikeDate date ->
+      ( Lens.set Model.lastChange (Just date) model
+      , Cmd.none
+      )
   
-noCmd : Model -> (Model, Cmd Msg)
-noCmd model = (model, Cmd.none)
 
 main : Program Never Model Msg
 main =

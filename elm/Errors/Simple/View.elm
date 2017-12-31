@@ -4,6 +4,9 @@ import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model exposing (Model)
 import Errors.Simple.Word exposing (Word)
 
+import Date exposing (Date)
+import Date.Extra as Date
+
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events as Event
@@ -29,18 +32,19 @@ view model =
     [ belovedDisplay model
     , buttons
     , clickCountDisplay model.clickCount
+    , dateDisplay model.lastChange
     ]
 
 belovedDisplay : Model -> Html Msg    
 belovedDisplay model =
   let
     words =
-      Dict.get model.beloved model.words
+      Dict.get model.focusPerson model.words
         |> Maybe.withDefault Array.empty
         |> Array.toList
   in
     div []
-      [ p [] [strong [] [text model.beloved]]
+      [ p [] [strong [] [text model.focusPerson]]
       , ul [] <| List.map oneWord words
       ]
 
@@ -53,7 +57,18 @@ clickCountDisplay count =
         "."
     ]
           
-
+dateDisplay : Maybe Date -> Html Msg
+dateDisplay maybe = 
+  let
+    display = 
+      case maybe of
+        Nothing -> "none"
+        Just date -> Date.toIsoString date
+  in
+    p []
+      [ text "Last change: "
+      , text display
+      ]
       
 oneWord : Word -> Html Msg
 oneWord word = 
@@ -66,7 +81,7 @@ oneWord word =
 buttons : Html Msg
 buttons =
   div []
-    [ p [] [button (EmphasizeWord "Dawn"  1)   "Emphasize 'Chamego'"]
-    , p [] [button (EmphasizeWord "Dawn"  100) "Try to emphasize the 100th word"]
-    , p [] [button (EmphasizeWord "Brian" 1)   "Pick a nonexistent person"]
+    [ p [] [button (Like "Dawn"  1)   "Emphasize 'Chamego'"]
+    , p [] [button (Like "Dawn"  100) "Try to emphasize the 100th word"]
+    , p [] [button (Like "Brian" 1)   "Pick a nonexistent person"]
     ]
