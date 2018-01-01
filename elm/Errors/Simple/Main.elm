@@ -19,16 +19,16 @@ update msg model =
       , fetchDateCmd
       )
 
-    LastChange date ->
-      ( Model.noteDate date model
-      , Cmd.none
-      )
-
     ChoosePerson person ->
       ( model
           |> Model.focusOn person
           |> Model.incrementClickCount
       , fetchDateCmd
+      )
+
+    LastChange date ->
+      ( Model.noteDate date model
+      , Cmd.none
       )
 
 main : Program Never Model Msg
