@@ -1,39 +1,47 @@
-module Errors.Simple.Main exposing (..)
+module Errors.Simple.Main2 exposing (..)
 
-import Errors.Simple.Basics exposing (..)
 import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model as Model exposing (Model)
 import Errors.Simple.View as View
 import Date exposing (Date)
 import Task
 
-import Lens.Final.Lens as Lens
 import Html
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of 
-    Like person index -> 
-      ( model
-        |> incrementClickCount
-        |> incrementWordCount person index
-        |> Lens.set Model.focusPerson person 
-      , Task.perform LastChange Date.now
-      )
+    Like person index ->
+      case Model.isExistingWord person index model of
+        True -> 
+          ( model
+              |> Model.incrementClickCount
+              |> Model.incrementWordCount person index
+              |> Model.focusOn person
+          , fetchDateCmd
+          )
+        False ->
+          ( Model.incrementClickCount model
+          , Cmd.none
+          )
+
+    ChoosePerson person ->
+      case Model.isExistingPerson person model of
+        True -> 
+          ( model
+            |> Model.focusOn person
+            |> Model.incrementClickCount
+          , fetchDateCmd
+          )
+        False ->
+          ( Model.incrementClickCount model
+          , Cmd.none
+          )
 
     LastChange date ->
-      ( Lens.set Model.lastChange (Just date) model
+      ( Model.noteDate date model
       , Cmd.none
       )
-
-    ChoosePerson who ->
-      ( model
-          |> Lens.set Model.focusPerson who 
-          |> Lens.update Model.clickCount increment
-      , Task.perform LastChange Date.now
-      )
-        
-  
 
 main : Program Never Model Msg
 main =
@@ -43,3 +51,9 @@ main =
     , update = update
     , subscriptions = always Sub.none
     }
+
+fetchDateCmd : Cmd Msg
+fetchDateCmd = 
+  Task.perform LastChange Date.now
+        
+    
