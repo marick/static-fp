@@ -17,8 +17,8 @@ justModel soFar =
     Ok model -> model
     Err model -> model
 
-constantly : (Model -> a -> ModelState) -> (Model -> a) -> ModelState -> ModelState
-constantly handleResult f soFar =
+ever : (Model -> a -> ModelState) -> (Model -> a) -> ModelState -> ModelState
+ever handleResult f soFar =
   let
     either model =
       model |> f |> handleResult model
@@ -55,16 +55,16 @@ update msg model =
   case msg of 
     Like person index -> 
       Ok model
-        |> constantly do  Model.incrementClickCount
-        |> whenOk try      (Model.incrementWordCountM person index)
-        |> whenOk do       (Model.focusOn person)
-        |> finishWith     fetchDateCmd  
+        |> ever do      Model.incrementClickCount
+        |> whenOk try  (Model.incrementWordCountM person index)
+        |> whenOk do   (Model.focusOn person)
+        |> finishWith   fetchDateCmd  
 
     ChoosePerson person ->
       Ok model
-        |> whenOk try       (Model.focusOnM person)
-        |> constantly do   Model.incrementClickCount
-        |> finishWith      fetchDateCmd
+        |> whenOk try   (Model.focusOnM person)
+        |> ever do       Model.incrementClickCount
+        |> finishWith    fetchDateCmd
 
     LastChange date ->
       ( Model.noteDate date model
