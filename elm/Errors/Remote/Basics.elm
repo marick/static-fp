@@ -1,4 +1,4 @@
-module Errors.Simple.Basics exposing (..)
+module Errors.Remote.Basics exposing (..)
 
 
 increment : Int -> Int

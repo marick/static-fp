@@ -1,10 +1,10 @@
-module Errors.Simple.Model exposing (..)
+module Errors.Remote.Model exposing (..)
 
-import Errors.Simple.Word as Word exposing (Word)
-import Errors.Simple.Basics exposing (..)
+import Errors.Remote.Word as Word exposing (Word)
 
 import Lens.Final.Lens as Lens 
 import Lens.Final.Operators exposing (..)
+import Lens.Final.Compose as Compose
 import Date exposing (Date)
 import Dict exposing (Dict)
 import Array exposing (Array)
@@ -30,45 +30,6 @@ init =
     }
   , Cmd.none
   )
-
-{- Actions -}
-
-
-incrementClickCount : Model -> Model
-incrementClickCount = 
-  Lens.update clickCount increment
-
-incrementWordCount : String -> Int -> Model -> Model
-incrementWordCount person index = 
-  Lens.update (wordCount person index) increment
-
-incrementWordCountM : String -> Int -> Model -> Maybe Model
-incrementWordCountM person index = 
-  Lens.updateM (wordCount person index) increment
-
-focusOn : String -> Model -> Model
-focusOn person = 
-  Lens.set focusPerson person 
-
-focusOnM : String -> Model -> Maybe Model
-focusOnM person model =
-  case Lens.exists (personWords person) model of
-    True -> Just (Lens.set focusPerson person model)
-    False -> Nothing
-
-noteDate : Date -> Model -> Model
-noteDate date = 
-  Lens.set lastChange (Just date)
-
-{- validations -}
-    
-isExistingWord : String -> Int -> Model -> Bool
-isExistingWord person index = 
-  Lens.exists <| word person index
-
-isExistingPerson : String -> Model -> Bool
-isExistingPerson person = 
-  Lens.exists <| personWords person
 
 {- Util -}
 
@@ -110,14 +71,14 @@ clickCount =
 
 -- Composed
 
-personWords : String -> Lens.Humble Model (Array Word)
+personWords : String -> Lens.Path Model (Array Word)
 personWords who = 
-  words .?>> Dict.humbleLens who
+  Compose.classicToPath ".words" words !!>> Dict.pathLens who
 
-word : String -> Int -> Lens.Humble Model Word
+word : String -> Int -> Lens.Path Model Word
 word who index =
-  personWords who ??>> Array.lens index
+  personWords who !!>> Array.pathLens index
 
-wordCount : String -> Int -> Lens.Humble Model Int
+wordCount : String -> Int -> Lens.Path Model Int
 wordCount who index =
-  word who index ?.>> Word.count
+  word who index !!>> Compose.classicToPath ".count" Word.count
