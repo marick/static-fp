@@ -1,11 +1,13 @@
 module Errors.Remote.UpdateActions exposing (..)
 
 import Errors.Remote.Basics exposing (..)
+import Errors.Remote.Msg as Msg exposing (Msg(..))
 import Errors.Remote.Model as Model exposing (Model)
 import Errors.Remote.Errors as Error exposing (Error)
 
 import Lens.Final.Lens as Lens 
 import Date exposing (Date)
+import Task
 
 {- Actions -}
 
@@ -29,3 +31,10 @@ focusOn person model =
 noteDate : Date -> Model -> Model
 noteDate date = 
   Lens.set Model.lastChange (Just date)
+
+
+{- Commands -}
+
+fetchDateCmd : Cmd Msg
+fetchDateCmd = 
+  Task.perform LastChange Date.now

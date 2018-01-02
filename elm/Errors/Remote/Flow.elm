@@ -42,8 +42,8 @@ whenOk_try modelAction state =
     _ ->
       state
 
-add : Cmd Msg -> State Error -> State Error
-add msg state = 
+cmd : Cmd Msg -> State Error -> State Error
+cmd msg state = 
   Lens.update State.cmds (Array.push msg) state
 
         
