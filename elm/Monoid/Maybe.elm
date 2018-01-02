@@ -1,6 +1,7 @@
 module Monoid.Maybe exposing (..)
 
 
+empty : Maybe a
 empty = Nothing
 
 append_left : Maybe a -> Maybe a -> Maybe a
