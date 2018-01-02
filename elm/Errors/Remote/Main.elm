@@ -79,7 +79,7 @@ update msg model =
 
     LogResponse (Err err) ->
       let
-        _ = Debug.log "Failed to post to remote log: " err
+        _ = Debug.log "Failed to post to remote log" err
       in
         (model, Cmd.none)
           

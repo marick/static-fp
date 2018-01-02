@@ -10,26 +10,18 @@ type Error
 
 jsonify : State Error -> Error -> Encode.Value
 jsonify state error =
+  case error of
+    MissingWord path ->
+      pathErr "MissingWord" state path
+    MissingPerson path -> 
+      pathErr "MissingPerson" state path
+
+pathErr : String -> State Error -> BadPath -> Encode.Value        
+pathErr tag state path =
   Encode.object
-    [("msg", Encode.string "foo")]
---   case msg of
---     EmphasizeWord person index ->
---       Encode.object
---         [ ("type", Encode.string "EmphasizeWord")
---         , ("person", Encode.string person)
---         , ("index", Encode.int index)
---         ]
---     _ ->
---       Encode.object
---         [ ("type", Encode.string "impossible")
---         , ("msg", Encode.string (toString msg) )
---         , ( "note"
---           , Encode.string
---               "`payload` called for `Msg` that should not be logged."
---           )
---         ]
-      
-
+    [ ("app", Encode.string "Errors.Remote.Errors")
+    , ("tag", Encode.string tag)
+    , ("msg", Encode.string <| toString state.msg)
+    , ("path", Encode.list <| List.map Encode.string path)
+    ]
     
-
---     payload = Error.jsonify msg |> Http.jsonBody
