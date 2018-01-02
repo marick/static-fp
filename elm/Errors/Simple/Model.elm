@@ -1,7 +1,6 @@
 module Errors.Simple.Model exposing (..)
 
 import Errors.Simple.Word as Word exposing (Word)
-import Errors.Simple.Basics exposing (..)
 
 import Lens.Final.Lens as Lens 
 import Lens.Final.Operators exposing (..)
@@ -31,44 +30,6 @@ init =
   , Cmd.none
   )
 
-{- Actions -}
-
-
-incrementClickCount : Model -> Model
-incrementClickCount = 
-  Lens.update clickCount increment
-
-incrementWordCount : String -> Int -> Model -> Model
-incrementWordCount person index = 
-  Lens.update (wordCount person index) increment
-
-incrementWordCountM : String -> Int -> Model -> Maybe Model
-incrementWordCountM person index = 
-  Lens.updateM (wordCount person index) increment
-
-focusOn : String -> Model -> Model
-focusOn person = 
-  Lens.set focusPerson person 
-
-focusOnM : String -> Model -> Maybe Model
-focusOnM person model =
-  case Lens.exists (personWords person) model of
-    True -> Just (Lens.set focusPerson person model)
-    False -> Nothing
-
-noteDate : Date -> Model -> Model
-noteDate date = 
-  Lens.set lastChange (Just date)
-
-{- validations -}
-    
-isExistingWord : String -> Int -> Model -> Bool
-isExistingWord person index = 
-  Lens.exists <| word person index
-
-isExistingPerson : String -> Model -> Bool
-isExistingPerson person = 
-  Lens.exists <| personWords person
 
 {- Util -}
 

@@ -2,10 +2,10 @@ module Errors.Simple.Main4 exposing (..)
 
 import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model as Model exposing (Model)
+import Errors.Simple.UpdateActions as Update
 import Errors.Simple.View as View
 import Date exposing (Date)
 import Task
--- import Result.Extra as Result
 
 import Html
 
@@ -55,19 +55,19 @@ update msg model =
   case msg of 
     Like person index -> 
       Ok model
-        |> ever do      Model.incrementClickCount
-        |> whenOk try  (Model.incrementWordCountM person index)
-        |> whenOk do   (Model.focusOn person)
+        |> ever do      Update.incrementClickCount
+        |> whenOk try  (Update.incrementWordCountM person index)
+        |> whenOk do   (Update.focusOn person)
         |> finishWith   fetchDateCmd  
 
     ChoosePerson person ->
       Ok model
-        |> whenOk try   (Model.focusOnM person)
-        |> ever do       Model.incrementClickCount
+        |> whenOk try   (Update.focusOnM person)
+        |> ever do       Update.incrementClickCount
         |> finishWith    fetchDateCmd
 
     LastChange date ->
-      ( Model.noteDate date model
+      ( Update.noteDate date model
       , Cmd.none
       )
 

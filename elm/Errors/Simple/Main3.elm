@@ -2,12 +2,35 @@ module Errors.Simple.Main3 exposing (..)
 
 import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model as Model exposing (Model)
+import Errors.Simple.UpdateActions as Update
 import Errors.Simple.View as View
 import Date exposing (Date)
 import Task
--- import Result.Extra as Result
 
 import Html
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  case msg of 
+    Like person index -> 
+      Ok model
+        |> always_do    Update.incrementClickCount
+        |> whenOk_try  (Update.incrementWordCountM person index)
+        |> whenOk_do   (Update.focusOn person)
+        |> finish       fetchDateCmd  
+
+    ChoosePerson person ->
+      Ok model
+        |> whenOk_try (Update.focusOnM person)
+        |> always_do   Update.incrementClickCount
+        |> finish      fetchDateCmd
+
+    LastChange date ->
+      ( Update.noteDate date model
+      , Cmd.none
+      )
+      
+{- Util -}
 
 type alias ModelState = Result Model Model
 
@@ -32,32 +55,17 @@ whenOk_try f soFar =
       Ok model -> process model
       e -> e
 
-whenOk_cmd : Cmd Msg -> ModelState -> (Model, Cmd Msg)
-whenOk_cmd cmd soFar = 
+finish : Cmd Msg -> ModelState -> (Model, Cmd Msg)
+finish cmd soFar = 
   case soFar of
     Ok model -> (model, cmd)
     Err model -> (model, Cmd.none)
       
-update : Msg -> Model -> (Model, Cmd Msg)
-update msg model =
-  case msg of 
-    Like person index -> 
-      Ok model
-        |> always_do     Model.incrementClickCount
-        |> whenOk_try  (Model.incrementWordCountM person index)
-        |> whenOk_do   (Model.focusOn person)
-        |> whenOk_cmd  fetchDateCmd  
-
-    ChoosePerson person ->
-      Ok model
-        |> whenOk_try (Model.focusOnM person)
-        |> always_do    Model.incrementClickCount
-        |> whenOk_cmd  fetchDateCmd
-
-    LastChange date ->
-      ( Model.noteDate date model
-      , Cmd.none
-      )
+fetchDateCmd : Cmd Msg
+fetchDateCmd = 
+  Task.perform LastChange Date.now
+        
+{- Main -}    
 
 main : Program Never Model Msg
 main =
@@ -68,8 +76,3 @@ main =
     , subscriptions = always Sub.none
     }
 
-fetchDateCmd : Cmd Msg
-fetchDateCmd = 
-  Task.perform LastChange Date.now
-        
-    
