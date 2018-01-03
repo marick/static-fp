@@ -66,13 +66,16 @@ viewSelected {focusPerson, words} =
         , text <| " " ++ word.text ++ ": " ++ showLikes word.count
         ]
 
-    addBadButton list = -- click on a nonexistent word
-      list ++ [button (Like focusPerson 888) errorSymbol]
+    addBadButtons list = -- 
+      list ++ [ button (Like focusPerson 888) (errorSymbol ++ "missing word")
+              , button (Like "joe" 0)         (errorSymbol ++ "missing person")
+              ]
+
   in
     div []
       (personWords
         |> List.indexedMap (showOne focusPerson)
-        |> addBadButton
+        |> addBadButtons
       )
 
 viewStatistics : Model -> Html Msg      
