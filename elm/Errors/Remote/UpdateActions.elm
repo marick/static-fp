@@ -2,7 +2,7 @@ module Errors.Remote.UpdateActions exposing (..)
 
 import Errors.Remote.Basics exposing (..)
 import Errors.Remote.Msg as Msg exposing (Msg(..))
-import Errors.Remote.Model as Model exposing (Model, Name)
+import Errors.Remote.Model as Model exposing (Model, Name, Index)
 import Errors.Remote.Errors as Error exposing (Error)
 
 import Lens.Final.Lens as Lens 
@@ -16,7 +16,7 @@ incrementClickCount : Model -> Model
 incrementClickCount = 
   Lens.update Model.clickCount increment
 
-incrementWordCount : Name -> Int -> Model -> Result Error Model 
+incrementWordCount : Name -> Index -> Model -> Result Error Model 
 incrementWordCount person index model =
   model 
     |> Lens.update (Model.wordCount person index) increment

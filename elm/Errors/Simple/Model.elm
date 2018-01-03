@@ -14,6 +14,7 @@ import Lens.Final.Array as Array
 {- Model -}
 
 type alias Name = String
+type alias Index = Int
 
 type alias Model =
   { words : Dict Name (Array Word)
@@ -77,10 +78,10 @@ personWords : Name -> Lens.Humble Model (Array Word)
 personWords who = 
   words .?>> Dict.humbleLens who
 
-word : Name -> Int -> Lens.Humble Model Word
+word : Name -> Index -> Lens.Humble Model Word
 word who index =
   personWords who ??>> Array.humbleLens index
 
-wordCount : Name -> Int -> Lens.Humble Model Int
+wordCount : Name -> Index -> Lens.Humble Model Int
 wordCount who index =
   word who index ?.>> Word.count

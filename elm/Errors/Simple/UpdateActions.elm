@@ -1,7 +1,7 @@
 module Errors.Simple.UpdateActions exposing (..)
 
 import Errors.Simple.Basics exposing (..)
-import Errors.Simple.Model as Model exposing (Model, Name)
+import Errors.Simple.Model as Model exposing (Model, Name, Index)
 
 import Lens.Final.Lens as Lens 
 import Date exposing (Date)
@@ -13,7 +13,7 @@ incrementClickCount : Model -> Model
 incrementClickCount = 
   Lens.update Model.clickCount increment
 
-incrementWordCount : Name -> Int -> Model -> Model
+incrementWordCount : Name -> Index -> Model -> Model
 incrementWordCount person index = 
   Lens.update (Model.wordCount person index) increment
 
@@ -28,7 +28,7 @@ noteDate date =
 
 {- Functions used in the second version (Main2) -}
 
-isExistingWord : Name -> Int -> Model -> Bool
+isExistingWord : Name -> Index -> Model -> Bool
 isExistingWord person index = 
   Lens.exists <| Model.word person index
 
@@ -39,7 +39,7 @@ isExistingPerson person =
 
 {- Functions used in the third version (Main3) -}
 
-incrementWordCountM : Name -> Int -> Model -> Maybe Model
+incrementWordCountM : Name -> Index -> Model -> Maybe Model
 incrementWordCountM person index = 
   Lens.updateM (Model.wordCount person index) increment
 

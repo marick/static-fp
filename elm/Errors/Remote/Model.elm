@@ -15,6 +15,7 @@ import Lens.Final.Array as Array
 {- Model -}
     
 type alias Name = String
+type alias Index = Int
 
 type alias Model =
   { words : Dict Name (Array Word)
@@ -77,10 +78,10 @@ personWords : Name -> Lens.Path Model (Array Word)
 personWords who = 
   Compose.classicToPath ".words" words !!>> Dict.pathLens who
 
-word : Name -> Int -> Lens.Path Model Word
+word : Name -> Index -> Lens.Path Model Word
 word who index =
   personWords who !!>> Array.pathLens index
 
-wordCount : Name -> Int -> Lens.Path Model Int
+wordCount : Name -> Index -> Lens.Path Model Int
 wordCount who index =
   word who index !!>> Compose.classicToPath ".count" Word.count
