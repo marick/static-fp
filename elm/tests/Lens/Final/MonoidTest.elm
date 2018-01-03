@@ -40,8 +40,8 @@ humble =
   let
     id = Lens.humbleIdentity
     
-    left = (Array.lens 1 ??>>  Array.lens 2) ??>> Array.lens 0 
-    right = Array.lens 1 ??>> (Array.lens 2  ??>> Array.lens 0)
+    left = (Array.humbleLens 1 ??>>  Array.humbleLens 2) ??>> Array.humbleLens 0 
+    right = Array.humbleLens 1 ??>> (Array.humbleLens 2  ??>> Array.humbleLens 0)
 
     a = Array.fromList 
 
@@ -53,9 +53,9 @@ humble =
               ]
   in
     describe "a humble lens is a monoid" 
-      [ equal_lenses (id ??>> Array.lens 1) (Array.lens 1)
+      [ equal_lenses (id ??>> Array.humbleLens 1) (Array.humbleLens 1)
           (Array.fromList [3, 6]) 8                             "left id"
-      , equal_lenses (Array.lens 0 ??>> id) (Array.lens 0)
+      , equal_lenses (Array.humbleLens 0 ??>> id) (Array.humbleLens 0)
           (Array.fromList ["1", "2"]) "3"                       "right id"
 
       , equal_lenses left right nested  8                       "associativity"

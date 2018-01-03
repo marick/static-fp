@@ -58,7 +58,7 @@ oneCaseToHumble =
 oneCaseAndClassic : Test
 oneCaseAndClassic =
   let
-    lens = Box.oneCaseAndClassic Result.ok Tuple2.first
+    lens = Box.oneCaseAndClassic Result.okLens Tuple2.first
     original = Humble.original
     present = Humble.present
     missing = Humble.missing

@@ -11,7 +11,7 @@ import Lens.Final.UpsertTest as Upsert
 
 
 
--- We need our own implementation of `Dict.lens` because 
+-- We need our own implementation of `Dict.upsertLens` because 
 -- `Lens.Final.Dict` imports `Lens.Final.Lens`, and that 
 -- module is the one we're rewriting. 
 

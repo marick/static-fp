@@ -49,7 +49,7 @@ lawTest : Test
 lawTest =
   let
     lens =
-      Dict.lens "key"
+      Dict.upsertLens "key"
 
     wholeMaker original =
       case original of
@@ -71,7 +71,7 @@ lawTest =
 update : Test
 update =
   let
-    dictLens = (Dict.lens "key")
+    dictLens = (Dict.upsertLens "key")
   in
     describe "update for various common base types"
       [ negateVia dictLens (dict "key" 3) (dict "key" -3)
@@ -93,9 +93,9 @@ exists =
       equal (Lens.exists lens whole) expected (toString whole)
   in
     describe "exists"
-      [ exists (Dict.lens "key")    Dict.empty         False
-      , exists (Dict.lens "key")    (dict "---" 3)     False
-      , exists (Dict.lens "key")    (dict "key" 3)     True
+      [ exists (Dict.upsertLens "key")    Dict.empty         False
+      , exists (Dict.upsertLens "key")    (dict "---" 3)     False
+      , exists (Dict.upsertLens "key")    (dict "key" 3)     True
       ]
 
 getWithDefault : Test
@@ -105,9 +105,9 @@ getWithDefault =
       equal (Lens.getWithDefault lens "default" whole) expected (toString whole)
   in
     describe "getWithDefault"
-      [ get (Dict.lens "key")    Dict.empty            (Just "default")
-      , get (Dict.lens "key")    (dict "---" "orig")   (Just "default")
-      , get (Dict.lens "key")    (dict "key" "orig")   (Just "orig")
+      [ get (Dict.upsertLens "key")    Dict.empty            (Just "default")
+      , get (Dict.upsertLens "key")    (dict "---" "orig")   (Just "default")
+      , get (Dict.upsertLens "key")    (dict "key" "orig")   (Just "orig")
       ]
     
 updateWithDefault : Test
@@ -117,14 +117,14 @@ updateWithDefault =
       equal (Lens.updateWithDefault lens 8888 negate whole) expected (toString whole)
   in
     describe "updateWithDefault"
-      [ negateVia (Dict.lens "key")    Dict.empty
-                                      (dict "key" -8888)
+      [ negateVia (Dict.upsertLens "key")    Dict.empty
+                                             (dict "key" -8888)
           
-      , negateVia (Dict.lens "key")    (dict "---" 3)
-                                       (dict "---" 3 |> Dict.insert "key" -8888)
+      , negateVia (Dict.upsertLens "key")    (dict "---" 3)
+                                             (dict "---" 3 |> Dict.insert "key" -8888)
                                    
-      , negateVia (Dict.lens "key")    (dict "key" 3)
-                                       (dict "key" -3)
+      , negateVia (Dict.upsertLens "key")    (dict "key" 3)
+                                             (dict "key" -3)
       ]
     
           
@@ -143,7 +143,7 @@ updateWithDefault =
 classic_and_upsert : Test 
 classic_and_upsert =
   let
-    lens = Compose.classicAndUpsert Tuple2.first (Dict.lens "key")
+    lens = Compose.classicAndUpsert Tuple2.first (Dict.upsertLens "key")
   in
     describe "classic and upsert"
       [ describe "update"

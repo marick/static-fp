@@ -79,7 +79,7 @@ personWords who =
 
 word : Name -> Int -> Lens.Humble Model Word
 word who index =
-  personWords who ??>> Array.lens index
+  personWords who ??>> Array.humbleLens index
 
 wordCount : Name -> Int -> Lens.Humble Model Int
 wordCount who index =

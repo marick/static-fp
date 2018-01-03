@@ -34,7 +34,7 @@ idTags id =
 
 idTags_upsert : Animal.Id -> Lens.Upsert TagDb (Array String)
 idTags_upsert id =
-  Compose.classicAndUpsert allTags (Dict.lens id)
+  Compose.classicAndUpsert allTags (Dict.upsertLens id)
 
 tagIds : String -> Lens.Humble TagDb (Array Animal.Id)
 tagIds tag =
@@ -42,4 +42,4 @@ tagIds tag =
 
 tagIds_upsert : String -> Lens.Upsert TagDb (Array Animal.Id)
 tagIds_upsert tag =
-  Compose.classicAndUpsert allIds (Dict.lens tag)
+  Compose.classicAndUpsert allIds (Dict.upsertLens tag)

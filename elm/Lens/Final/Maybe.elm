@@ -1,10 +1,9 @@
 module Lens.Final.Maybe exposing
-  ( just
+  ( justLens
   )
 
 import Lens.Final.Lens as Lens
 
-just : Lens.OneCase (Maybe a) a
-just =
+justLens : Lens.OneCase (Maybe a) a
+justLens =
   Lens.oneCase identity Just
-

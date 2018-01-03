@@ -18,7 +18,7 @@ animals =
 
 oneAnimal : Animal.Id -> Lens.Upsert Model Animal
 oneAnimal id =
-  Compose.classicAndUpsert animals (Dict.lens id)
+  Compose.classicAndUpsert animals (Dict.upsertLens id)
 
 updateAnimal : Animal.Id -> (Animal -> Animal) -> Model -> Model
 updateAnimal id =

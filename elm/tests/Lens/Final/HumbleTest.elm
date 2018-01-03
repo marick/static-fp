@@ -95,8 +95,8 @@ laws : Test
 laws =
   describe "humble lenses obey the humble lens laws"
     [ describe "array lens"
-        [ present (Array.lens 1)   (array [' ', original])
-        , missing (Array.lens 1)   (array [' '          ])   "array too short"
+        [ present (Array.humbleLens 1)   (array [' ', original])
+        , missing (Array.humbleLens 1)   (array [' '          ])   "array too short"
         ]
 
     , describe "dict lens"
@@ -115,8 +115,8 @@ laws =
 update : Test
 update =
   let
-    at0 = Array.lens 0
-    at1 = Array.lens 1
+    at0 = Array.humbleLens 0
+    at1 = Array.humbleLens 1
 
     dictLens = Dict.humbleLens "key"
   in
@@ -209,7 +209,7 @@ from_classic =
 from_upsert : Test
 from_upsert =
   let
-    lens = Compose.upsertToHumble (Dict.lens "key")
+    lens = Compose.upsertToHumble (Dict.upsertLens "key")
   in
     describe "upsert to humble lens"
       [ negateVia    lens   (dict "key"  3)
@@ -225,7 +225,7 @@ from_upsert =
 from_oneCase : Test
 from_oneCase =
   let
-    lens = Compose.oneCaseToHumble Result.ok
+    lens = Compose.oneCaseToHumble Result.okLens
   in
     describe "one-part to humble lens"
       [ negateVia lens   (Ok 3)  (Ok  -3)
@@ -243,7 +243,7 @@ from_oneCase =
 humble_and_humble : Test 
 humble_and_humble =
   let
-    lens = Compose.humbleAndHumble (Array.lens 0) (Array.lens 1)
+    lens = Compose.humbleAndHumble (Array.humbleLens 0) (Array.humbleLens 1)
 
     a2 = List.map array >> array
   in
@@ -263,7 +263,7 @@ humble_and_humble =
 classic_and_humble : Test
 classic_and_humble =
   let
-    lens = Compose.classicAndHumble Tuple2.second (Array.lens 1)
+    lens = Compose.classicAndHumble Tuple2.second (Array.humbleLens 1)
 
     nested oneElt =
       ( array [] , array oneElt )
@@ -283,7 +283,7 @@ classic_and_humble =
 upsert_and_classic : Test
 upsert_and_classic =
   let
-    lens = Compose.upsertAndClassic (Dict.lens "key") (Tuple2.first)
+    lens = Compose.upsertAndClassic (Dict.upsertLens "key") (Tuple2.first)
   in
     describe "upsert and classic"
       [ describe "update"
@@ -302,7 +302,7 @@ upsert_and_classic =
 onecase_and_classic : Test
 onecase_and_classic =
   let
-    lens = Compose.oneCaseAndClassic Result.ok Tuple2.first
+    lens = Compose.oneCaseAndClassic Result.okLens Tuple2.first
   in
     describe "one-case and classic"
       [ negateVia lens  (Ok  (3, ""))    (Ok  (-3, ""))

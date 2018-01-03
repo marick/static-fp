@@ -1,5 +1,5 @@
 module Lens.Final.Dict exposing
-  ( lens
+  ( upsertLens
   , humbleLens
   , pathLens
   )
@@ -10,13 +10,13 @@ import Dict exposing (Dict)
 
 {- This lens can add keys or delete them. -}
 
-lens : comparable -> Lens.Upsert (Dict comparable val) val
-lens key =
+upsertLens : comparable -> Lens.Upsert (Dict comparable val) val
+upsertLens key =
   Lens.upsert (Dict.get key) (Dict.insert key) (Dict.remove key)
 
 humbleLens : comparable -> Lens.Humble (Dict comparable val) val
 humbleLens key =
-  lens key |> Compose.upsertToHumble
+  upsertLens key |> Compose.upsertToHumble
 
 pathLens : comparable -> Lens.Path (Dict comparable val) val
 pathLens key =

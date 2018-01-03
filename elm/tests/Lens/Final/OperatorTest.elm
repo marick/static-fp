@@ -14,14 +14,14 @@ import Lens.Final.Result as Result
 -- These "tests" are only about trivial errors like typos in the type annotations.
 
 test_cc = Tuple2.first ..>> Tuple2.second
-test_cu = Tuple2.first .^>> Dict.lens "key"
-test_ch = Tuple2.first .?>> Array.lens 3
+test_cu = Tuple2.first .^>> Dict.upsertLens "key"
+test_ch = Tuple2.first .?>> Array.humbleLens 3
 
-test_uc = Dict.lens "key" ^.>> Tuple2.first
+test_uc = Dict.upsertLens "key" ^.>> Tuple2.first
 
-test_hh = Array.lens 0 ??>> Array.lens 3
-test_hc = Array.lens 0 ?.>> Tuple2.second
+test_hh = Array.humbleLens 0 ??>> Array.humbleLens 3
+test_hc = Array.humbleLens 0 ?.>> Tuple2.second
           
-test_oc = Result.ok |.>> Tuple2.second
+test_oc = Result.okLens |.>> Tuple2.second
           
 test_pp = Dict.pathLens "key" !!>> Array.pathLens 0

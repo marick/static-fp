@@ -23,7 +23,7 @@ tagDb =
 
 oneAnimal : Animal.Id -> Lens.Upsert Model Animal
 oneAnimal id =
-  Compose.classicAndUpsert animals (Dict.lens id)
+  Compose.classicAndUpsert animals (Dict.upsertLens id)
 
 addAnimalTag : Animal.Id -> String -> Model -> Model
 addAnimalTag id tag =

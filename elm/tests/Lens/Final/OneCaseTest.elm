@@ -55,10 +55,10 @@ legal =
 lawTest : Test
 lawTest =
   describe "oneCase lenses obey the oneCase lens laws"
-    [ legal Result.ok   Ok      "ok lens"
-    , legal Result.err  Err     "err lens"
+    [ legal Result.okLens   Ok      "ok lens"
+    , legal Result.errLens  Err     "err lens"
       
-    , legal Maybe.just  Just    "just lens"
+    , legal Maybe.justLens  Just    "just lens"
     ]
 
     
@@ -71,14 +71,14 @@ lawTest =
 update : Test
 update =
   describe "update for various common base types (one-case lenses)"
-    [ negateVia Result.ok (Ok  3)  (Ok  -3)
-    , negateVia Result.ok (Err 3)  (Err  3)
+    [ negateVia Result.okLens (Ok  3)  (Ok  -3)
+    , negateVia Result.okLens (Err 3)  (Err  3)
 
-    , negateVia Result.err (Ok  3) (Ok   3)
-    , negateVia Result.err (Err 3) (Err -3)
+    , negateVia Result.errLens (Ok  3) (Ok   3)
+    , negateVia Result.errLens (Err 3) (Err -3)
 
-    , negateVia Maybe.just (Just 3)  (Just  -3)
-    , negateVia Maybe.just Nothing   Nothing
+    , negateVia Maybe.justLens (Just 3)  (Just  -3)
+    , negateVia Maybe.justLens Nothing   Nothing
     ]
   
 
@@ -94,9 +94,9 @@ exists =
       equal (Lens.exists lens whole) expected (toString whole)
   in
     describe "exists"
-      [ exists Result.ok    (Ok 3)      True
-      , exists Result.ok    (Err '-')   False
-      , exists Result.err   (Err '!')   True
+      [ exists Result.okLens    (Ok 3)      True
+      , exists Result.okLens    (Err '-')   False
+      , exists Result.errLens   (Err '!')   True
       ]
 
 getWithDefault : Test
@@ -106,8 +106,8 @@ getWithDefault =
       equal (Lens.getWithDefault lens "default" whole) expected (toString whole)
   in
     describe "getWithDefault"
-      [ get Maybe.just (Just "here")     (Just "here")
-      , get Maybe.just Nothing           (Just "default")
+      [ get Maybe.justLens (Just "here")     (Just "here")
+      , get Maybe.justLens Nothing           (Just "default")
       ]
       
 {-
