@@ -37,7 +37,7 @@ isExistingPerson person =
   Lens.exists <| Model.personWords person
 
 
-{- Functions used in the third version (Main3) -}
+{- Functions used in the second and third versions (Main3) -}
 
 incrementWordCountM : Name -> Index -> Model -> Maybe Model
 incrementWordCountM person index = 
