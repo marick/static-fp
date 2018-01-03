@@ -1,10 +1,11 @@
 module Errors.Remote.Msg exposing (Msg(..))
 
+import Errors.Remote.Model exposing (Name)
 import Date exposing (Date)
 import Http
 
 type Msg
-  = Like String Int
+  = Like Name Int
+  | ChoosePerson Name
   | LastChange Date
-  | ChoosePerson String
   | LogResponse (Result Http.Error String)

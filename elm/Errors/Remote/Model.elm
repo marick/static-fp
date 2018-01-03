@@ -14,10 +14,12 @@ import Lens.Final.Array as Array
 
 {- Model -}
     
+type alias Name = String
+
 type alias Model =
-  { words : Dict String (Array Word)
-  , focusPerson : String
-  , clickCount : Int    -- this session
+  { words : Dict Name (Array Word)
+  , focusPerson : Name
+  , clickCount : Int
   , lastChange : Maybe Date 
   }
   
@@ -51,12 +53,12 @@ startingWords =
 
 -- the basics
 
-words : Lens.Classic Model (Dict String (Array Word))
+words : Lens.Classic Model (Dict Name (Array Word))
 words =
   Lens.classic .words (\words model -> { model | words = words })
 
 
-focusPerson : Lens.Classic Model String
+focusPerson : Lens.Classic Model Name
 focusPerson =
   Lens.classic .focusPerson (\focusPerson model -> { model | focusPerson = focusPerson })
     
@@ -71,14 +73,14 @@ clickCount =
 
 -- Composed
 
-personWords : String -> Lens.Path Model (Array Word)
+personWords : Name -> Lens.Path Model (Array Word)
 personWords who = 
   Compose.classicToPath ".words" words !!>> Dict.pathLens who
 
-word : String -> Int -> Lens.Path Model Word
+word : Name -> Int -> Lens.Path Model Word
 word who index =
   personWords who !!>> Array.pathLens index
 
-wordCount : String -> Int -> Lens.Path Model Int
+wordCount : Name -> Int -> Lens.Path Model Int
 wordCount who index =
   word who index !!>> Compose.classicToPath ".count" Word.count
