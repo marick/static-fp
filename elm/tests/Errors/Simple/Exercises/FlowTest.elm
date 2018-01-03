@@ -5,6 +5,7 @@ import TestBuilders exposing (..)
 import Random
 
 -- Change this to match your source
+-- import Errors.Simple.Exercises.Flow as Flow
 import Errors.Simple.Exercises.FlowSolution as Flow
 
 type alias Model = Int
