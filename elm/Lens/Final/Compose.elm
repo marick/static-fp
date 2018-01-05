@@ -3,7 +3,6 @@ module Lens.Final.Compose exposing (..)
 
 import Tagged exposing (Tagged(..))
 import Lens.Final.Lens as Lens
-import Lens.Final.PathShared as Path
 
 {-          Conversions               -}
 
@@ -36,7 +35,7 @@ classicToPath showable (Tagged lens) =
     set small = lens.set small >> Ok
     update f = lens.update f >> Ok
   in
-    Tagged { path = [Path.quote showable]
+    Tagged { path = [toString showable]
            , get = get
            , set = set
            , update = update
@@ -46,7 +45,7 @@ classicToPath showable (Tagged lens) =
 humbleToPath : showable -> Lens.Humble big small -> Lens.Path big small
 humbleToPath showable lens =
   let
-    path = [Path.quote showable]
+    path = [toString showable]
            
     lift lensOp big =
       case lensOp big of

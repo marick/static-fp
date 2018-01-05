@@ -170,7 +170,7 @@ set_failure =
     whole = dict "not key" 3
   in
     describe "set produces error lists"
-      [ equal_ (Lens.set lens 33 whole) (Err ["`\"key\"`"])
+      [ equal_ (Lens.set lens 33 whole) (Err ["\"key\""])
       ]
 
 update_failure : Test
@@ -180,7 +180,7 @@ update_failure =
     whole = Array.empty
   in
     describe "update produces error lists"
-      [ equal_ (Lens.set lens 33 whole) (Err ["`3`"])
+      [ equal_ (Lens.set lens 33 whole) (Err ["3"])
       ]
 
 {-
@@ -217,14 +217,14 @@ classicToPath =
 
       , equal_ (negatory lens (88.8, original))   (Ok (88.8, negate original))
 
-      , equal (extractPath lens) ["`\"tuple-second\"`"]  "stored for use in composition"
+      , equal (extractPath lens) ["\"tuple-second\""]  "stored for use in composition"
       ]
 
 humbleToPath : Test
 humbleToPath =
   let
     lens = Compose.humbleToPath 88 <| Dict.humbleLens "key"
-    path = ["`88`"]
+    path = ["88"]
 
     get whole = equal_ (Lens.get lens whole)
     set new whole = equal_ (Lens.set lens new whole)
@@ -286,8 +286,8 @@ pathAndPath =
       equal (Lens.pathExists lens whole) expected comment
 
     w key list = dict key (array list)
-    dictValuePath =  ["`\"key\"`"]
-    arrayValuePath = ["`\"key\"`", "`0`"]
+    dictValuePath =  ["\"key\""]
+    arrayValuePath = ["\"key\"", "0"]
 
   in
     describe "path and path"
