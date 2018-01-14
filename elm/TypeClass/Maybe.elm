@@ -1,4 +1,4 @@
-module Monoid.Maybe exposing (..)
+module TypeClass.Maybe exposing (..)
 
 
 empty : Maybe a

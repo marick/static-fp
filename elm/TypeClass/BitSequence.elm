@@ -1,4 +1,4 @@
-module Monoid.BitSequence exposing
+module TypeClass.BitSequence exposing
   ( fromList
   , fromString
   , fromBool
