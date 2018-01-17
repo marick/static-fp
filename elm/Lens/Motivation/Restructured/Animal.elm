@@ -4,9 +4,6 @@ module Lens.Motivation.Restructured.Animal exposing
   , named
   )
 
-import Array exposing (Array)
-import Lens.Final.Lens as Lens
-
 type alias Id = Int
 
 type alias Animal =

@@ -1,4 +1,4 @@
-module Errors.Remote.Main4 exposing (..)
+module Errors.Remote.Main exposing (..)
 
 import Errors.Remote.Msg exposing (Msg(..))
 import Errors.Remote.Model as Model exposing (Model)

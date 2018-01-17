@@ -5,7 +5,6 @@ import Lens.Motivation.WithLenses.Animal as Animal exposing (Animal)
 import Lens.Motivation.WithLenses.TagDb as TagDb exposing (TagDb)
 import Lens.Final.Lens as Lens
 import Dict
-import Array
 
 type Msg 
   = AddTag Animal.Id String

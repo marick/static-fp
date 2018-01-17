@@ -12,7 +12,7 @@ destination = "http://logger.outsidefp.com"
 cmd : Encode.Value -> Cmd Msg
 cmd payload =
   let
-    _ = Debug.log "Will log" (Encode.encode 4 payload)
+    _ = Debug.log "Will log this" (Encode.encode 4 payload)
   in
     Decode.succeed "ok" -- Logging is "fire and forget"
       |> Http.post destination (Http.jsonBody payload)
