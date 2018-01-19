@@ -1,6 +1,6 @@
-module Errors.Exercises.AllBoth.UpdateActions exposing (..)
+module Errors.Exercises.ActionChoice.UpdateActions exposing (..)
 
-import Errors.Exercises.AllBoth.Flow as Flow
+import Errors.Exercises.ActionChoice.Flow as Flow
 import Errors.Remote.Basics exposing (..)
 import Errors.Remote.Msg as Msg exposing (Msg(..))
 import Errors.Remote.Model as Model exposing (Model, Name, Index)

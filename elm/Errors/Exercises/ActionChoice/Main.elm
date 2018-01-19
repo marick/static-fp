@@ -1,9 +1,9 @@
-module Errors.Exercises.AllBoth.Main exposing (..)
+module Errors.Exercises.ActionChoice.Main exposing (..)
 
 import Errors.Remote.Msg exposing (Msg(..))
 import Errors.Remote.Model as Model exposing (Model)
-import Errors.Exercises.AllBoth.Flow as Flow exposing (..)
-import Errors.Exercises.AllBoth.UpdateActions as Update 
+import Errors.Exercises.ActionChoice.Flow as Flow exposing (..)
+import Errors.Exercises.ActionChoice.UpdateActions as Update 
 import Errors.Remote.View as View
 
 import Html

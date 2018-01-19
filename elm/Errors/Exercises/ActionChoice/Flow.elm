@@ -1,4 +1,4 @@
-module Errors.Exercises.AllBoth.Flow exposing (..)
+module Errors.Exercises.ActionChoice.Flow exposing (..)
 import Lens.Final.Lens as Lens
 import Array exposing (Array)
 import Errors.Remote.Msg exposing (Msg(..))
