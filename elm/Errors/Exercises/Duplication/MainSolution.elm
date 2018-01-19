@@ -1,9 +1,9 @@
-module Errors.Exercises.MoreFlow.Main exposing (..)
+module Errors.Exercises.Duplication.MainSolution exposing (..)
 
 import Errors.Remote.Msg exposing (Msg(..))
 import Errors.Remote.Model as Model exposing (Model)
-import Errors.Exercises.MoreFlow.Flow as Flow exposing (..)
-import Errors.Exercises.MoreFlow.UpdateActions as Update 
+import Errors.Exercises.Duplication.FlowSolution as Flow exposing (..)
+import Errors.Exercises.Duplication.UpdateActions as Update 
 import Errors.Remote.View as View
 
 import Html

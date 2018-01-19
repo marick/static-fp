@@ -1,4 +1,4 @@
-module Errors.Exercises.MoreFlow.UpdateActions exposing (..)
+module Errors.Exercises.Duplication.UpdateActions exposing (..)
 
 import Errors.Remote.Basics exposing (..)
 import Errors.Remote.Msg as Msg exposing (Msg(..))
