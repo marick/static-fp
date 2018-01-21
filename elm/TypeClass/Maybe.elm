@@ -1,5 +1,6 @@
 module TypeClass.Maybe exposing (..)
 
+{- Support for Monoids -} 
 
 empty : Maybe a
 empty = Nothing
