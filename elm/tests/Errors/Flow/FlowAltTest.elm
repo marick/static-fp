@@ -1,12 +1,12 @@
-module Errors.Simple.Exercises.FlowAltTest exposing (..)
+module Errors.Flow.FlowAltTest exposing (..)
 
 import Test exposing (..)
 import TestBuilders exposing (..)
 import Random
 
 -- Change this to match your source
--- import Errors.Simple.Exercises.FlowAlt as Flow
-import Errors.Simple.Exercises.FlowAltSolution as Flow
+-- import Errors.Exercises.Flow.FlowAlt as Flow
+import Errors.Exercises.Flow.FlowAltSolution as Flow
 
 type alias Model = Int
 

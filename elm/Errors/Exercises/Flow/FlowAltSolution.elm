@@ -1,4 +1,4 @@
-module Errors.Simple.Exercises.FlowAltSolution exposing (..)
+module Errors.Exercises.Flow.FlowAltSolution exposing (..)
 
 type alias ModelState model = 
   { ok : Bool

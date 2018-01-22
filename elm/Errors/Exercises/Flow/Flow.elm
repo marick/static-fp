@@ -1,4 +1,4 @@
-module Errors.Simple.Exercises.Flow exposing (..)
+module Errors.Exercises.Flow.Flow exposing (..)
 
 type alias ModelState model = Result model model
 
