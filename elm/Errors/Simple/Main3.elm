@@ -2,7 +2,7 @@ module Errors.Simple.Main3 exposing (..)
 
 import Errors.Simple.Msg exposing (Msg(..))
 import Errors.Simple.Model as Model exposing (Model)
-import Errors.Simple.Exercises.FlowSolution
+import Errors.Exercises.Flow.FlowSolution
   exposing (always_do, whenOk_try, whenOk_do, finishWith)
 import Errors.Simple.UpdateActions as Update
 import Errors.Simple.View as View
