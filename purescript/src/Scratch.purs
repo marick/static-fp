@@ -1,10 +1,16 @@
 module Scratch where
 
 import Prelude
-import Control.Monad.Eff.Random
-import Control.Monad.Eff.Console
 
-func arg = do
-  there <- random
-  let here = 500.0
-  logShow (here + there + arg)
+import Data.List as List
+import Data.List (List)
+
+import Data.Array as Array
+
+-- import Data.Array 
+
+x :: List Int
+x = List.singleton 4
+
+y :: Array Int
+y = Array.singleton 3
