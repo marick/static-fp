@@ -1,4 +1,4 @@
-module Records where
+module Blunder.Records where
 
 import Prelude
 
