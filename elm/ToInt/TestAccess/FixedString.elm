@@ -86,6 +86,8 @@ multiplyFully sign tenthDigit partialResult =
     (EQ, _       , Just 9)     -> Nothing
     (EQ, Positive, Just 8)     -> Nothing
     (_ , _       , Just digit) -> Just (10 * partialResult + digit)
+                               -- Sigh. The above would overflow a
+                               -- 32-bit integer. 
 
 err : String -> Result String Int
 err original =

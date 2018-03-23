@@ -141,10 +141,12 @@ fullyMultiply =
        , check Negative (boundary-1) Nothing   <| Just (boundary-1)
 
          -- first nine digits are bigger than boundary value
+         -- so multiplying by 10 is guaranteed to overflow,
+         -- no matter the last digit.
        , check Positive (boundary+1) (Just 0)  <| Nothing
        , check Negative (boundary+1) (Just 0)  <| Nothing
 
-         -- at boundary
+         -- at boundary (final digit is 4)
        , check Positive (boundary) (Just 7)  <| Just (boundary * 10 + 7)
        , check Negative (boundary) (Just 7)  <| Just (boundary * 10 + 7)
 
@@ -154,7 +156,7 @@ fullyMultiply =
        , check Positive (boundary) (Just 9)  <| Nothing
        , check Negative (boundary) (Just 9)  <| Nothing
 
-       -- below boundary
+       -- below boundary (final digit is 3, so it's always safe to multiply)
        , check Positive (boundary-1) (Just 8)  <| Just (boundary * 10 - 10 + 8)
        , check Negative (boundary-1) (Just 9)  <| Just (boundary * 10 - 10 + 9)
       ]
