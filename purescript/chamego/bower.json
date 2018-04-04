@@ -12,7 +12,13 @@
     "purescript-random": "^3.0.0",
     "purescript-css": "^3.4.0",
     "purescript-datetime": "^3.4.1",
-    "purescript-pux": "^12.0.0"
+    "purescript-pux": "^12.0.0",
+    "purescript-now": "^3.0.0",
+    "bower": "*",
+    "install": "^1.0.4",
+    "purescript-profunctor-lenses": "^3.8.0",
+    "purescript-record-show": "^0.4.0",
+    "purescript-stringutils": "menelaos/purescript-stringutils#^0.0.7"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"

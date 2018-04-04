@@ -11,15 +11,20 @@ import Pux (start, EffModel)
 import Pux.Renderer.React (renderToDOM)
 import Signal.Channel (CHANNEL)
 
--- import FormsExample.Form (foldp, view, init)
 import State as State
-import State (State)
+import State (State, Name, Index)
 import View as View
-import Events
+import Events (Event(..))
 
 foldp :: forall fx. Event -> State -> EffModel State Event fx
-foldp Increment state = { state: state { count = state.count + 1 }, effects: [] }
-foldp Decrement state = { state: state { count = state.count - 1 }, effects: [] }
+foldp (Like name index) state
+  = { state : state, effects : [] }
+
+foldp (ChoosePerson name) state
+  = { state : state, effects : [] }
+
+foldp (LastChange time) state
+  = { state : state, effects : [] }
 
 
 
