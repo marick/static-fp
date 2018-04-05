@@ -33,8 +33,3 @@ cases _ 3 = -3
 cases 8 _ = -8
 cases 8 8 = 3
 -- cases x y = x + y
-
-
-
-derp 0 = 5
-   
